@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
   g++ \
   git \
   gnupg gnupg1 gnupg2 \
-  locales \
+  libcanberra-gtk* \
   lsb-release \
   wget
 

@@ -45,9 +45,9 @@ def img_callback(msg):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, min_bounds, max_bounds)
     keypoints = detector.detect(mask)
-    labeled_mask = cv2.drawKeypoints(mask, keypoints, None, (0,0,255), 
+    labeled_img = cv2.drawKeypoints(img, keypoints, None, (255,0,0), 
                                      cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    cv2.imshow("Thresholded image", labeled_mask)
+    cv2.imshow("Image with Detections", labeled_img)
     cv2.waitKey(10)
 
 if __name__=="__main__":

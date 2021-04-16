@@ -10,7 +10,7 @@ By Sebastian Castro, 2021
 ---
 
 ## Setup
-First, install Docker using [https://docs.docker.com/engine/install/ubuntu/](the official install guide).
+First, install Docker using [the official install guide](https://docs.docker.com/engine/install/ubuntu/).
 
 To run Docker containers with graphics and GPU support, you will also need the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker).
 
