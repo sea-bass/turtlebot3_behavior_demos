@@ -10,7 +10,9 @@ By Sebastian Castro, 2021
 ---
 
 ## Setup
-To run Docker containers with graphics (Gazebo, RViz, GPU support, etc.), first install the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker).
+First, install Docker using [https://docs.docker.com/engine/install/ubuntu/](the official install guide).
+
+To run Docker containers with graphics and GPU support, you will also need the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker).
 
 To use GUI based tools (e.g., RViz, Gazebo) inside Docker, there is additional setup required. The simplest way is to run the command below each time you log into your machine, but there is a more detailed walkthrough of options in the [ROS Wiki](http://wiki.ros.org/docker/Tutorials/GUI).
 
@@ -39,8 +41,8 @@ To run a basic Gazebo simulation included with the standard TurtleBot3 packages:
 make sim
 ```
 
-To run a simulation with the custom world / scripts in our overlay workspace:
+To run our demo from the overlay workspace:
 
 ```
-make TODO
+make demo
 ```

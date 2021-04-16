@@ -1,11 +1,16 @@
 <launch>
 
+<!-- Arguments -->
+<arg name="world" default="sim_house"/>
+
 <!-- Start sim world -->
-<include file="$(find tb3_worlds)/launch/tb3_sim_world.launch" />
+<include file="$(find tb3_worlds)/launch/tb3_world.launch">
+    <arg name="world" value="$(arg world)"/>
+</include>
 
 <!-- Start navigation stack -->
-<include file="$(find turtlebot3_navigation)/launch/turtlebot3_navigation.launch" >
-    <arg name="map_file" value="$(find tb3_worlds)/maps/sim_map.yaml" />
+<include file="$(find turtlebot3_navigation)/launch/turtlebot3_navigation.launch">
+    <arg name="map_file" value="$(find tb3_worlds)/maps/$(arg world)_map.yaml"/>
 </include>
 
 </launch>

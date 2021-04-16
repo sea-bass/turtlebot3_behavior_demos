@@ -58,6 +58,13 @@ sim:
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash -it -c "roslaunch turtlebot3_gazebo turtlebot3_world.launch"
 
+# Start Terminal for teleoperating the TurtleBot3
+.PHONY: teleop
+teleop:
+	@docker run -it --gpus all --net=host --ipc host --privileged \
+		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
+		bash -it -c "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch"
+
 # Start our own simulation demo
 .PHONY: demo
 demo:
