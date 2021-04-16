@@ -4,8 +4,8 @@
 Script that tests a simple color thresholding vision approach.
 
 Example usage:
-  Python: python3 test_vision.py --min_h 0 --max_h 255 --min_s 220 --max_s 255 --min_v 0 --max_v 255
-  rosrun: rosrun tb3_autonomy test_vision.py --min_h 0 --max_h 255 --min_s 220 --max_s 255 --min_v 0 --max_v 255
+  Python: python3 test_vision.py --min_h 0 --max_h 30 --min_s 0 --max_s 255 --min_v 0 --max_v 255
+  rosrun: rosrun tb3_autonomy test_vision.py --min_h 0 --max_h 30 --min_s 220 --max_s 255 --min_v 0 --max_v 255
 """
 
 import cv2
@@ -17,8 +17,8 @@ from sensor_msgs.msg import Image
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="HSV Color Thresholding test script")
 parser.add_argument("--min_h", type=int, default=0)
-parser.add_argument("--max_h", type=int, default=255)
-parser.add_argument("--min_s", type=int, default=220)
+parser.add_argument("--max_h", type=int, default=30)
+parser.add_argument("--min_s", type=int, default=0)
 parser.add_argument("--max_s", type=int, default=255)
 parser.add_argument("--min_v", type=int, default=0)
 parser.add_argument("--max_v", type=int, default=255)
