@@ -18,7 +18,7 @@ To use GUI based tools (e.g., RViz, Gazebo) inside Docker, there is additional s
 xhost +
 ```
 
---
+---
 
 ## Usage
 First, build the base and overlay Docker images. This will take a while.

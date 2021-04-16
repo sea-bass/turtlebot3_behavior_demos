@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>tb3_worlds</name>
+  <version>0.0.0</version>
+  <description>Simple world examples for TurtleBot3</description>
+
+ <maintainer email="sebas.a.castro@gmail.com">Sebastian Castro</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+</package>

@@ -43,6 +43,8 @@ RUN rosdep init \
 
 # Install TurtleBot3 packages
 RUN apt-get install -y \
+  ros-noetic-dwa-local-planner \
+  ros-noetic-gmapping \
   ros-noetic-turtlebot3 \
   ros-noetic-turtlebot3-msgs
 RUN mkdir -p /turtlebot3_ws/src \
