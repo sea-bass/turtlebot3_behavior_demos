@@ -41,24 +41,27 @@ RUN rosdep init \
  && rosdep fix-permissions \
  && rosdep update
 
-# Install TurtleBot3 packages
+# Install other ROS packages
 RUN apt-get install -y \
-  ros-noetic-dwa-local-planner \
   ros-noetic-gmapping \
-  ros-noetic-turtlebot3 \
-  ros-noetic-turtlebot3-msgs
+  ros-noetic-navigation \
+  ros-noetic-py-trees \
+  ros-noetic-py-trees-ros \
+  ros-noetic-rqt-py-trees
+
+# Create Catkin workspace with TurtleBot3 package source
 RUN mkdir -p /turtlebot3_ws/src \
  && cd /turtlebot3_ws/src \
  && source /opt/ros/noetic/setup.bash \
  && catkin_init_workspace \
- && git clone https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+ && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
+ && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
+ && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
 
 # Build the base Catkin workspace
 RUN cd /turtlebot3_ws \
  && source /opt/ros/noetic/setup.bash \
  && catkin build -j4
-#RUN echo "source /turtlebot3_ws/devel/setup.bash" >> ~/.bashrc
-#RUN echo "export TURTLEBOT3_MODEL=waffle_pi" >> ~/.bashrc
 
 # Set up the work directory and entrypoint
 WORKDIR /turtlebot3_ws
