@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <sdf version="1.4">
-  <model name="red_block">
+  <model name="green_block">
     <pose>0 0 0.05 0 0 0</pose>
     <static>true</static>
     <link name="link">
@@ -29,8 +29,8 @@
           </box>
         </geometry>
          <material>
-          <ambient>0.8 0.0 0.1 1</ambient>
-          <diffuse>0.8 0.0 0.2 1</diffuse>
+          <ambient>0.0 0.7 0.0 1</ambient>
+          <diffuse>0.0 0.7 0.0 1</diffuse>
           <specular>0 0 0 0</specular>
           <emissive>0 0 0 1</emissive>
         </material>

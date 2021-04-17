@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 
 """
-Script that tests the `move_base` action client.
+Navigation script for the TurtleBot3
 
-Example usage:
-  Python: python3 test_move_base.py --x 0 --y 2 --theta 1.57
-  rosrun: rosrun tb3_autonomy test_move_base.py --x 0 --y 2 --theta 1.57
+This script relies on a YAML file of potential navigation locations, 
+which is listed as a `/location_file` ROS parameter
 """
 
 import tf
+import yaml
 import rospy
-import argparse
+import random
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 
@@ -29,21 +29,25 @@ def create_move_base_goal(x, y, theta):
     return goal
 
 if __name__=="__main__":
-    # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Move base test script")
-    parser.add_argument("--x", type=str, default="1.0")
-    parser.add_argument("--y", type=str, default="0.0")
-    parser.add_argument("--theta", type=str, default="0.0")
-    args = parser.parse_args()
-
     # Start ROS node and action client
     rospy.init_node("test_move_base")
     client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
     client.wait_for_server()
 
-    # Send goal to the move_base action server
-    print(f"Going to [x: {args.x}, y: {args.y}, theta: {args.theta}] ...")
-    goal = create_move_base_goal(float(args.x), float(args.y), float(args.theta))
-    client.send_goal(goal)
-    result = client.wait_for_result()
-    print(f"Action complete with result: {result}")
+    # Parse locations YAML file
+    location_file = rospy.get_param("location_file")
+    print(f"Using location file: {location_file}")
+    with open(location_file, "r") as f:
+        locations = yaml.load(f, Loader=yaml.FullLoader)
+
+    # Send goals randomly
+    while not rospy.is_shutdown():
+      next_loc = random.choice(list(locations.keys()))
+      x, y, theta = locations[next_loc]
+      print(f"Selected {next_loc}")
+      print(f"Going to [x: {x}, y: {y}, theta: {theta}] ...")
+      goal = create_move_base_goal(x, y, theta)
+      client.send_goal(goal)
+      result = client.wait_for_result()
+      print(f"Action complete with result: {result}")
+    

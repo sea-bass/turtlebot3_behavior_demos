@@ -47,27 +47,27 @@ kill:
 # Start a terminal inside the Docker container
 .PHONY: term
 term:
-	@docker run -it --gpus all --net=host --ipc host --privileged \
+	@docker run -it --gpus all --net=host --privileged \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash
 
 # Start basic simulation included with TurtleBot3 packages
 .PHONY: sim
 sim:
-	@docker run -it --gpus all --net=host --ipc host --privileged \
+	@docker run -it --gpus all --net=host --privileged \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash -it -c "roslaunch turtlebot3_gazebo turtlebot3_world.launch"
 
 # Start Terminal for teleoperating the TurtleBot3
 .PHONY: teleop
 teleop:
-	@docker run -it --gpus all --net=host --ipc host --privileged \
+	@docker run -it --gpus all --net=host --privileged \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash -it -c "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch"
 
 # Start our own simulation demo
 .PHONY: demo
 demo:
-	@docker run -it --gpus all --net=host --ipc host --privileged \
+	@docker run -it --gpus all --net=host --privileged \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash -it -c "roslaunch tb3_autonomy tb3_demo.launch"

@@ -11,6 +11,10 @@
 <!-- Start navigation stack -->
 <include file="$(find turtlebot3_navigation)/launch/turtlebot3_navigation.launch">
     <arg name="map_file" value="$(find tb3_worlds)/maps/$(arg world)_map.yaml"/>
+    <arg name="move_forward_only" value="true"/>
 </include>
+
+<!-- Spawn objects -->
+<node pkg="tb3_worlds" type="block_spawner.py" name="block_spawner"/>
 
 </launch>

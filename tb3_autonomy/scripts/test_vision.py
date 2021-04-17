@@ -6,6 +6,12 @@ Script that tests a simple color thresholding vision approach.
 Example usage:
   Python: python3 test_vision.py --min_h 0 --max_h 30 --min_s 0 --max_s 255 --min_v 0 --max_v 255
   rosrun: rosrun tb3_autonomy test_vision.py --min_h 0 --max_h 30 --min_s 220 --max_s 255 --min_v 0 --max_v 255
+
+For reference, these are some approximate thresholds on the H channel.
+  Red: 0 - 30
+  Blue: 100 - 140
+  Green: 40 - 80
+Since the blocks are highly saturated, the default S channel thresholds are tight (220-255)
 """
 
 import cv2
@@ -16,9 +22,9 @@ from sensor_msgs.msg import Image
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="HSV Color Thresholding test script")
-parser.add_argument("--min_h", type=int, default=0)
-parser.add_argument("--max_h", type=int, default=30)
-parser.add_argument("--min_s", type=int, default=0)
+parser.add_argument("--min_h", type=int, default=100)
+parser.add_argument("--max_h", type=int, default=140)
+parser.add_argument("--min_s", type=int, default=220)
 parser.add_argument("--max_s", type=int, default=255)
 parser.add_argument("--min_v", type=int, default=0)
 parser.add_argument("--max_v", type=int, default=255)
@@ -28,7 +34,7 @@ max_bounds = (args.max_h, args.max_s, args.max_v)
 
 # Define vision related variables
 bridge = cv_bridge.CvBridge()
-cv2.namedWindow("Image", cv2.WINDOW_NORMAL)
+cv2.namedWindow("Image with Detections", cv2.WINDOW_NORMAL)
 params = cv2.SimpleBlobDetector_Params()
 params.minArea = 100
 params.maxArea = 100000
