@@ -1,5 +1,5 @@
 # TurtleBot3 Behavior Demos
-In this repository, we demonstrate autonomous behavior using a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 20.04 and ROS Noetic.
+In this repository, we demonstrate autonomous behavior with a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 20.04 and ROS Noetic.
 
 This also serves as an example for Docker + Make workflows in ROS based projects. For more information, refer to the accompanying blog post (TODO).
 
@@ -17,6 +17,8 @@ To use GUI based tools (e.g., RViz, Gazebo) inside Docker, there is additional s
 ```
 xhost +
 ```
+
+Technically, you should be able to bypass Docker, directly clone this package to a Catkin workspace, and build it provided you have the necessary dependencies. As long as you can run the examples in the [TurtleBot3 manual](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview), you should be in good shape.
 
 ---
 
