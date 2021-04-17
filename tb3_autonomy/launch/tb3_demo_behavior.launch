@@ -1,0 +1,13 @@
+<launch>
+
+<!-- Define target object color -->
+<arg name="target_color" default="blue"/>
+<param name="target_color" value="$(arg target_color)"/>
+
+<!-- Run autonomy stack -->
+<node pkg="tb3_autonomy" type="autonomy_node.py" name="autonomy_node" output="screen"/>
+
+<!-- Run behavior tree visualization -->
+<node pkg="rqt_py_trees" type="rqt_py_trees" name="rqt_py_trees"/>
+
+</launch>

@@ -9,8 +9,8 @@ Example usage:
 
 For reference, these are some approximate thresholds on the H channel.
   Red: 0 - 30
-  Blue: 100 - 140
   Green: 40 - 80
+  Blue: 100 - 140
 Since the blocks are highly saturated, the default S channel thresholds are tight (220-255)
 """
 

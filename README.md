@@ -1,9 +1,7 @@
-# docker-make-ros
-Example repository for Docker + Make workflows in ROS based projects
+# TurtleBot3 Behavior Examples
+In this repository, we demonstrate autonomous behavior using a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 20.04 and ROS Noetic.
 
-In this example, we will set up a simulation environment for the [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 20.04 and ROS Noetic.
-
-For more information, refer to the accompanying blog post (TODO).
+This also serves as an example for Docker + Make workflows in ROS based projects. For more information, refer to the accompanying blog post (TODO).
 
 By Sebastian Castro, 2021
 
@@ -41,8 +39,13 @@ To run a basic Gazebo simulation included with the standard TurtleBot3 packages:
 make sim
 ```
 
-To run our demo from the overlay workspace:
+To start our demo world and autonomous behaviors
 
 ```
-make demo
+make demo-world
+make demo-behavior TARGET_COLOR=green
 ```
+
+After starting the commands above (plus doing some waiting and window rearranging), you should see the following.
+
+![Example demo screenshot](./media/demo_screenshot.png)

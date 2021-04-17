@@ -20,6 +20,8 @@ DOCKER_ENV_VARS = \
 	--env="XPASSTHROUGH=$(XPASSTHROUGH)"
 DOCKER_ARGS = ${DOCKER_CODE_VOLUMES} ${DOCKER_GUI_VOLUMES} ${DOCKER_ENV_VARS}
 
+# Command-line arguments
+TARGET_COLOR ?= blue
 
 ###########
 #  SETUP  #
@@ -65,9 +67,16 @@ teleop:
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash -it -c "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch"
 
-# Start our own simulation demo
-.PHONY: demo
-demo:
+# Start our own simulation demo world
+.PHONY: demo-world
+demo-world:
 	@docker run -it --gpus all --net=host --privileged \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		bash -it -c "roslaunch tb3_autonomy tb3_demo.launch"
+		bash -it -c "roslaunch tb3_worlds tb3_demo_world.launch"
+
+# Start our own simulation demo behavior
+.PHONY: demo-behavior
+demo-behavior:
+	@docker run -it --gpus all --net=host --privileged \
+		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
+		bash -it -c "roslaunch tb3_autonomy tb3_demo_behavior.launch target_color:=${TARGET_COLOR}"
