@@ -1,4 +1,4 @@
-# TurtleBot3 Behavior Examples
+# TurtleBot3 Behavior Demos
 In this repository, we demonstrate autonomous behavior using a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 20.04 and ROS Noetic.
 
 This also serves as an example for Docker + Make workflows in ROS based projects. For more information, refer to the accompanying blog post (TODO).
@@ -33,13 +33,13 @@ To enter a Terminal in the overlay container:
 make term
 ```
 
-To run a basic Gazebo simulation included with the standard TurtleBot3 packages:
+You can verify that display in Docker works by starting a basic Gazebo simulation included in the standard TurtleBot3 packages:
 
 ```
 make sim
 ```
 
-To start our demo world and autonomous behaviors
+To start our demo world and autonomous behaviors:
 
 ```
 make demo-world
