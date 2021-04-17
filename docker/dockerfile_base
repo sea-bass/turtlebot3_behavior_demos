@@ -46,8 +46,12 @@ RUN apt-get install -y \
   ros-noetic-gmapping \
   ros-noetic-navigation \
   ros-noetic-py-trees \
-  ros-noetic-py-trees-ros \
-  ros-noetic-rqt-py-trees
+  ros-noetic-py-trees-ros
+
+# Installs for building rqt_py_trees from source
+# (Once bug is fixed, replace with apt-get install ros-noetic-rqt-py-trees)
+RUN apt-get install -y graphviz graphviz-dev
+RUN pip3 install pygraphviz
 
 # Create Catkin workspace with TurtleBot3 package source
 RUN mkdir -p /turtlebot3_ws/src \
@@ -56,7 +60,8 @@ RUN mkdir -p /turtlebot3_ws/src \
  && catkin_init_workspace \
  && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
  && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
- && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+ && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git \
+ && git clone -b devel https://github.com/sea-bass/rqt_py_trees.git
 
 # Build the base Catkin workspace
 RUN cd /turtlebot3_ws \

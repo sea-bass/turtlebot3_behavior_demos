@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
 """
-Spawns blocks randomly given a world
+Spawns blocks randomly given a list of possible locations.
+
+This node spawns one block each (red, blue, and green), so at least 
+3 locations are required in the current implementation.
 """
 
 import os
