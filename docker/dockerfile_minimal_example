@@ -1,0 +1,29 @@
+# Minimal Dockerfile for TurtleBot3 (for example purposes)
+# This directly uses an OSRF ROS Noetic image
+FROM osrf/ros:noetic-desktop-full
+
+# Change the default shell to Bash
+SHELL [ "bash" , "-c" ]
+
+# Install Git and catkin-tools
+RUN apt-get update \
+ && apt-get install -y git
+
+# Create a Catkin workspace and clone TurtleBot3 repos
+RUN source /opt/ros/noetic/setup.bash \
+ && mkdir -p /turtlebot3_ws/src \
+ && cd /turtlebot3_ws/src \
+ && catkin_init_workspace \
+ && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
+ && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
+ && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+RUN echo "export TURTLEBOT3_MODEL=waffle_pi" >> ~/.bashrc
+
+# Build the Catkin workspace and ensure it's sourced
+RUN source /opt/ros/noetic/setup.bash \
+ && cd turtlebot3_ws \
+ && catkin_make
+RUN echo "source /turtlebot3_ws/devel/setup.bash" >> ~/.bashrc
+
+# Set the working folder at startup
+WORKDIR /turtlebot3_ws
