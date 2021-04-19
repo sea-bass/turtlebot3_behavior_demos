@@ -22,7 +22,7 @@ Technically, you should be able to bypass Docker, directly clone this package to
 
 ---
 
-## Usage
+## Basic Usage
 First, build the base and overlay Docker images. This will take a while.
 
 ```
@@ -35,19 +35,32 @@ To enter a Terminal in the overlay container:
 make term
 ```
 
+If you have an NVIDIA GPU and want to give your container access to the devices, add the following argument (this is true for all targets):
+
+```
+make term USE_GPU=true
+```
+
 You can verify that display in Docker works by starting a basic Gazebo simulation included in the standard TurtleBot3 packages:
 
 ```
 make sim
 ```
 
-To start our demo world and autonomous behaviors:
+---
+
+## Behavior Demo
+In this example, the robot uses [behavior trees](https://arxiv.org/abs/1709.00084) to randomly navigate around known locations to find a block of a specific color (red, green, or blue). Object detection is done using simple thresholding in the [HSV color space](https://en.wikipedia.org/wiki/HSL_and_HSV) with calibrated values.
+
+To start the demo, run the following commands in two separate Terminals. Of course, you can change the `TARGET_COLOR` argument.
 
 ```
 make demo-world
 make demo-behavior TARGET_COLOR=green
 ```
 
-After starting the commands above (plus doing some waiting and window rearranging), you should see the following.
+Note that the behavior tree viewer (`rqt_py_trees`) does not select topics automatically, so you should use the drop-down list to select the `autonomy_node/log/tree` topic to view the tree.
+
+After starting the commands above (plus doing some waiting and window rearranging), you should see the following. The labeled images will appear once the robot reaches a target location.
 
 ![Example demo screenshot](./media/demo_screenshot.png)
