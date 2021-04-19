@@ -54,12 +54,14 @@ if __name__=="__main__":
     py_trees.logging.level = py_trees.logging.Level.INFO
 
     # Tick the tree until a terminal state is reached
-    while not rospy.is_shutdown():
+    done = False
+    while not rospy.is_shutdown() and not done:
         ros_tree.tick()
         if ros_tree.root.status == py_trees.common.Status.SUCCESS:
             print("Behavior tree succeeded")
-            exit()
+            done = True
         elif ros_tree.root.status == py_trees.common.Status.FAILURE:
             print("Behavior tree failed.")
-            exit()
+            done = True
         rospy.sleep(0.5)
+    rospy.spin()

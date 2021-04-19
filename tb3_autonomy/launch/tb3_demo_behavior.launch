@@ -8,6 +8,6 @@
 <node pkg="tb3_autonomy" type="autonomy_node.py" name="autonomy_node" output="screen"/>
 
 <!-- Run behavior tree visualization -->
-<node pkg="rqt_py_trees" type="rqt_py_trees" name="rqt_py_trees"/>
+<node pkg="rqt_py_trees" type="rqt_py_trees" name="rqt_py_trees" output="screen"/>
 
 </launch>

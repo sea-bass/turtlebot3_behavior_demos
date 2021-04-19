@@ -35,7 +35,8 @@ RUN apt-get update \
 RUN apt-get install -y --no-install-recommends \
   python3-catkin-tools \
   python3-pip \
-  python3-rosdep
+  python3-rosdep \
+  python3-tk
 RUN pip3 install osrf-pycommon
 RUN rosdep init \
  && rosdep fix-permissions \

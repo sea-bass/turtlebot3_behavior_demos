@@ -7,6 +7,7 @@ import cv_bridge
 import rospy
 import py_trees
 from sensor_msgs.msg import Image
+import matplotlib.pyplot as plt
 
 # Define HSV color space thresholds
 hsv_threshold_dict = {
@@ -29,6 +30,11 @@ class LookForObject(py_trees.behaviour.Behaviour):
         self.img_timeout = rospy.Duration(img_timeout)
         self.viz_window_name = "Image with Detections"
         self.visualize = visualize
+        if self.visualize:
+            plt.figure(1)
+            plt.axis("off")
+            plt.title(self.viz_window_name)
+            plt.ion()
 
 
     def initialise(self):
@@ -70,9 +76,14 @@ class LookForObject(py_trees.behaviour.Behaviour):
         if self.visualize:
             labeled_img = cv2.drawKeypoints(img, keypoints, None, (255,0,0), 
                                             cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-            cv2.destroyAllWindows() 
-            cv2.imshow(self.viz_window_name, labeled_img)
-            cv2.waitKey(100)
+            # OpenCV visualization
+            # cv2.destroyAllWindows() 
+            # cv2.imshow(self.viz_window_name, labeled_img)
+            # cv2.waitKey(100)
+            
+            # Matplotlib visualization
+            plt.imshow(labeled_img[:,:,::-1])
+            plt.pause(0.1)
 
         # If there were no failures along the way, the behavior was successful
         if len(keypoints) == 0:

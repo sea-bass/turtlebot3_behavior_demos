@@ -1,8 +1,22 @@
-# Docker arguments
+# Makefile for TurtleBot3 examples
+#
+# Usage:
+#   make <target> <arg-name>=<arg-value>
+#
+# Examples:
+#   make term
+#   make demo-world USE_GPU=true
+#   make demo-behavior USE_GPU=false TARGET_COLOR=green
+
+# Command-line arguments
+TARGET_COLOR ?= blue	# Target color for behavior tree demo
+USE_GPU ?= false		# Use GPU devices (set to true if you have a GPU)
+DISPLAY ?= :0.0			# Display index (change as needed)
+
+# Docker variables
 IMAGE_NAME = turtlebot3
 BASE_DOCKERFILE = ${PWD}/docker/dockerfile_base
 OVERLAY_DOCKERFILE = ${PWD}/docker/dockerfile_overlay
-DISPLAY ?= :0.0
 
 # Set Docker volumes and environment variables
 DOCKER_VOLUMES = \
@@ -13,10 +27,13 @@ DOCKER_ENV_VARS = \
 	--env="NVIDIA_DRIVER_CAPABILITIES=all" \
 	--env="DISPLAY=$(DISPLAY)" \
 	--env="QT_X11_NO_MITSHM=1"
-DOCKER_ARGS = ${DOCKER_VOLUMES} ${DOCKER_ENV_VARS}
+ifeq ("${USE_GPU}", "true")
+DOCKER_GPU_ARGS = "--gpus all"
+else
+DOCKER_GPU_ARGS = ""
+endif
+DOCKER_ARGS = ${DOCKER_VOLUMES} ${DOCKER_ENV_VARS} ${DOCKER_GPU_VARS}
 
-# Command-line arguments
-TARGET_COLOR ?= blue
 
 ###########
 #  SETUP  #
@@ -44,34 +61,35 @@ kill:
 # Start a terminal inside the Docker container
 .PHONY: term
 term:
-	@docker run -it --gpus all --net=host --privileged \
+	@echo ${DOCKER_GPU_ARGS}
+	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash
 
 # Start basic simulation included with TurtleBot3 packages
 .PHONY: sim
 sim:
-	@docker run -it --gpus all --net=host --privileged \
+	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash -c "roslaunch turtlebot3_gazebo turtlebot3_world.launch"
 
 # Start Terminal for teleoperating the TurtleBot3
 .PHONY: teleop
 teleop:
-	@docker run -it --gpus all --net=host --privileged \
+	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash -c "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch"
 
 # Start our own simulation demo world
 .PHONY: demo-world
 demo-world:
-	@docker run -it --gpus all --net=host --privileged \
+	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash -c "roslaunch tb3_worlds tb3_demo_world.launch"
 
 # Start our own simulation demo behavior
 .PHONY: demo-behavior
 demo-behavior:
-	@docker run -it --gpus all --net=host --privileged \
+	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash -c "roslaunch tb3_autonomy tb3_demo_behavior.launch target_color:=${TARGET_COLOR}"
