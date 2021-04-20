@@ -20,14 +20,23 @@ xhost +
 
 Technically, you should be able to bypass Docker, directly clone this package to a Catkin workspace, and build it provided you have the necessary dependencies. As long as you can run the examples in the [TurtleBot3 manual](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview), you should be in good shape.
 
----
+First, clone this repository and go into the top-level folder:
 
-## Basic Usage
-First, build the base and overlay Docker images. This will take a while.
+```
+git clone https://github.com/sea-bass/turtlebot3_behavior_demos.git
+cd turtlebot3_behavior_demos
+```
+
+Build the base and overlay Docker images. This will take a while and requires approximately 4 GB of disk space.
 
 ```
 make build
 ```
+
+---
+
+## Basic Usage
+We use `make` to automate building, as shown above, but also for various useful entry points into the Docker container once it has been built. **All `make` commands below should be run from your host machine, and not from inside the container**.
 
 To enter a Terminal in the overlay container:
 
@@ -50,7 +59,7 @@ make sim
 ---
 
 ## Behavior Demo
-In this example, the robot uses [behavior trees](https://arxiv.org/abs/1709.00084) to randomly navigate around known locations to find a block of a specific color (red, green, or blue). Object detection is done using simple thresholding in the [HSV color space](https://en.wikipedia.org/wiki/HSL_and_HSV) with calibrated values.
+In this example, the robot uses [behavior trees](https://arxiv.org/abs/1709.00084) to randomly navigate around known locations and find a block of a specified color (red, green, or blue). Object detection is done using simple thresholding in the [HSV color space](https://en.wikipedia.org/wiki/HSL_and_HSV) with calibrated values.
 
 To start the demo, run the following commands in two separate Terminals. Of course, you can change the `TARGET_COLOR` argument.
 
@@ -59,7 +68,7 @@ make demo-world
 make demo-behavior TARGET_COLOR=green
 ```
 
-Note that the behavior tree viewer (`rqt_py_trees`) does not select topics automatically, so you should use the drop-down list to select the `autonomy_node/log/tree` topic to view the tree.
+Note that the behavior tree viewer (`rqt_py_trees`) does not select topics automatically. To view the tree, you should use the drop-down list to select the `/autonomy_node/log/tree` topic.
 
 After starting the commands above (plus doing some waiting and window rearranging), you should see the following. The labeled images will appear once the robot reaches a target location.
 

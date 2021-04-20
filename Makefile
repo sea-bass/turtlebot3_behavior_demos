@@ -11,12 +11,12 @@
 # Command-line arguments
 TARGET_COLOR ?= blue	# Target color for behavior tree demo
 USE_GPU ?= false		# Use GPU devices (set to true if you have a GPU)
-DISPLAY ?= :0.0			# Display index (change as needed)
 
 # Docker variables
 IMAGE_NAME = turtlebot3
-BASE_DOCKERFILE = ${PWD}/docker/dockerfile_base
-OVERLAY_DOCKERFILE = ${PWD}/docker/dockerfile_overlay
+CORE_DOCKERFILE = ${PWD}/docker/dockerfile_nvidia_ros
+BASE_DOCKERFILE = ${PWD}/docker/dockerfile_tb3_base
+OVERLAY_DOCKERFILE = ${PWD}/docker/dockerfile_tb3_overlay
 
 # Set Docker volumes and environment variables
 DOCKER_VOLUMES = \
@@ -25,7 +25,7 @@ DOCKER_VOLUMES = \
 	--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"
 DOCKER_ENV_VARS = \
 	--env="NVIDIA_DRIVER_CAPABILITIES=all" \
-	--env="DISPLAY=$(DISPLAY)" \
+	--env="DISPLAY" \
 	--env="QT_X11_NO_MITSHM=1"
 ifeq ("${USE_GPU}", "true")
 DOCKER_GPU_ARGS = "--gpus all"
@@ -38,6 +38,11 @@ DOCKER_ARGS = ${DOCKER_VOLUMES} ${DOCKER_ENV_VARS} ${DOCKER_GPU_VARS}
 ###########
 #  SETUP  #
 ###########
+# Build the core image
+.PHONY: build-core
+build-core:
+	@docker build -f ${CORE_DOCKERFILE} -t nvidia_ros .
+
 # Build the base image
 .PHONY: build-base
 build-base:
@@ -61,7 +66,6 @@ kill:
 # Start a terminal inside the Docker container
 .PHONY: term
 term:
-	@echo ${DOCKER_GPU_ARGS}
 	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash

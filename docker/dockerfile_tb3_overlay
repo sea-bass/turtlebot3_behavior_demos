@@ -1,5 +1,4 @@
 # Overlay Development Image for TurtleBot3 Simulation
-
 FROM turtlebot3_base:latest
 
 # Create an overlay Catkin workspace
