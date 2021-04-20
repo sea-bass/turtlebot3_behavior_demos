@@ -15,4 +15,4 @@ DOCKER_ENV_VARS="
 DOCKER_ARGS=${DOCKER_VOLUMES}" "${DOCKER_ENV_VARS}
 
 # Run the command
-docker run -it --net=host $DOCKER_ARGS $1 bash -it -c "$2"
+docker run -it --net=host $DOCKER_ARGS $1 bash -c "$2"

@@ -75,25 +75,25 @@ term:
 sim:
 	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		bash -c "roslaunch turtlebot3_gazebo turtlebot3_world.launch"
+		roslaunch turtlebot3_gazebo turtlebot3_world.launch
 
 # Start Terminal for teleoperating the TurtleBot3
 .PHONY: teleop
 teleop:
 	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		bash -c "roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch"
+		roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
 
 # Start our own simulation demo world
 .PHONY: demo-world
 demo-world:
 	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		bash -c "roslaunch tb3_worlds tb3_demo_world.launch"
+		roslaunch tb3_worlds tb3_demo_world.launch
 
 # Start our own simulation demo behavior
 .PHONY: demo-behavior
 demo-behavior:
 	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		bash -c "roslaunch tb3_autonomy tb3_demo_behavior.launch target_color:=${TARGET_COLOR}"
+		roslaunch tb3_autonomy tb3_demo_behavior.launch target_color:=${TARGET_COLOR}

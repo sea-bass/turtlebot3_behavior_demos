@@ -12,6 +12,7 @@ RUN source /opt/ros/noetic/setup.bash \
  && cd /overlay_ws \
  && catkin config --extend /turtlebot3_ws/devel \
  && catkin build -j4
+RUN echo "source /overlay_ws/devel/setup.bash" >> ~/.bashrc
 
 # Set up the work directory and entrypoint
 WORKDIR /overlay_ws

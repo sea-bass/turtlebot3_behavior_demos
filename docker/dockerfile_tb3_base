@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
   libcanberra-gtk* \
   python3-catkin-tools \
   python3-pip \
+  python3-tk \
   wget
 
 # Install additional ROS packages
