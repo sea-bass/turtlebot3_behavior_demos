@@ -1,7 +1,7 @@
 # TurtleBot3 Behavior Demos
 In this repository, we demonstrate autonomous behavior with a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 20.04 and ROS Noetic.
 
-This also serves as an example for Docker + Make workflows in ROS based projects. For more information, refer to the accompanying blog post (TODO).
+This also serves as an example for Docker + Make workflows in ROS based projects. For more information, refer to the [accompanying blog post](https://roboticseabass.wordpress.com/2021/04/21/docker-and-ros/).
 
 By Sebastian Castro, 2021
 
