@@ -26,7 +26,7 @@ RUN apt-get install -y \
 RUN apt-get install -y graphviz graphviz-dev
 RUN pip3 install pygraphviz
 
-# Create Catkin workspace with TurtleBot3 package source
+# Create Catkin workspace with TurtleBot3 package and behavior tree source
 RUN mkdir -p /turtlebot3_ws/src \
  && cd /turtlebot3_ws/src \
  && source /opt/ros/noetic/setup.bash \
@@ -34,12 +34,15 @@ RUN mkdir -p /turtlebot3_ws/src \
  && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
  && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
  && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git \
+ && git clone -b master https://github.com/BehaviorTree/BehaviorTree.CPP.git behavior_tree_cpp \
+ && git clone -b master https://github.com/BehaviorTree/Groot.git groot \
  && git clone -b devel https://github.com/sea-bass/rqt_py_trees.git
 
 # Build the base Catkin workspace
 RUN pip3 install osrf-pycommon
 RUN cd /turtlebot3_ws \
  && source /opt/ros/noetic/setup.bash \
+ && rosdep install -y --from-paths src --ignore-src \
  && catkin build -j4
 
 # Set up the work directory and entrypoint
