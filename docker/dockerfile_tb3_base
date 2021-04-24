@@ -45,6 +45,11 @@ RUN cd /turtlebot3_ws \
  && rosdep install -y --from-paths src --ignore-src \
  && catkin build -j4
 
+# Remove display warnings
+RUN mkdir /tmp/runtime-root
+ENV XDG_RUNTIME_DIR "/tmp/runtime-root"
+
+
 # Set up the work directory and entrypoint
 WORKDIR /turtlebot3_ws
 COPY ./docker/entrypoint.sh /

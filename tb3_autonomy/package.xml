@@ -7,7 +7,15 @@
  <maintainer email="sebas.a.castro@gmail.com">Sebastian Castro</maintainer>
   <license>MIT</license>
 
+  <depend>roscpp</depend>
+  <depend>cv_bridge</depend>
+  <depend>actionlib</depend>
+  <depend>sensor_msgs</depend>
+  <depend>move_base_msgs</depend>
+  <depend>image_transport</depend>
   <depend>tb3_worlds</depend>
+  <depend>behaviortree_cpp_v3</depend>
+
   <buildtool_depend>catkin</buildtool_depend>
 
   <export>
