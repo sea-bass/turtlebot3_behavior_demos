@@ -4,31 +4,36 @@
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
+// Sets number of locations from list
+class SetLocations : public BT::SyncActionNode
+{
+  public:
+    SetLocations(const std::string& name, const BT::NodeConfiguration& config);
+    BT::NodeStatus tick() override;
+    static BT::PortsList providedPorts();
+};
+
+// Gets location from a queue of locations read from a list
+class GetLocationFromQueue : public BT::SyncActionNode
+{
+  public:
+
+    std::deque<std::string> location_queue_;
+
+    GetLocationFromQueue(const std::string& name, const BT::NodeConfiguration& config);
+    BT::NodeStatus tick() override;
+    static BT::PortsList providedPorts();
+};
+
+// Go to a target location (wraps around move_base)
 class GoToPose : public BT::StatefulActionNode
 {
   public:
 
     MoveBaseClient client_;
     move_base_msgs::MoveBaseGoal goal_;
-    std::vector<float> pose_;
 
-    GoToPose(const std::string& name, const std::vector<float>& pose={1.0, 0.0, 0.0});
-
-    BT::NodeStatus onStart() override;
-    BT::NodeStatus onRunning() override;
-    void onHalted() override;
-
-};
-
-class GoToPosePort : public BT::StatefulActionNode
-{
-  public:
-
-    MoveBaseClient client_;
-    move_base_msgs::MoveBaseGoal goal_;
-
-    GoToPosePort(const std::string& name, const BT::NodeConfiguration& config);
-
+    GoToPose(const std::string& name, const BT::NodeConfiguration& config);
     BT::NodeStatus onStart() override;
     BT::NodeStatus onRunning() override;
     void onHalted() override;

@@ -61,15 +61,48 @@ make sim
 ## Behavior Demo
 In this example, the robot uses [behavior trees](https://arxiv.org/abs/1709.00084) to randomly navigate around known locations and find a block of a specified color (red, green, or blue). Object detection is done using simple thresholding in the [HSV color space](https://en.wikipedia.org/wiki/HSL_and_HSV) with calibrated values.
 
-To start the demo, run the following commands in two separate Terminals. Of course, you can change the `TARGET_COLOR` argument.
+To start the demo world, run the following command:
 
 ```
 make demo-world
-make demo-behavior TARGET_COLOR=green
+```
+
+### Behavior Trees in Python
+
+To start the Python based demo, which uses `py_trees`:
+
+```
+make demo-behavior
+```
+
+You can also include arguments: 
+
+```
+make demo-behavior TARGET_COLOR=green USE_GPU=true
 ```
 
 Note that the behavior tree viewer (`rqt_py_trees`) does not select topics automatically. To view the tree, you should use the drop-down list to select the `/autonomy_node/log/tree` topic.
 
 After starting the commands above (plus doing some waiting and window rearranging), you should see the following. The labeled images will appear once the robot reaches a target location.
 
-![Example demo screenshot](./media/demo_screenshot.png)
+![Example demo screenshot](./media/demo_screenshot_python.png)
+
+### Behavior Trees in C++
+
+To start the C++ demo, which uses `BehaviorTrees.CPP`:
+
+```
+make demo-behavior-cpp
+```
+
+You can also include arguments: 
+
+```
+make demo-behavior-cpp TARGET_COLOR=green USE_GPU=true
+```
+
+Note that the behavior tree viewer (`Groot`) requires you to click the "Connect" button to display the active tree.
+
+After starting the commands above (plus doing some waiting and window rearranging), you should see the following. The labeled images will appear once the robot reaches a target location.
+
+![Example demo screenshot](./media/demo_screenshot_cpp.png)

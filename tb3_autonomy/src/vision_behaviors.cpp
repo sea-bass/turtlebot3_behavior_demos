@@ -19,7 +19,9 @@ void LookForObject::init(const ros::NodeHandle& nh) {
 
 BT::NodeStatus LookForObject::tick()
 {
-    std::cout << "[" << this->name() << "] Looking for object" << std::endl;
+    std::string target_color;
+    ros::param::get("target_color", target_color);
+    std::cout << "[" << this->name() << "] Looking for " << target_color << " object" << std::endl;
     
     // Receive an image
     cv::namedWindow("Image");
@@ -33,13 +35,13 @@ BT::NodeStatus LookForObject::tick()
     sub.shutdown();
 
     // Convert to HSV and threshold
-    // TODO: Promote color threshold parameters based on a separate input
+    std::vector<int> th = hsv_threshold_dict.at(target_color);
     cv::Mat img, img_hsv, img_threshold, img_keypoints;
     img = cv_bridge::toCvShare(latest_image_, "bgr8")->image;
     cv::cvtColor(img, img_hsv, cv::COLOR_BGR2HSV);
     cv::inRange(img_hsv, 
-        cv::Scalar(40, 220, 0), 
-        cv::Scalar(80, 255, 255), img_threshold);
+        cv::Scalar(th[0], th[2], th[4]), 
+        cv::Scalar(th[1], th[3], th[5]), img_threshold);
 
     // Do blob detection
     cv::SimpleBlobDetector::Params params;

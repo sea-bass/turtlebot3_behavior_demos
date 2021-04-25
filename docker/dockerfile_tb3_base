@@ -48,7 +48,7 @@ RUN cd /turtlebot3_ws \
 # Remove display warnings
 RUN mkdir /tmp/runtime-root
 ENV XDG_RUNTIME_DIR "/tmp/runtime-root"
-
+ENV NO_AT_BRIDGE 1
 
 # Set up the work directory and entrypoint
 WORKDIR /turtlebot3_ws

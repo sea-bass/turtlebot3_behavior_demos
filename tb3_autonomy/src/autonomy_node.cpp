@@ -7,30 +7,52 @@
 
 #include "behaviortree_cpp_v3/loggers/bt_zmq_publisher.h"
 
-static const char* xml_text = R"(
+// "Naive" implementation where there is a hard-coded sequence for each location.
+// Here, there is a top-level fallback node that tries locations sequentially.
+// As you can see, this does not automatically scale with number of locations.
+static const char* xml_text_naive = R"(
  <root main_tree_to_execute = "MainTree" >
      <BehaviorTree ID="MainTree">
         <Fallback name="root">
             <Sequence name="search_location1">
-                <GoToPosePort   name="go_to_location1"  loc="location1" />
+                <GoToPose       name="go_to_location1"  loc="location1" />
                 <LookForObject  name="look_in_location1"/>
             </Sequence>
             <Sequence name="search_location2">
-                <GoToPosePort   name="go_to_location2" loc="location2"/>
+                <GoToPose       name="go_to_location2" loc="location2"/>
                 <LookForObject  name="look_in_location2"/>
             </Sequence>
             <Sequence name="search_location3">
-                <GoToPosePort   name="go_to_location3" loc="location3"/>
+                <GoToPose       name="go_to_location3" loc="location3"/>
                 <LookForObject  name="look_in_location3"/>
             </Sequence>
             <Sequence name="search_location3">
-                <GoToPosePort   name="go_to_location4" loc="location4"/>
+                <GoToPose       name="go_to_location4" loc="location4"/>
                 <LookForObject  name="look_in_location4"/>
             </Sequence>
         </Fallback>
      </BehaviorTree>
  </root>
  )";
+
+// A better implementation which uses a queue of location names to iterate through 
+// visiting locations regardless of number of locations.
+static const char* xml_text_queue = R"(
+<root main_tree_to_execute = "MainTree" >
+    <BehaviorTree ID="MainTree">
+    <Sequence name="main_loop">
+        <SetLocations              name="set_locations" num_locs="{num_locs}"/>
+        <RetryUntilSuccesful       num_attempts="{num_locs}">
+            <Sequence   name="search_location">
+                <GetLocationFromQueue   name="get_loc"      target_location="{target_location}"/>   
+                <GoToPose               name="go_to_loc"    loc="{target_location}"/>
+                <LookForObject          name="look_for_obj" />
+            </Sequence>   
+        </RetryUntilSuccesful>
+    </Sequence>
+    </BehaviorTree>
+</root>
+)";
 
 
 void mainLoop(const ros::NodeHandle& nh) {
@@ -44,45 +66,19 @@ void mainLoop(const ros::NodeHandle& nh) {
     }
     std::srand(100);
     std::random_shuffle(loc_names.begin(), loc_names.end());
-    std::string loc = loc_names[0];
 
-    // Build a tree from XML
-    #define USE_XML
-    #ifdef USE_XML
-        BT::BehaviorTreeFactory factory;
-        factory.registerNodeType<GoToPose>("GoToPose");
-        factory.registerNodeType<GoToPosePort>("GoToPosePort");
-        factory.registerNodeType<LookForObject>("LookForObject");
-        auto tree = factory.createTreeFromText(xml_text);
-        for (auto &node : tree.nodes) {
-            if (auto vis_node = dynamic_cast<LookForObject*>(node.get())) {
-                vis_node->init(nh);
-            }
-        }
-    // Build a tree manually
-    #else
-        auto root = std::make_shared<BT::FallbackNode>("root");    
-        BT::Tree tree;
-        tree.nodes.push_back(root);
-        for (std::string loc : loc_names) {
-            std::vector<float> pose = locations[loc].as<std::vector<float>>();
-            
-            auto search = std::make_shared<BT::SequenceNode>("search_" + loc);
-            root->addChild(search.get());
-            tree.nodes.push_back(search);
-
-            auto nav_node = std::make_shared<GoToPose>("go_to_" + loc, pose);
-            search->addChild(nav_node.get());
-            tree.nodes.push_back(nav_node);
-
-            auto vis_node = std::make_shared<LookForObject>("look_in_" + loc);
+    // Build a tree from XML and set it up for logging
+    BT::BehaviorTreeFactory factory;
+    factory.registerNodeType<GoToPose>("GoToPose");
+    factory.registerNodeType<SetLocations>("SetLocations");
+    factory.registerNodeType<GetLocationFromQueue>("GetLocationFromQueue");
+    factory.registerNodeType<LookForObject>("LookForObject");
+    auto tree = factory.createTreeFromText(xml_text_queue);
+    for (auto &node : tree.nodes) {
+        if (auto vis_node = dynamic_cast<LookForObject*>(node.get())) {
             vis_node->init(nh);
-            search->addChild(vis_node.get());
-            tree.nodes.push_back(vis_node);
         }
-    #endif
-
-    // Set the tree up for logging
+    }
     BT::PublisherZMQ publisher_zmq(tree);
 
     // Tick the tree until it reaches a terminal state
@@ -91,7 +87,15 @@ void mainLoop(const ros::NodeHandle& nh) {
         status = tree.tickRoot();
         ros::Duration(0.5).sleep();
     }
-    ROS_INFO("Done!");
+
+    // Output final results
+    std::string status_str;
+    if (status == BT::NodeStatus::SUCCESS) {
+        status_str = "SUCCESS";
+    } else {
+        status_str = "FAILURE";
+    }
+    ROS_INFO("Done with status %s!", status_str.c_str());
 
 }
 
