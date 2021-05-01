@@ -9,8 +9,9 @@
 #   make demo-behavior USE_GPU=false TARGET_COLOR=green
 
 # Command-line arguments
-TARGET_COLOR ?= blue	# Target color for behavior tree demo
-USE_GPU ?= false		# Use GPU devices (set to true if you have a GPU)
+TARGET_COLOR ?= blue	# Target color for behavior tree demo (red | green | blue)
+USE_GPU ?= false		# Use GPU devices (set to true if you have an NVIDIA GPU)
+BT_TYPE ?= queue		# Behavior tree type (naive | queue)
 
 # Docker variables
 IMAGE_NAME = turtlebot3
@@ -96,10 +97,12 @@ demo-world:
 demo-behavior:
 	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		roslaunch tb3_autonomy tb3_demo_behavior_py.launch target_color:=${TARGET_COLOR}
+		roslaunch tb3_autonomy tb3_demo_behavior_py.launch \
+		target_color:=${TARGET_COLOR} behavior_tree_type:=${BT_TYPE}
 
 .PHONY: demo-behavior-cpp
 demo-behavior-cpp:
 	@docker run -it --net=host \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		roslaunch tb3_autonomy tb3_demo_behavior_cpp.launch target_color:=${TARGET_COLOR}
+		roslaunch tb3_autonomy tb3_demo_behavior_cpp.launch \
+		target_color:=${TARGET_COLOR} behavior_tree_type:=${BT_TYPE}

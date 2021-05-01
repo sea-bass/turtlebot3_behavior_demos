@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Navigation script for the TurtleBot3
+Navigation test node for the TurtleBot3
 
 This script relies on a YAML file of potential navigation locations, 
 which is listed as a `/location_file` ROS parameter

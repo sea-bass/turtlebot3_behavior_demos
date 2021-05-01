@@ -1,3 +1,5 @@
+// Navigation Related Behaviors
+
 #include "navigation_behaviors.h"
 
 #include <ros/ros.h>
@@ -5,7 +7,9 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include "yaml-cpp/yaml.h"
 
+
 // SETLOCATIONS
+// Gets a list of locations from a YAML file and ensures they are not empty
 SetLocations::SetLocations(const std::string& name, const BT::NodeConfiguration& config) :
     BT::SyncActionNode(name, config)
 {
@@ -34,6 +38,8 @@ BT::PortsList SetLocations::providedPorts()
 
 
 // GETLOCATIONFROMQUEUE
+// Gets a location name from a queue of locations to visit.
+// If the queue is empty, this behavior fails.
 GetLocationFromQueue::GetLocationFromQueue(const std::string& name, const BT::NodeConfiguration& config) :
     BT::SyncActionNode(name, config)
 {
@@ -66,6 +72,9 @@ BT::PortsList GetLocationFromQueue::providedPorts()
 }
 
 
+// GOTOPOSE
+// Wrapper behavior around a `move_base` action client, whose status
+// reflects the status of the ROS action.
 GoToPose::GoToPose(const std::string& name, const BT::NodeConfiguration& config) :
     BT::StatefulActionNode(name, config), 
     client_("move_base", true)

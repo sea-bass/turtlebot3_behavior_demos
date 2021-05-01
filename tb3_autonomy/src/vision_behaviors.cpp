@@ -1,3 +1,5 @@
+// Vision related behaviors
+
 #include "vision_behaviors.h"
 
 #include <ros/ros.h>
@@ -7,6 +9,9 @@
 #include <opencv2/features2d.hpp>
 #include <cv_bridge/cv_bridge.h>
 
+
+// LOOKFOROBJECT
+// Looks for an object of a certain color, specified by a parameter
 LookForObject::LookForObject(const std::string& name) :
     BT::SyncActionNode(name, {})
 {

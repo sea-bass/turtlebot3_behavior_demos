@@ -69,7 +69,7 @@ make demo-world
 
 ### Behavior Trees in Python
 
-To start the Python based demo, which uses `py_trees`:
+To start the Python based demo, which uses [`py_trees`](https://py-trees.readthedocs.io/en/devel/):
 
 ```
 make demo-behavior
@@ -78,10 +78,10 @@ make demo-behavior
 You can also include arguments: 
 
 ```
-make demo-behavior TARGET_COLOR=green USE_GPU=true
+make demo-behavior TARGET_COLOR=green BT_TYPE=queue USE_GPU=true
 ```
 
-Note that the behavior tree viewer (`rqt_py_trees`) does not select topics automatically. To view the tree, you should use the drop-down list to select the `/autonomy_node/log/tree` topic.
+Note that the behavior tree viewer ([`rqt_py_trees`](https://github.com/splintered-reality/rqt_py_trees)) does not select topics automatically. To view the tree, you should use the drop-down list to select the `/autonomy_node/log/tree` topic.
 
 After starting the commands above (plus doing some waiting and window rearranging), you should see the following. The labeled images will appear once the robot reaches a target location.
 
@@ -89,7 +89,7 @@ After starting the commands above (plus doing some waiting and window rearrangin
 
 ### Behavior Trees in C++
 
-To start the C++ demo, which uses `BehaviorTrees.CPP`:
+To start the C++ demo, which uses [`BehaviorTrees.CPP`](https://www.behaviortree.dev/):
 
 ```
 make demo-behavior-cpp
@@ -98,10 +98,10 @@ make demo-behavior-cpp
 You can also include arguments: 
 
 ```
-make demo-behavior-cpp TARGET_COLOR=green USE_GPU=true
+make demo-behavior-cpp TARGET_COLOR=green BT_TYPE=queue USE_GPU=true
 ```
 
-Note that the behavior tree viewer (`Groot`) requires you to click the "Connect" button to display the active tree.
+Note that the behavior tree viewer ([`Groot`](https://github.com/BehaviorTree/Groot)) requires you to click the "Connect" button to display the active tree.
 
 After starting the commands above (plus doing some waiting and window rearranging), you should see the following. The labeled images will appear once the robot reaches a target location.
 

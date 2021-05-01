@@ -1,11 +1,12 @@
+// Main behavior node for TurtleBot3 
+
 #include "ros/ros.h"
 #include "yaml-cpp/yaml.h"
-
 #include "behaviortree_cpp_v3/behavior_tree.h"
+#include "behaviortree_cpp_v3/loggers/bt_zmq_publisher.h"
 #include "navigation_behaviors.h"
 #include "vision_behaviors.h"
 
-#include "behaviortree_cpp_v3/loggers/bt_zmq_publisher.h"
 
 // "Naive" implementation where there is a hard-coded sequence for each location.
 // Here, there is a top-level fallback node that tries locations sequentially.
@@ -55,7 +56,12 @@ static const char* xml_text_queue = R"(
 )";
 
 
-void mainLoop(const ros::NodeHandle& nh) {
+int main(int argc, char **argv)
+{
+    // Initialize ROS node
+    ros::init(argc, argv, "autonomy_node");
+    ros::NodeHandle nh;
+
     // Read YAML file
     std::string yaml_file;
     ros::param::get("location_file", yaml_file);
@@ -67,13 +73,23 @@ void mainLoop(const ros::NodeHandle& nh) {
     std::srand(100);
     std::random_shuffle(loc_names.begin(), loc_names.end());
 
-    // Build a tree from XML and set it up for logging
+    // Build a behavior tree from XML and set it up for logging
+    std::string behavior_tree_type;
+    ros::param::get("behavior_tree_type", behavior_tree_type);
+    BT::Tree tree;
     BT::BehaviorTreeFactory factory;
     factory.registerNodeType<GoToPose>("GoToPose");
     factory.registerNodeType<SetLocations>("SetLocations");
     factory.registerNodeType<GetLocationFromQueue>("GetLocationFromQueue");
     factory.registerNodeType<LookForObject>("LookForObject");
-    auto tree = factory.createTreeFromText(xml_text_queue);
+    if ( behavior_tree_type == "naive" ) {
+        tree = factory.createTreeFromText(xml_text_naive);
+    } else if (behavior_tree_type == "queue") {
+        tree = factory.createTreeFromText(xml_text_queue);
+    } else {
+        std::cerr << "Invalid behavior tree type: " << behavior_tree_type << std::endl;
+        return 0;
+    }
     for (auto &node : tree.nodes) {
         if (auto vis_node = dynamic_cast<LookForObject*>(node.get())) {
             vis_node->init(nh);
@@ -96,16 +112,5 @@ void mainLoop(const ros::NodeHandle& nh) {
         status_str = "FAILURE";
     }
     ROS_INFO("Done with status %s!", status_str.c_str());
-
-}
-
-int main(int argc, char **argv)
-{
-    // Initialize ROS node
-    ros::init(argc, argv, "autonomy_node");
-    ros::NodeHandle nh;
-
-    // Run the main loop
-    mainLoop(nh);
     return 0;
 }

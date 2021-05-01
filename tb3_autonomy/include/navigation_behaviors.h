@@ -1,3 +1,5 @@
+// Navigation behaviors for TurtleBot3
+
 #include "behaviortree_cpp_v3/behavior_tree.h"
 #include <actionlib/client/simple_action_client.h>
 #include <move_base_msgs/MoveBaseAction.h>
@@ -25,7 +27,7 @@ class GetLocationFromQueue : public BT::SyncActionNode
     static BT::PortsList providedPorts();
 };
 
-// Go to a target location (wraps around move_base)
+// Go to a target location (wraps around `move_base`)
 class GoToPose : public BT::StatefulActionNode
 {
   public:

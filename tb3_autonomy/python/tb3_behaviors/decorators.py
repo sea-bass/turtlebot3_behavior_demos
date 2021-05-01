@@ -7,6 +7,44 @@ from py_trees import behaviour
 from py_trees import common
 from py_trees.decorators import Decorator
 
+
+class Loop(Decorator):
+    """
+    A py_trees decorator for looping a behavior until successful or a 
+    maximum number of iterations have been reached
+    """
+    def __init__(self, child, max_iters=3,
+                 name=common.Name.AUTO_GENERATED):
+        """
+        Init with the decorated child.
+                
+        Args:
+            child (:class:`~py_trees.behaviour.Behaviour`): behaviour to time
+            max_iters (:obj:`int`): the maximum number of iterations
+            name (:obj:`str`): the decorator name
+        """
+        super().__init__(name=name, child=child)
+        self.max_iters = max_iters
+
+    def initialise(self):
+        self.iters = 0
+    
+    def update(self):
+        """
+        If the child behavior has failed, move on to the next iteration until 
+        the maximum number has been reached. Else, keep ticking the child behavior.
+        """
+        if self.decorated.status == common.Status.FAILURE:
+            self.iters += 1
+            self.logger.info(f"Loop Failure Count: {self.iters}")
+            if self.iters >= self.max_iters:
+                self.logger.info(f"Exceeded {self.max_iters} failures of {self.decorated.name}")
+                return common.Status.FAILURE
+            return common.Status.RUNNING
+        else:
+            return self.decorated.status
+
+
 class OneShot(Decorator):
     """
     Modified version of a decorator that implements the oneshot pattern.
