@@ -1,4 +1,4 @@
-// Vision related behaviors
+// Vision behaviors for TurtleBot3
 
 #include <ros/ros.h>
 #include "sensor_msgs/Image.h"
@@ -14,7 +14,7 @@ const ColorThresholdMap hsv_threshold_dict = {
 };
 
 // Look for an object of a particular color
-class LookForObject : public BT::SyncActionNode
+class LookForObject : public BT::ConditionNode
 {
   public:
 

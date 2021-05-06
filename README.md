@@ -1,7 +1,9 @@
 # TurtleBot3 Behavior Demos
 In this repository, we demonstrate autonomous behavior with a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 20.04 and ROS Noetic.
 
-This also serves as an example for Docker + Make workflows in ROS based projects. For more information, refer to the [accompanying blog post](https://roboticseabass.wordpress.com/2021/04/21/docker-and-ros/).
+The autonomy in these examples are designed using **behavior trees**. For more information, refer to this blog post (TODO) or the [Behavior Trees in Robotics and AI textbook](https://arxiv.org/abs/1709.00084).
+
+This also serves as an example for Docker + Make workflows in ROS based projects. For more information, refer to [this blog post](https://roboticseabass.wordpress.com/2021/04/21/docker-and-ros/).
 
 By Sebastian Castro, 2021
 
@@ -15,7 +17,7 @@ To run Docker containers with graphics and GPU support, you will also need the [
 To use GUI based tools (e.g., RViz, Gazebo) inside Docker, there is additional setup required. The simplest way is to run the command below each time you log into your machine, but there is a more detailed walkthrough of options in the [ROS Wiki](http://wiki.ros.org/docker/Tutorials/GUI).
 
 ```
-xhost +
+xhost + local:docker
 ```
 
 Technically, you should be able to bypass Docker, directly clone this package to a Catkin workspace, and build it provided you have the necessary dependencies. As long as you can run the examples in the [TurtleBot3 manual](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview), you should be in good shape.
@@ -58,8 +60,8 @@ make sim
 
 ---
 
-## Behavior Demo
-In this example, the robot uses [behavior trees](https://arxiv.org/abs/1709.00084) to randomly navigate around known locations and find a block of a specified color (red, green, or blue). Object detection is done using simple thresholding in the [HSV color space](https://en.wikipedia.org/wiki/HSL_and_HSV) with calibrated values.
+## Behavior Trees Demo
+In this example, the robot navigates around known locations with the goal of finding a block of a specified color (red, green, or blue). Object detection is done using simple thresholding in the [HSV color space](https://en.wikipedia.org/wiki/HSL_and_HSV) with calibrated values.
 
 To start the demo world, run the following command:
 

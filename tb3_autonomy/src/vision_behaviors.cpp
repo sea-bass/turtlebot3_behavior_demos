@@ -13,7 +13,7 @@
 // LOOKFOROBJECT
 // Looks for an object of a certain color, specified by a parameter
 LookForObject::LookForObject(const std::string& name) :
-    BT::SyncActionNode(name, {})
+    BT::ConditionNode(name, {})
 {
     std::cout << "[" << this->name() << "] Initialized" << std::endl;
 }
