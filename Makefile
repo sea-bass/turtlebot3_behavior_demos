@@ -9,9 +9,9 @@
 #   make demo-behavior USE_GPU=false TARGET_COLOR=green
 
 # Command-line arguments
-TARGET_COLOR ?= blue	# Target color for behavior tree demo (red | green | blue)
-USE_GPU ?= false		# Use GPU devices (set to true if you have an NVIDIA GPU)
-BT_TYPE ?= queue		# Behavior tree type (naive | queue)
+TARGET_COLOR ?= blue    # Target color for behavior tree demo (red | green | blue)
+USE_GPU ?= false        # Use GPU devices (set to true if you have an NVIDIA GPU)
+BT_TYPE ?= queue        # Behavior tree type (naive | queue)
 
 # Docker variables
 IMAGE_NAME = turtlebot3
@@ -30,8 +30,6 @@ DOCKER_ENV_VARS = \
 	--env="QT_X11_NO_MITSHM=1"
 ifeq ("${USE_GPU}", "true")
 DOCKER_GPU_ARGS = "--gpus all"
-else
-DOCKER_GPU_ARGS = ""
 endif
 DOCKER_ARGS = ${DOCKER_VOLUMES} ${DOCKER_ENV_VARS} ${DOCKER_GPU_VARS}
 
