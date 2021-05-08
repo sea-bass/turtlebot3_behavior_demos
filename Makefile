@@ -6,7 +6,7 @@
 # Examples:
 #   make term
 #   make demo-world USE_GPU=true
-#   make demo-behavior USE_GPU=false TARGET_COLOR=green
+#   make demo-behavior USE_GPU=false TARGET_COLOR=green BT_TYPE=queue
 
 # Command-line arguments
 TARGET_COLOR ?= blue    # Target color for behavior tree demo (red | green | blue)
