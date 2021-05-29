@@ -44,7 +44,7 @@ build-core:
 
 # Build the base image
 .PHONY: build-base
-build-base:: build-core
+build-base: build-core
 	@docker build -f ${BASE_DOCKERFILE} -t ${IMAGE_NAME}_base .
 
 # Build the overlay image (depends on base image build)
