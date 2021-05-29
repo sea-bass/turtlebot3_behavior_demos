@@ -42,7 +42,7 @@ DOCKER_ARGS = ${DOCKER_VOLUMES} ${DOCKER_ENV_VARS} ${DOCKER_GPU_VARS}
 build-core:
 	@docker build -f ${CORE_DOCKERFILE} -t nvidia_ros .
 
-# Build the base image
+# Build the base image (depends on core image build)
 .PHONY: build-base
 build-base: build-core
 	@docker build -f ${BASE_DOCKERFILE} -t ${IMAGE_NAME}_base .
