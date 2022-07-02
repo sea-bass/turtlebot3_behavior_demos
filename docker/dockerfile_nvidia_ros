@@ -1,16 +1,9 @@
 # Ubuntu 20.04 image with NVIDIA CUDA + OpenGL and ROS Noetic
-FROM nvidia/cudagl:11.1.1-base-ubuntu20.04
+FROM nvidia/cudagl:11.4.2-base-ubuntu20.04
 
 # Install basic apt packages
-RUN apt-get update && apt-get install -y locales lsb-release
-
-# Set up locale and UTF-8 encoding, mostly so setup runs without errors
 ARG DEBIAN_FRONTEND=noninteractive
-#RUN locale-gen en_US.UTF-8
-#ENV PYTHONIOENCODING UTF-8
-#ENV LC_ALL en_US.UTF-8
-#ENV LANG en_US.UTF-8
-#ENV LANGUAGE en_US:en
+RUN apt-get update && apt-get install -y locales lsb-release
 RUN dpkg-reconfigure locales
 
 # Install ROS Noetic

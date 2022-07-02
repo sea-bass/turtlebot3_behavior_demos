@@ -5,7 +5,7 @@ The autonomy in these examples are designed using **behavior trees**. For more i
 
 This also serves as an example for Docker + Make workflows in ROS based projects. For more information, refer to [this blog post](https://roboticseabass.com/2021/04/21/docker-and-ros/).
 
-By Sebastian Castro, 2021
+By Sebastian Castro, 2021-2022
 
 ---
 
