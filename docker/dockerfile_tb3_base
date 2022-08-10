@@ -31,7 +31,7 @@ RUN mkdir -p /turtlebot3_ws/src \
  && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
  && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git \
  && git clone -b master https://github.com/BehaviorTree/BehaviorTree.CPP.git behavior_tree_cpp \
- && git clone -b revert-157-Fix_Build https://github.com/BehaviorTree/Groot.git groot
+ && git clone -b master https://github.com/BehaviorTree/Groot.git groot
 
 # Build the base Catkin workspace
 # RUN pip3 install osrf-pycommon
