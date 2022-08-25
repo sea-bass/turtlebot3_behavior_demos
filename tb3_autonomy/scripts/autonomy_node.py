@@ -69,6 +69,9 @@ if __name__=="__main__":
     print(f"Targeting object color: {target_color}")
 
     # Parse locations YAML file
+    while not rospy.has_param("location_file"):
+        print("Waiting for location_file parameter. Please load a world ...")
+        rospy.sleep(3.0)
     location_file = rospy.get_param("location_file")
     print(f"Using location file: {location_file}")
     with open(location_file, "r") as f:

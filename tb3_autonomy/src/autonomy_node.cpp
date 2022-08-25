@@ -64,6 +64,10 @@ int main(int argc, char **argv)
 
     // Read YAML file
     std::string yaml_file;
+    while (!nh.hasParam("location_file")) {
+        ROS_INFO("Waiting for location_file parameter. Please load a world ...");
+        ros::Duration(3.0).sleep();
+    }
     ros::param::get("location_file", yaml_file);
     YAML::Node locations = YAML::LoadFile(yaml_file);
     std::vector<std::string> loc_names;
