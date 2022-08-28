@@ -1651,5 +1651,11 @@
         <projection_type>perspective</projection_type>
       </camera>
     </gui>
+
+    <!-- Include a robot -->
+    <include>
+      <uri>model://turtlebot3_waffle_pi</uri>
+    </include>
+
   </world>
 </sdf>

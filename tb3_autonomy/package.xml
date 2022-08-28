@@ -7,6 +7,8 @@
  <maintainer email="sebas.a.castro@gmail.com">Sebastian Castro</maintainer>
   <license>MIT</license>
 
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
   <depend>roscpp</depend>
   <depend>cv_bridge</depend>
   <depend>actionlib</depend>
@@ -16,8 +18,7 @@
   <depend>tb3_worlds</depend>
   <depend>behaviortree_cpp_v3</depend>
 
-  <buildtool_depend>catkin</buildtool_depend>
-
   <export>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>

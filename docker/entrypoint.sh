@@ -1,23 +1,25 @@
 #!/bin/bash
-# Basic entrypoint for ROS / Catkin Docker containers
+# Basic entrypoint for ROS / Colcon Docker containers
 
-# Source ROS and Catkin workspaces
-source /opt/ros/noetic/setup.bash
-if [ -f /turtlebot3_ws/devel/setup.bash ]
+# Source ROS and Colcon workspaces
+source /opt/ros/foxy/setup.bash
+echo "Sourced ROS2 Foxy"
+if [ -f /turtlebot3_ws/install/setup.bash ]
 then
-  echo "source /turtlebot3_ws/devel/setup.bash" >> ~/.bashrc
-  source /turtlebot3_ws/devel/setup.bash
+  echo "source /turtlebot3_ws/install/setup.bash" >> ~/.bashrc
+  source /turtlebot3_ws/install/setup.bash
+  echo "Sourced TurtleBot3 base workspace"
 fi
-if [ -f /overlay_ws/devel/setup.bash ]
+if [ -f /overlay_ws/install/setup.bash ]
 then
-  echo "source /overlay_ws/devel/setup.bash" >> ~/.bashrc
-  source /overlay_ws/devel/setup.bash
+  echo "source /overlay_ws/install/setup.bash" >> ~/.bashrc
+  source /overlay_ws/install/setup.bash
+  echo "Sourced autonomy overlay workspace"
 fi
-echo "Sourced Catkin workspace!"
 
 # Set environment variables
 export TURTLEBOT3_MODEL=waffle_pi
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:$(rospack find tb3_worlds)/models
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:$(ros2 pkg prefix tb3_worlds)/share/tb3_worlds/models
 
 # Execute the command passed into this entrypoint
 exec "$@"

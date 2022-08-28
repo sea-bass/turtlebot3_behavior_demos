@@ -4,41 +4,38 @@ SHELL ["/bin/bash", "-c"]
 
 # Install basic apt packages
 RUN apt-get update && apt-get install -y \
-  cmake \
-  g++ \
-  git \
-  gnupg gnupg1 gnupg2 \
-  libcanberra-gtk* \
-  python3-catkin-tools \
-  python3-pip \
-  python3-tk \
-  wget
+  git
 
 # Install additional ROS packages
 RUN apt-get install -y \
-  ros-noetic-gmapping \
-  ros-noetic-navigation \
-  ros-noetic-py-trees \
-  ros-noetic-py-trees-ros \
-  ros-noetic-rqt-py-trees
+  ros-foxy-gazebo-* \
+  ros-foxy-cartographer \
+  ros-foxy-cartographer-ros \
+  ros-foxy-navigation2 \
+  ros-foxy-nav2-bringup \
+  ros-foxy-py-trees \
+  ros-foxy-py-trees-ros \
+  ros-foxy-py-trees-ros-viewer
 
-# Create Catkin workspace with TurtleBot3 package and behavior tree source
+# Create Colcon workspace with TurtleBot3 packages
 RUN mkdir -p /turtlebot3_ws/src \
  && cd /turtlebot3_ws/src \
- && source /opt/ros/noetic/setup.bash \
- && catkin_init_workspace \
- && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
- && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
- && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git \
- && git clone -b master https://github.com/BehaviorTree/BehaviorTree.CPP.git behavior_tree_cpp \
- && git clone -b master https://github.com/BehaviorTree/Groot.git groot
+ && git clone -b foxy-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
+ && git clone -b foxy-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
+ && git clone -b foxy-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git \
+ && git clone -b foxy-devel https://github.com/ROBOTIS-GIT/DynamixelSDK.git
 
-# Build the base Catkin workspace
-# RUN pip3 install osrf-pycommon
+# Install Groot for visualizing behavior trees
+RUN apt-get install -y qt5-default libqt5x11extras5-dev libqt5help5 qttools5-dev qtxmlpatterns5-dev-tools libqt5svg5-dev
+RUN cd /turtlebot3_ws/src \
+ && git clone -b master https://github.com/BehaviorTree/Groot.git groot \
+ && cd groot \
+ && git submodule update --init --recursive
+
+# Build the base Colcon workspace
 RUN cd /turtlebot3_ws \
- && source /opt/ros/noetic/setup.bash \
- && rosdep install -y --from-paths src --ignore-src \
- && catkin build
+ && source /opt/ros/foxy/setup.bash \
+ && colcon build --symlink-install
 
 # Remove display warnings
 RUN mkdir /tmp/runtime-root
