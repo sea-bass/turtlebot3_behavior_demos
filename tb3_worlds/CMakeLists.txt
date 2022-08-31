@@ -7,10 +7,18 @@ endif()
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(gazebo_msgs REQUIRED)
+
+# Install programs
+install(PROGRAMS
+    scripts/block_spawner.py
+    DESTINATION lib/${PROJECT_NAME}
+)
 
 # Install directories
 install(DIRECTORY
-  launch models worlds
+  launch maps models worlds
   DESTINATION share/${PROJECT_NAME}
 )
 

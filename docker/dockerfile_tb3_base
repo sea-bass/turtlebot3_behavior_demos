@@ -4,7 +4,10 @@ SHELL ["/bin/bash", "-c"]
 
 # Install basic apt packages
 RUN apt-get update && apt-get install -y \
-  git
+ git python3-pip
+
+# Install additional Python modules
+RUN pip3 install transforms3d
 
 # Install additional ROS packages
 RUN apt-get install -y \

@@ -89,7 +89,7 @@ teleop:
 demo-world:
 	@docker run -it \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		roslaunch tb3_worlds tb3_demo_world.launch
+		ros2 launch tb3_worlds tb3_demo_world.launch.py
 
 # Start our own simulation demo behavior
 .PHONY: demo-behavior
