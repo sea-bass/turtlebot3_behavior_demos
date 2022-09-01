@@ -14,6 +14,7 @@ find_package(behaviortree_cpp_v3 REQUIRED)
 # Install programs
 install(PROGRAMS
     scripts/test_move_base.py
+    scripts/test_vision.py
     DESTINATION lib/${PROJECT_NAME}
 )
 
