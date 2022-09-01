@@ -29,6 +29,12 @@ def generate_launch_description():
                 "map": join(pkg_tb3_worlds, "maps", "sim_house_map.yaml")
             }.items()
         ),
+        # Set AMCL initial pose
+        Node(
+            package="tb3_worlds",
+            executable="set_init_amcl_pose.py",
+            name="init_pose_publisher",
+        ),
         # Spawn blocks
         Node(
             package="tb3_worlds",

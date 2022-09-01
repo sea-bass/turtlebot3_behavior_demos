@@ -1,20 +1,42 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
 project(tb3_autonomy)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+# Find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(nav2_msgs REQUIRED)
+find_package(behaviortree_cpp_v3 REQUIRED)
+
+# Install programs
+install(PROGRAMS
+    scripts/test_move_base.py
+    DESTINATION lib/${PROJECT_NAME}
+)
+
+# Install directories
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
+ament_package()
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(ament_cmake REQUIRED COMPONENTS 
-    roscpp 
-    cv_bridge
-    actionlib 
-    sensor_msgs
-    move_base_msgs 
-    image_transport
-    behaviortree_cpp_v3)
-find_package(OpenCV REQUIRED)
-
-ament_package()
+# find_package(ament_cmake REQUIRED COMPONENTS 
+#     roscpp 
+#     cv_bridge
+#     actionlib 
+#     sensor_msgs
+#     move_base_msgs 
+#     image_transport
+#     behaviortree_cpp_v3)
+# find_package(OpenCV REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed

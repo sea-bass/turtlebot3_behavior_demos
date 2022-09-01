@@ -9,12 +9,8 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>roscpp</depend>
-  <depend>cv_bridge</depend>
-  <depend>actionlib</depend>
-  <depend>sensor_msgs</depend>
-  <depend>move_base_msgs</depend>
-  <depend>image_transport</depend>
+  <depend>rclpy</depend>
+  <depend>nav2_msgs</depend>
   <depend>tb3_worlds</depend>
   <depend>behaviortree_cpp_v3</depend>
 

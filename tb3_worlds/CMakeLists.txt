@@ -9,10 +9,12 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(gazebo_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 # Install programs
 install(PROGRAMS
     scripts/block_spawner.py
+    scripts/set_init_amcl_pose.py
     DESTINATION lib/${PROJECT_NAME}
 )
 
