@@ -20,6 +20,7 @@ import cv_bridge
 import cv2
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image
 
 class ColorThresholdTester(Node):
@@ -27,7 +28,8 @@ class ColorThresholdTester(Node):
         # Define ROS subscriber
         super().__init__("test_vision")
         self.sub = self.create_subscription(
-            Image, "/camera/image_raw", self.img_callback, 10)
+            Image, "/camera/image_raw", self.img_callback,
+            qos_profile=qos_profile_sensor_data)
 
         # Define vision related variables
         self.bridge = cv_bridge.CvBridge()
@@ -39,7 +41,7 @@ class ColorThresholdTester(Node):
         params.filterByColor = False
         params.filterByInertia = False
         params.filterByConvexity = False
-        params.thresholdStep = 20
+        params.thresholdStep = 60
         self.detector = cv2.SimpleBlobDetector_create(params)
         self.min_bounds = (args.min_h, args.min_s, args.min_v)
         self.max_bounds = (args.max_h, args.max_s, args.max_v)

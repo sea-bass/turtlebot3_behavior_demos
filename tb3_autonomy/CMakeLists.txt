@@ -19,8 +19,8 @@ ament_python_install_package(
 
 # Install programs
 install(PROGRAMS
+    scripts/autonomy_node.py
     scripts/test_move_base.py
-    scripts/test_navigation.py
     scripts/test_vision.py
     DESTINATION lib/${PROJECT_NAME}
 )

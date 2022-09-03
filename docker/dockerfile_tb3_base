@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Install basic apt packages
 RUN apt-get update && apt-get install -y \
- git python3-pip python3-opencv
+ git python3-pip python3-opencv python3-tk
 
 # Install additional Python modules
 RUN pip3 install transforms3d

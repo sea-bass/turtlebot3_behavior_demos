@@ -80,8 +80,8 @@ class GoToPose(py_trees.behaviour.Behaviour):
 
     def terminate(self, new_status):
         self.logger.info(f"Terminated with status {new_status}")
-        self.client.destroy()
-        # self.bb.set("target_pose", None)
+        self.client = None
+        self.bb.set("target_pose", None)
 
     def create_move_base_goal(self, x, y, theta):
         """ Creates a MoveBaseGoal message from a 2D navigation pose """
