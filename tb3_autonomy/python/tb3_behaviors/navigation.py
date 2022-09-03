@@ -1,13 +1,12 @@
 """
-Navigation behaviors for TurtleBot3
+Navigation behaviors for TurtleBot3.
 """
 
-import tf
-import rospy
 import py_trees
-import actionlib
-from actionlib_msgs.msg import GoalStatus
-from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from rclpy.action import ActionClient
+from nav2_msgs.action import NavigateToPose
+import transforms3d
+
 
 class GetLocationFromQueue(py_trees.behaviour.Behaviour):
     """ Gets a location name from the queue """
@@ -36,51 +35,64 @@ class GetLocationFromQueue(py_trees.behaviour.Behaviour):
 class GoToPose(py_trees.behaviour.Behaviour):
     """ Wrapper behavior around the `move_base` action client """
 
-    def __init__(self, name, pose=None):
+    def __init__(self, name, pose, node):
         super(GoToPose, self).__init__(name)
-        self.client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
-        self.client.wait_for_server()
         self.pose = pose
+        self.client = None
+        self.node = node
         self.bb = py_trees.blackboard.Blackboard()
 
     def initialise(self):
-        """ Sends the initial navigation action goal """
+        """ Sends the initial navigation action goal """        
         # Check if there is a pose available in the blackboard
-        target_pose = self.bb.get("target_pose")
-        if target_pose is not None:
-            self.pose = target_pose
-        
+        try:
+            target_pose = self.bb.get("target_pose")
+            if target_pose is not None:
+                self.pose = target_pose
+        except:
+            pass
+
+        self.client = ActionClient(self.node, NavigateToPose, "/navigate_to_pose")
+        self.client.wait_for_server()
+
+        self.goal_result = None
         x, y, theta = self.pose
         self.logger.info(f"Going to [x: {x}, y: {y}, theta: {theta}] ...")
-        goal = create_move_base_goal(x, y, theta)
-        self.client.send_goal(goal)
-        rospy.sleep(0.5)    # Ensure goal was received before checking state
+        self.goal = self.create_move_base_goal(x, y, theta)
+        self.send_goal_future = self.client.send_goal_async(self.goal)
+        self.send_goal_future.add_done_callback(self.goal_callback)
+
+    def goal_callback(self, future):
+        res = future.result()
+        if res is None or not res.accepted:
+            return
+        future = res.get_result_async()
+        future.add_done_callback(self.goal_result_callback)
+
+    def goal_result_callback(self, future):
+        self.goal_result = future.result().result
 
     def update(self):
         """ Checks for the status of the navigation action """
-        status = self.client.get_state()
-        if status == GoalStatus.SUCCEEDED:
+        if self.goal_result is not None:
             return py_trees.common.Status.SUCCESS
-        if status == GoalStatus.ACTIVE:
-            return py_trees.common.Status.RUNNING
-        else:
-            return py_trees.common.Status.FAILURE
+        return py_trees.common.Status.RUNNING
 
     def terminate(self, new_status):
         self.logger.info(f"Terminated with status {new_status}")
-        self.bb.set("target_pose", None)
+        self.client.destroy()
+        # self.bb.set("target_pose", None)
 
-
-def create_move_base_goal(x, y, theta):
-    """ Creates a MoveBaseGoal message from a 2D navigation pose """
-    goal = MoveBaseGoal()
-    goal.target_pose.header.frame_id = "map"
-    goal.target_pose.header.stamp = rospy.Time.now()
-    goal.target_pose.pose.position.x = x
-    goal.target_pose.pose.position.y = y
-    quat = tf.transformations.quaternion_from_euler(0, 0, theta)
-    goal.target_pose.pose.orientation.x = quat[0]
-    goal.target_pose.pose.orientation.y = quat[1]
-    goal.target_pose.pose.orientation.z = quat[2]
-    goal.target_pose.pose.orientation.w = quat[3]
-    return goal
+    def create_move_base_goal(self, x, y, theta):
+        """ Creates a MoveBaseGoal message from a 2D navigation pose """
+        goal = NavigateToPose.Goal()
+        goal.pose.header.frame_id = "map"
+        goal.pose.header.stamp = self.node.get_clock().now().to_msg()
+        goal.pose.pose.position.x = x
+        goal.pose.pose.position.y = y
+        quat = transforms3d.euler.euler2quat(0, 0, theta)
+        goal.pose.pose.orientation.w = quat[0]
+        goal.pose.pose.orientation.x = quat[1]
+        goal.pose.pose.orientation.y = quat[2]
+        goal.pose.pose.orientation.z = quat[3]
+        return goal
