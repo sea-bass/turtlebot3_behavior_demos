@@ -74,6 +74,8 @@ class GoToPose(py_trees.behaviour.Behaviour):
 
     def update(self):
         """ Checks for the status of the navigation action """
+        # If there is a result, we consider navigation completed.
+        # bt_navigator only sends an empty message without status because reasons.
         if self.goal_result is not None:
             return py_trees.common.Status.SUCCESS
         return py_trees.common.Status.RUNNING

@@ -40,7 +40,7 @@ class TestNavigationNode(Node):
 
         # Parse locations YAML file and shuffle the location list.
         location_file = self.get_parameter("location_file").value
-        print(f"Using location file: {location_file}")
+        self.get_logger().info(f"Using location file: {location_file}")
         with open(location_file, "r") as f:
             self.locations = yaml.load(f, Loader=yaml.FullLoader)
         self.loc_list = list(self.locations.keys())

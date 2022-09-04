@@ -74,7 +74,7 @@ make demo-world
 To start the Python based demo, which uses [`py_trees`](https://py-trees.readthedocs.io/en/devel/):
 
 ```
-make demo-behavior
+make demo-behavior-py
 ```
 
 You can also include arguments: 

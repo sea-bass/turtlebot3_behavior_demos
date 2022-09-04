@@ -8,7 +8,6 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    use_sim_time = LaunchConfiguration("use_sim_time", default="True")
     tb3_nav2_dir = get_package_share_directory("turtlebot3_navigation2")
     pkg_tb3_worlds = get_package_share_directory("tb3_worlds")
 
@@ -25,7 +24,7 @@ def generate_launch_description():
                 join(tb3_nav2_dir, "launch", "navigation2.launch.py")
             ),
             launch_arguments={
-                "use_sim_time": use_sim_time,
+                "use_sim_time": LaunchConfiguration("use_sim_time", default="True"),
                 "map": join(pkg_tb3_worlds, "maps", "sim_house_map.yaml")
             }.items()
         ),
