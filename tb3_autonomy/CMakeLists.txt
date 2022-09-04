@@ -9,15 +9,18 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(rclpy REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
 find_package(nav2_msgs REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 # Install Python package
 ament_python_install_package(
     tb3_behaviors
     PACKAGE_DIR python/tb3_behaviors)
 
-# Install programs
+# Install Python scripts
 install(PROGRAMS
     scripts/autonomy_node.py
     scripts/test_move_base.py
@@ -25,9 +28,24 @@ install(PROGRAMS
     DESTINATION lib/${PROJECT_NAME}
 )
 
+# Install C++ nodes
+set(AUTONOMY_SOURCES
+    src/navigation_behaviors.cpp 
+    #src/vision_behaviors.cpp
+)
+include_directories(include)
+add_executable(autonomy_node src/autonomy_node.cpp ${AUTONOMY_SOURCES})
+install(TARGETS
+    autonomy_node
+    DESTINATION lib/${PROJECT_NAME}
+)
+ament_target_dependencies(autonomy_node
+    rclcpp rclcpp_action behaviortree_cpp_v3 nav2_msgs yaml-cpp)
+target_link_libraries(autonomy_node ${YAML_CPP_LIBRARIES})
+
 # Install directories
 install(DIRECTORY
-  launch
+  bt_xml launch
   DESTINATION share/${PROJECT_NAME}
 )
 

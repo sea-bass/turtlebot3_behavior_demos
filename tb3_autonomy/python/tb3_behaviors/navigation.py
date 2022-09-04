@@ -43,7 +43,7 @@ class GoToPose(py_trees.behaviour.Behaviour):
         self.bb = py_trees.blackboard.Blackboard()
 
     def initialise(self):
-        """ Sends the initial navigation action goal """        
+        """ Sends the initial navigation action goal """
         # Check if there is a pose available in the blackboard
         try:
             target_pose = self.bb.get("target_pose")

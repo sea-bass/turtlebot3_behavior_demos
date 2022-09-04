@@ -32,7 +32,7 @@ default_location_file = os.path.join(
 
 class TestNavigationNode(Node):
     def __init__(self):
-        super().__init__("navigation_test_node")
+        super().__init__("autonomy_node")
         self.declare_parameter("location_file", value=default_location_file)
         self.declare_parameter("tree_type", value="naive")
         self.declare_parameter("enable_vision", value=True)
@@ -100,7 +100,7 @@ class TestNavigationNode(Node):
         ])
         if self.enable_vision:
             seq.add_child(LookForObject(f"find_{self.target_color}",
-                                         self.target_color, self))
+                                        self.target_color, self))
         root = py_trees.decorators.OneShot(seq)
         return py_trees.trees.BehaviourTree(root)
 
