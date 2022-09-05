@@ -12,7 +12,7 @@
 #include "yaml-cpp/yaml.h"
 
 #include "navigation_behaviors.h"
-// #include "vision_behaviors.h"
+#include "vision_behaviors.h"
 
 using namespace std::chrono_literals;
 
@@ -86,14 +86,19 @@ class AutonomyNode : public rclcpp::Node {
             for(YAML::const_iterator it=locations.begin(); it!=locations.end(); ++it) {
                 loc_names.push_back(it->first.as<std::string>());
             }
-            std::srand(100);
+            std::srand(42);  // The answer
             std::random_shuffle(loc_names.begin(), loc_names.end());
+        }
 
+        void execute() {
             create_behavior_tree();
 
             // Create a timer to tick the behavior tree.
             timer_ = this->create_wall_timer(
                 500ms, std::bind(&AutonomyNode::update_behavior_tree, this));
+
+            rclcpp::spin(shared_from_this());
+            rclcpp::shutdown();
         }
 
         void create_behavior_tree() {
@@ -102,13 +107,19 @@ class AutonomyNode : public rclcpp::Node {
             // ros::param::get("behavior_tree_type", behavior_tree_type);
             BT::BehaviorTreeFactory factory;
             factory.registerNodeType<GoToPose>("GoToPose");
-            // factory.registerNodeType<SetLocations>("SetLocations");
-            // factory.registerNodeType<GetLocationFromQueue>("GetLocationFromQueue");
-            // factory.registerNodeType<LookForObject>("LookForObject");
-            tree_ = factory.createTreeFromFile(bt_xml_dir + "/nav_tree.xml");
+            factory.registerNodeType<SetLocations>("SetLocations");
+            factory.registerNodeType<GetLocationFromQueue>("GetLocationFromQueue");
+            factory.registerNodeType<LookForObject>("LookForObject");
+
+            const std::string tree_file = "nav_tree_queue.xml";
+            tree_ = factory.createTreeFromFile(bt_xml_dir + "/" + tree_file);
+
+            // Inject a pointer to node to initalize behaviors that need it.
             for (auto &node : tree_.nodes) {
                 if (auto node_ptr = dynamic_cast<GoToPose*>(node.get())) {
-                    node_ptr->init(this);
+                    node_ptr->init(shared_from_this());
+                } else if (auto node_ptr = dynamic_cast<LookForObject*>(node.get())) {
+                    node_ptr->init(shared_from_this());
                 }
             }
             
@@ -145,7 +156,7 @@ class AutonomyNode : public rclcpp::Node {
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<AutonomyNode>());
-    rclcpp::shutdown();
+    auto node = std::make_shared<AutonomyNode>();
+    node->execute();
     return 0;
 }

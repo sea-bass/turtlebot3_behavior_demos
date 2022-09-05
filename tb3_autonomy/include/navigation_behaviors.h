@@ -1,33 +1,32 @@
 // Navigation behaviors for TurtleBot3
 
-#include "behaviortree_cpp_v3/behavior_tree.h"
+#include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
-#include <nav2_msgs/action/navigate_to_pose.hpp>
+#include "nav2_msgs/action/navigate_to_pose.hpp"
+#include "behaviortree_cpp_v3/behavior_tree.h"
 
-// typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
+// Sets number of locations from list.
+class SetLocations : public BT::SyncActionNode
+{
+  public:
+    SetLocations(const std::string& name, const BT::NodeConfiguration& config);
+    BT::NodeStatus tick() override;
+    static BT::PortsList providedPorts();
+};
 
-// // Sets number of locations from list
-// class SetLocations : public BT::SyncActionNode
-// {
-//   public:
-//     SetLocations(const std::string& name, const BT::NodeConfiguration& config);
-//     BT::NodeStatus tick() override;
-//     static BT::PortsList providedPorts();
-// };
+// Gets location from a queue of locations read from a list.
+class GetLocationFromQueue : public BT::SyncActionNode
+{
+  public:
 
-// // Gets location from a queue of locations read from a list
-// class GetLocationFromQueue : public BT::SyncActionNode
-// {
-//   public:
+    std::deque<std::string> location_queue_;
 
-//     std::deque<std::string> location_queue_;
+    GetLocationFromQueue(const std::string& name, const BT::NodeConfiguration& config);
+    BT::NodeStatus tick() override;
+    static BT::PortsList providedPorts();
+};
 
-//     GetLocationFromQueue(const std::string& name, const BT::NodeConfiguration& config);
-//     BT::NodeStatus tick() override;
-//     static BT::PortsList providedPorts();
-// };
-
-// Go to a target location (wraps around `navigate_to_pose`)
+// Go to a target location (wraps around `navigate_to_pose` action).
 class GoToPose : public BT::StatefulActionNode
 {
   public:
@@ -35,7 +34,7 @@ class GoToPose : public BT::StatefulActionNode
     using GoalHandleNav = rclcpp_action::ClientGoalHandle<NavigateToPose>;
 
     bool done_flag_;
-    rclcpp::Node* node_ptr_;
+    rclcpp::Node::SharedPtr node_ptr_;
     rclcpp_action::Client<NavigateToPose>::SharedPtr client_ptr_;
 
     // Method overrides
@@ -43,7 +42,7 @@ class GoToPose : public BT::StatefulActionNode
     BT::NodeStatus onStart() override;
     BT::NodeStatus onRunning() override;
     void onHalted() override {};
-    void init(rclcpp::Node* node_ptr);
+    void init(rclcpp::Node::SharedPtr node_ptr);
     static BT::PortsList providedPorts();
 
     // Action client callbacks

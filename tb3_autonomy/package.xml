@@ -16,6 +16,7 @@
   <depend>ament_index_cpp</depend>
   <depend>behaviortree_cpp_v3</depend>
   <depend>nav2_msgs</depend>
+  <depend>sensor_msgs</depend>
   <depend>tb3_worlds</depend>
   <depend>yaml-cpp</depend>
 

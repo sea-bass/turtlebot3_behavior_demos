@@ -7,68 +7,67 @@
 #include "yaml-cpp/yaml.h"
 
 
-// // SETLOCATIONS
-// // Gets a list of locations from a YAML file and ensures they are not empty
-// SetLocations::SetLocations(const std::string& name, const BT::NodeConfiguration& config) :
-//     BT::SyncActionNode(name, config)
-// {
-//     std::cout << "[" << this->name() << "] Initialized" << std::endl;
-// }
+// SETLOCATIONS
+// Gets a list of locations from a YAML file and ensures they are not empty
+SetLocations::SetLocations(const std::string& name, const BT::NodeConfiguration& config) :
+    BT::SyncActionNode(name, config)
+{
+    std::cout << "[" << this->name() << "] Initialized" << std::endl;
+}
 
-// BT::NodeStatus SetLocations::tick()
-// {
-//     std::string yaml_file;
-//     ros::param::get("location_file", yaml_file);
-//     YAML::Node locations = YAML::LoadFile(yaml_file);
-//     int num_locs = locations.size();
-//     if (num_locs == 0) {
-//         std::cout << "[" << this->name() << "] No locations found." << std::endl;
-//         return BT::NodeStatus::FAILURE;
-//     }
-//     setOutput("num_locs", num_locs);
-//     std::cout << "[" << this->name() << "] Found " << num_locs << " locations." << std::endl;
-//     return BT::NodeStatus::SUCCESS;
-// }
+BT::NodeStatus SetLocations::tick()
+{
+    std::string yaml_file = "/overlay_ws/src/tb3_worlds/maps/sim_house_locations.yaml";
+    // ros::param::get("location_file", yaml_file);
+    YAML::Node locations = YAML::LoadFile(yaml_file);
+    int num_locs = locations.size();
+    if (num_locs == 0) {
+        std::cout << "[" << this->name() << "] No locations found." << std::endl;
+        return BT::NodeStatus::FAILURE;
+    }
+    setOutput("num_locs", num_locs);
+    std::cout << "[" << this->name() << "] Found " << num_locs << " locations." << std::endl;
+    return BT::NodeStatus::SUCCESS;
+}
 
-// BT::PortsList SetLocations::providedPorts()
-// {
-//     return { BT::OutputPort<int>("num_locs") };
-// }
+BT::PortsList SetLocations::providedPorts()
+{
+    return { BT::OutputPort<int>("num_locs") };
+}
 
 
-// // GETLOCATIONFROMQUEUE
-// // Gets a location name from a queue of locations to visit.
-// // If the queue is empty, this behavior fails.
-// GetLocationFromQueue::GetLocationFromQueue(const std::string& name, const BT::NodeConfiguration& config) :
-//     BT::SyncActionNode(name, config)
-// {
-//     std::string yaml_file;
-//     ros::param::get("location_file", yaml_file);
-//     YAML::Node locations = YAML::LoadFile(yaml_file);
-//     for(YAML::const_iterator it=locations.begin(); it!=locations.end(); ++it) {
-//         location_queue_.push_front(it->first.as<std::string>());
-//     }
-//     std::cout << "[" << this->name() << "] Initialized" << std::endl;
-// }
+// GETLOCATIONFROMQUEUE
+// Gets a location name from a queue of locations to visit.
+// If the queue is empty, this behavior fails.
+GetLocationFromQueue::GetLocationFromQueue(const std::string& name, const BT::NodeConfiguration& config) :
+    BT::SyncActionNode(name, config)
+{
+    std::string yaml_file = "/overlay_ws/src/tb3_worlds/maps/sim_house_locations.yaml";
+    YAML::Node locations = YAML::LoadFile(yaml_file);
+    for(YAML::const_iterator it=locations.begin(); it!=locations.end(); ++it) {
+        location_queue_.push_front(it->first.as<std::string>());
+    }
+    std::cout << "[" << this->name() << "] Initialized" << std::endl;
+}
 
-// BT::NodeStatus GetLocationFromQueue::tick()
-// {
-//     if (location_queue_.empty()) {
-//         std::cout << "[" << this->name() << "] No more locations!" << std::endl;
-//         return BT::NodeStatus::FAILURE;
-//     } else {
-//         std::string tgt_loc = location_queue_.front();
-//         setOutput("target_location", tgt_loc);
-//         location_queue_.pop_front();
-//         std::cout << "[" << this->name() << "] Targeting location: " << tgt_loc << std::endl;
-//         return BT::NodeStatus::SUCCESS;
-//     }
-// }
+BT::NodeStatus GetLocationFromQueue::tick()
+{
+    if (location_queue_.empty()) {
+        std::cout << "[" << this->name() << "] No more locations!" << std::endl;
+        return BT::NodeStatus::FAILURE;
+    } else {
+        std::string tgt_loc = location_queue_.front();
+        setOutput("target_location", tgt_loc);
+        location_queue_.pop_front();
+        std::cout << "[" << this->name() << "] Targeting location: " << tgt_loc << std::endl;
+        return BT::NodeStatus::SUCCESS;
+    }
+}
 
-// BT::PortsList GetLocationFromQueue::providedPorts()
-// {
-//     return { BT::OutputPort<std::string>("target_location") };
-// }
+BT::PortsList GetLocationFromQueue::providedPorts()
+{
+    return { BT::OutputPort<std::string>("target_location") };
+}
 
 
 // GOTOPOSE
@@ -77,7 +76,7 @@
 GoToPose::GoToPose(const std::string& name, const BT::NodeConfiguration& config) :
     BT::StatefulActionNode(name, config) {}
 
-void GoToPose::init(rclcpp::Node* node_ptr) {
+void GoToPose::init(rclcpp::Node::SharedPtr node_ptr) {
     node_ptr_ = node_ptr;
 }
 
