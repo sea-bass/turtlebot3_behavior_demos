@@ -8,6 +8,7 @@ endif()
 # Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
@@ -40,7 +41,7 @@ install(TARGETS
     DESTINATION lib/${PROJECT_NAME}
 )
 ament_target_dependencies(autonomy_node
-    rclcpp rclcpp_action behaviortree_cpp_v3 nav2_msgs yaml-cpp)
+    ament_index_cpp rclcpp rclcpp_action behaviortree_cpp_v3 nav2_msgs yaml-cpp)
 target_link_libraries(autonomy_node ${YAML_CPP_LIBRARIES})
 
 # Install directories

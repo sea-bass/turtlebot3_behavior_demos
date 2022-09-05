@@ -16,22 +16,6 @@
 
 using namespace std::chrono_literals;
 
-static const char* xml_text_nav = R"(
- <root main_tree_to_execute = "MainTree" >
-     <BehaviorTree ID="MainTree">
-        <Fallback name="root">
-            <Sequence name="search_location1">
-                <GoToPose       name="go_to_location1"  loc="location1" />
-                <GoToPose       name="go_to_location2"  loc="location2" />
-                <GoToPose       name="go_to_location3"  loc="location3" />
-                <GoToPose       name="go_to_location4"  loc="location4" />
-            </Sequence>
-        </Fallback>
-     </BehaviorTree>
- </root>
- )";
-
-
 // // "Naive" implementation where there is a hard-coded sequence for each location.
 // // Here, there is a top-level fallback node that tries locations sequentially.
 // // As you can see, this does not automatically scale with number of locations.
@@ -121,8 +105,7 @@ class AutonomyNode : public rclcpp::Node {
             // factory.registerNodeType<SetLocations>("SetLocations");
             // factory.registerNodeType<GetLocationFromQueue>("GetLocationFromQueue");
             // factory.registerNodeType<LookForObject>("LookForObject");
-            tree_ = factory.createTreeFromText(xml_text_nav);//
-            factory.createTreeFromFile(bt_xml_dir + "/nav_tree.xml");
+            tree_ = factory.createTreeFromFile(bt_xml_dir + "/nav_tree.xml");
             for (auto &node : tree_.nodes) {
                 if (auto node_ptr = dynamic_cast<GoToPose*>(node.get())) {
                     node_ptr->init(this);

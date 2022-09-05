@@ -31,33 +31,39 @@ default_location_file = os.path.join(
     get_package_share_directory("tb3_worlds"),
     "maps", "sim_house_locations.yaml")
 
-class TestNavigationNode(Node):
-    def __init__(self):
-        super().__init__("autonomy_node")
-        self.declare_parameter("location_file", value=default_location_file)
-        self.declare_parameter("tree_type", value="naive")
-        self.declare_parameter("enable_vision", value=True)
-        self.declare_parameter("target_color", value="blue")
-
+class AutonomyBehavior:
+    def __init__(self, tree_type="queue", target_color="blue", enable_vision=True):
         # Parse locations YAML file and shuffle the location list.
-        location_file = self.get_parameter("location_file").value
-        self.get_logger().info(f"Using location file: {location_file}")
+        # location_file = self.get_parameter("location_file").value
+        location_file = default_location_file
         with open(location_file, "r") as f:
             self.locations = yaml.load(f, Loader=yaml.FullLoader)
         self.loc_list = list(self.locations.keys())
         random.shuffle(self.loc_list)
 
-        # Get vision and target color parameters
-        self.enable_vision = self.get_parameter("enable_vision").value
-        self.target_color = self.get_parameter("target_color").value
-        self.get_logger().info(f"Looking for color {self.target_color}...")
+        # Create and setup the behavior tree
+        self.tree_type = tree_type
+        self.enable_vision = enable_vision
+        self.target_color = target_color
+        self.create_behavior_tree(self.tree_type)
+        self.tree.node.get_logger().info(
+            f"Using location file: {location_file}")
 
-    def create_behavior_tree(self):
-        tree_type = self.get_parameter("tree_type").value
+        # Set up parameters
+        #self.declare_parameter("location_file", value=default_location_file)
+        #self.declare_parameter("tree_type", value="naive")
+        #self.declare_parameter("enable_vision", value=True)
+        #self.declare_parameter("target_color", value="blue")
+        #self.enable_vision = self.get_parameter("enable_vision").value
+        #self.target_color = self.get_parameter("target_color").value
+        self.tree.node.get_logger().info(
+            f"Looking for color {self.target_color}...")
+
+    def create_behavior_tree(self, tree_type):
         if tree_type == "naive":
-            return self.create_naive_tree()
+            self.tree = self.create_naive_tree()
         elif tree_type == "queue":
-            return self.create_queue_tree()
+            self.tree = self.create_queue_tree()
         else:
             self.get_logger().info(f"Invalid behavior tree type {tree_type}.")
 
@@ -65,6 +71,10 @@ class TestNavigationNode(Node):
         """ Create behavior tree with explicit nodes for each location. """
         if self.enable_vision:
             selector = py_trees.composites.Selector(name="navigation")
+            root = py_trees.decorators.OneShot(selector)
+            tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=True)
+            tree.setup(timeout=15.0)  # Need the tree node to exist
+
             for loc in self.loc_list:
                 pose = self.locations[loc]
                 selector.add_child(
@@ -72,22 +82,26 @@ class TestNavigationNode(Node):
                         py_trees.composites.Sequence(
                             name=f"search_{loc}",
                             children=[
-                                GoToPose(f"go_to_{loc}", pose, self),
+                                GoToPose(f"go_to_{loc}", pose, tree.node),
                                 LookForObject(f"find_{self.target_color}_{loc}",
-                                              self.target_color, self)
+                                              self.target_color, tree.node)
                             ]
                         ),
                         policy=OneShotPolicy.ON_COMPLETION
                     )
                 )
-            root = py_trees.decorators.OneShot(selector)
+            
         else:
             seq = py_trees.composites.Sequence(name="navigation")
+            root = py_trees.decorators.OneShot(seq)
+            tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=True)
+            tree.setup(timeout=15.0)  # Need the tree node to exist
+
             for loc in self.loc_list:
                 pose = self.locations[loc]
                 seq.add_child(GoToPose(f"go_to_{loc}", pose, self))
-            root = py_trees.decorators.OneShot(seq)
-        return py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=True)
+
+        return tree
 
     def create_queue_tree(self):
         """ Create behavior tree by picking a next location from a queue """
@@ -95,27 +109,29 @@ class TestNavigationNode(Node):
         bb.set("loc_list", self.loc_list)
 
         seq = py_trees.composites.Sequence(name="search")
+        root = py_trees.decorators.OneShot(seq)
+        tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=True)
+        tree.setup(timeout=15.0)  # Need the tree node to exist
+
         seq.add_children([
             GetLocationFromQueue("get_next_location", self.locations),
-            GoToPose("go_to_location", None, self)
+            GoToPose("go_to_location", None, tree.node)
         ])
         if self.enable_vision:
             seq.add_child(LookForObject(f"find_{self.target_color}",
-                                        self.target_color, self))
-        root = py_trees.decorators.OneShot(seq)
-        return py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=True)
+                                        self.target_color, tree.node))
+        return tree
 
-    def start_behavior_tree(self, tree, period=1.0, timeout=10.0):
-        tree.setup(timeout=timeout)
-        while rclpy.ok():
-            tree.tick()
-            rclpy.spin_once(self)
-            time.sleep(period)
+    def execute(self, period=1.0):
+        self.tree.tick_tock(period_ms=period*1000.0)
+        rclpy.spin(self.tree.node)
         rclpy.shutdown()
 
 
 if __name__=="__main__":
     rclpy.init()
-    nav = TestNavigationNode()
-    root = nav.create_behavior_tree()
-    nav.start_behavior_tree(root, 1.0)
+    behavior = AutonomyBehavior(
+        tree_type="queue",
+        target_color="blue",
+        enable_vision=True)
+    behavior.execute()

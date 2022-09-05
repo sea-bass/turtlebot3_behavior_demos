@@ -13,9 +13,10 @@
   <depend>rclpy</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_action</depend>
+  <depend>ament_index_cpp</depend>
+  <depend>behaviortree_cpp_v3</depend>
   <depend>nav2_msgs</depend>
   <depend>tb3_worlds</depend>
-  <depend>behaviortree_cpp_v3</depend>
   <depend>yaml-cpp</depend>
 
   <export>
