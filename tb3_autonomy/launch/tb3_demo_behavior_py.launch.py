@@ -2,7 +2,7 @@ from os.path import join
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, ExecuteProcess
 from launch.substitutions import LaunchConfiguration, TextSubstitution
 from launch_ros.actions import Node
 
@@ -46,5 +46,10 @@ def generate_launch_description():
                 "enable_vision": LaunchConfiguration("enable_vision")
             }]
         ),
-        # TODO: Figure out behavior tree visualization
+        # Behavior tree visualization
+        ExecuteProcess(
+            cmd=["py-trees-tree-viewer", "--no-sandbox"],
+            # output="screen",
+            # emulate_tty=True,
+        ),
     ])

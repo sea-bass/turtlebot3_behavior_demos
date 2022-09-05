@@ -17,8 +17,9 @@ import yaml
 import random
 import rclpy
 from rclpy.node import Node
-import threading
+import time
 import py_trees
+import py_trees_ros
 from py_trees.common import OneShotPolicy
 from ament_index_python.packages import get_package_share_directory
 
@@ -86,7 +87,7 @@ class TestNavigationNode(Node):
                 pose = self.locations[loc]
                 seq.add_child(GoToPose(f"go_to_{loc}", pose, self))
             root = py_trees.decorators.OneShot(seq)
-        return py_trees.trees.BehaviourTree(root)
+        return py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=True)
 
     def create_queue_tree(self):
         """ Create behavior tree by picking a next location from a queue """
@@ -102,20 +103,15 @@ class TestNavigationNode(Node):
             seq.add_child(LookForObject(f"find_{self.target_color}",
                                         self.target_color, self))
         root = py_trees.decorators.OneShot(seq)
-        return py_trees.trees.BehaviourTree(root)
+        return py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=True)
 
-    def start_behavior_tree(self, tree, period_s=1.0, timeout_s=10.0):
-        tree.setup(timeout=timeout_s)
-        tree.add_post_tick_handler(self.display_tree)
-        t = threading.Thread(target=tree.tick_tock, args=(period_s * 1000.0,))
-        t.start()
-        rclpy.spin(self)
-        self.ros_tree.shutdown()
+    def start_behavior_tree(self, tree, period=1.0, timeout=10.0):
+        tree.setup(timeout=timeout)
+        while rclpy.ok():
+            tree.tick()
+            rclpy.spin_once(self)
+            time.sleep(period)
         rclpy.shutdown()
-
-    def display_tree(self, tree):
-        print("Current behavior:")
-        print(py_trees.display.unicode_tree(tree.root))
 
 
 if __name__=="__main__":

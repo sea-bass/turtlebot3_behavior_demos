@@ -4,7 +4,8 @@ SHELL ["/bin/bash", "-c"]
 
 # Install basic apt packages
 RUN apt-get update && apt-get install -y \
- git python3-pip python3-opencv python3-tk
+ git libcanberra-gtk-module \
+ python3-pip python3-opencv python3-tk python3-pyqt5.qtwebengine
 
 # Install additional Python modules
 RUN pip3 install transforms3d
@@ -28,6 +29,7 @@ RUN mkdir -p /turtlebot3_ws/src \
 # Install py_trees and related packages.
 RUN cd /turtlebot3_ws/src \
  && git clone -b devel https://github.com/splintered-reality/py_trees.git \
+ && git clone -b devel https://github.com/splintered-reality/py_trees_js.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_ros.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_ros_interfaces.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_ros_viewer.git

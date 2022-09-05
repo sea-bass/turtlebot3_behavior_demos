@@ -93,15 +93,15 @@ demo-world:
 
 # Start our own simulation demo behavior
 .PHONY: demo-behavior-py
-demo-behavior:
+demo-behavior-py:
 	@docker run -it \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		roslaunch tb3_autonomy tb3_demo_behavior_py.launch.py \
+		ros2 launch tb3_autonomy tb3_demo_behavior_py.launch.py \
 		target_color:=${TARGET_COLOR} tree_type:=${BT_TYPE}
 
 .PHONY: demo-behavior-cpp
 demo-behavior-cpp:
 	@docker run -it \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		roslaunch tb3_autonomy tb3_demo_behavior_cpp.launch.py \
+		ros2 launch tb3_autonomy tb3_demo_behavior_cpp.launch.py \
 		target_color:=${TARGET_COLOR} tree_type:=${BT_TYPE}
