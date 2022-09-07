@@ -103,6 +103,7 @@ class AutonomyNode : public rclcpp::Node {
         }
 
         void execute() {
+            // Build and initialize the behavior tree based on parameters.
             create_behavior_tree();
 
             // Create a timer to tick the behavior tree.

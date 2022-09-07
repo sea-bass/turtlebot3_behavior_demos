@@ -9,9 +9,10 @@
 #   make demo-behavior USE_GPU=false TARGET_COLOR=green BT_TYPE=queue
 
 # Command-line arguments
-TARGET_COLOR ?= blue    # Target color for behavior tree demo (red | green | blue)
 USE_GPU ?= false        # Use GPU devices (set to true if you have an NVIDIA GPU)
+TARGET_COLOR ?= blue    # Target color for behavior tree demo (red | green | blue)
 BT_TYPE ?= queue        # Behavior tree type (naive | queue)
+ENABLE_VISION ?= true   # Enable vision in behaviors if true, else just do navigation
 
 # Docker variables
 IMAGE_NAME = turtlebot3
@@ -33,6 +34,12 @@ DOCKER_GPU_ARGS = "--gpus all"
 endif
 DOCKER_ARGS = --ipc=host --net=host \
 	${DOCKER_VOLUMES} ${DOCKER_ENV_VARS} ${DOCKER_GPU_VARS}
+
+# Set ROS launch arguments for examples
+LAUNCH_ARGS = \
+	target_color:=${TARGET_COLOR} \
+	tree_type:=${BT_TYPE} \
+	enable_vision:=${ENABLE_VISION}
 
 
 ###########
@@ -91,17 +98,15 @@ demo-world:
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		ros2 launch tb3_worlds tb3_demo_world.launch.py
 
-# Start our own simulation demo behavior
+# Start our own simulation demo behavior (Python or C++)
 .PHONY: demo-behavior-py
 demo-behavior-py:
 	@docker run -it \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		ros2 launch tb3_autonomy tb3_demo_behavior_py.launch.py \
-		target_color:=${TARGET_COLOR} tree_type:=${BT_TYPE}
+		ros2 launch tb3_autonomy tb3_demo_behavior_py.launch.py ${LAUNCH_ARGS}
 
 .PHONY: demo-behavior-cpp
 demo-behavior-cpp:
 	@docker run -it \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		ros2 launch tb3_autonomy tb3_demo_behavior_cpp.launch.py \
-		target_color:=${TARGET_COLOR} tree_type:=${BT_TYPE}
+		ros2 launch tb3_autonomy tb3_demo_behavior_cpp.launch.py ${LAUNCH_ARGS}
