@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Install basic apt packages
 RUN apt-get update && apt-get install -y \
- git libcanberra-gtk-module libcanberra-gtk3-module \
+ git libcanberra-gtk-module libcanberra-gtk3-module libqt5svg5-dev \
  python3-pip python3-opencv python3-tk python3-pyqt5.qtwebengine
 
 # Install additional Python modules
@@ -36,7 +36,6 @@ RUN cd /turtlebot3_ws/src \
  && git clone -b devel https://github.com/splintered-reality/py_trees_ros_viewer.git
 
 # Install Groot for visualizing behavior trees from BehaviorTree.CPP.
-RUN apt-get install -y qt5-default libqt5x11extras5-dev libqt5help5 qttools5-dev qtxmlpatterns5-dev-tools libqt5svg5-dev
 RUN cd /turtlebot3_ws/src \
  && git clone -b master https://github.com/BehaviorTree/Groot.git groot \
  && cd groot \

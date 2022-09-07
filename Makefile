@@ -6,7 +6,7 @@
 # Examples:
 #   make term
 #   make demo-world USE_GPU=true
-#   make demo-behavior USE_GPU=false TARGET_COLOR=green BT_TYPE=queue
+#   make demo-behavior TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true
 
 # Command-line arguments
 USE_GPU ?= false        # Use GPU devices (set to true if you have an NVIDIA GPU)
