@@ -39,10 +39,10 @@ class GoToPose : public BT::StatefulActionNode
 
     // Method overrides
     GoToPose(const std::string& name, const BT::NodeConfiguration& config);
+    void init(rclcpp::Node::SharedPtr node_ptr);
     BT::NodeStatus onStart() override;
     BT::NodeStatus onRunning() override;
     void onHalted() override {};
-    void init(rclcpp::Node::SharedPtr node_ptr);
     static BT::PortsList providedPorts();
 
     // Action client callbacks

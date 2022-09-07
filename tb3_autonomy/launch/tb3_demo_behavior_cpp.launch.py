@@ -36,7 +36,7 @@ def generate_launch_description():
         # Start autonomy stack
         Node(
             package="tb3_autonomy",
-            executable="autonomy_node",
+            executable="autonomy_node_cpp",
             name="autonomy_node_cpp",
             output="screen",
             emulate_tty=True,

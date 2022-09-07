@@ -50,12 +50,12 @@ set(TARGET_DEPENDS
     behaviortree_cpp_v3 yaml-cpp
 )
 include_directories(include)
-add_executable(autonomy_node src/autonomy_node.cpp ${AUTONOMY_SOURCES})
+add_executable(autonomy_node_cpp src/autonomy_node.cpp ${AUTONOMY_SOURCES})
 install(TARGETS
-    autonomy_node
+    autonomy_node_cpp
     DESTINATION lib/${PROJECT_NAME}
 )
-ament_target_dependencies(autonomy_node ${TARGET_DEPENDS})
-target_link_libraries(autonomy_node ${OpenCV_LIBS} ${YAML_CPP_LIBRARIES})
+ament_target_dependencies(autonomy_node_cpp ${TARGET_DEPENDS})
+target_link_libraries(autonomy_node_cpp ${OpenCV_LIBS} ${YAML_CPP_LIBRARIES})
 
 ament_package()

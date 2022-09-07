@@ -88,14 +88,28 @@ class AutonomyNode : public rclcpp::Node {
             }
             std::srand(42);  // The answer
             std::random_shuffle(loc_names.begin(), loc_names.end());
+
+            // Declare and get the other node parameters.
+            this->declare_parameter<std::string>("tree_type", "naive");
+            tree_type_ = this->get_parameter("tree_type").as_string();
+            this->declare_parameter<bool>("enable_vision", true);
+            enable_vision_ = this->get_parameter("enable_vision").as_bool();
+            this->declare_parameter<std::string>("target_color", "blue");
+            target_color_ = this->get_parameter("target_color").as_string();
+            if (enable_vision_) {
+                RCLCPP_INFO(this->get_logger(), "Searching for target color %s",
+                    target_color_.c_str());
+            }
         }
 
         void execute() {
             create_behavior_tree();
 
             // Create a timer to tick the behavior tree.
+            const auto timer_period = 500ms;
             timer_ = this->create_wall_timer(
-                500ms, std::bind(&AutonomyNode::update_behavior_tree, this));
+                timer_period,
+                std::bind(&AutonomyNode::update_behavior_tree, this));
 
             rclcpp::spin(shared_from_this());
             rclcpp::shutdown();
@@ -103,15 +117,25 @@ class AutonomyNode : public rclcpp::Node {
 
         void create_behavior_tree() {
             // Build a behavior tree from XML and set it up for logging
-            // std::string behavior_tree_type;
-            // ros::param::get("behavior_tree_type", behavior_tree_type);
             BT::BehaviorTreeFactory factory;
             factory.registerNodeType<GoToPose>("GoToPose");
             factory.registerNodeType<SetLocations>("SetLocations");
             factory.registerNodeType<GetLocationFromQueue>("GetLocationFromQueue");
             factory.registerNodeType<LookForObject>("LookForObject");
-
-            const std::string tree_file = "nav_tree_queue.xml";
+            std::string tree_file;
+            if (enable_vision_) {
+                if (tree_type_ == "queue") {
+                    tree_file = "tree_queue.xml";
+                } else {
+                    tree_file = "tree_naive.xml";
+                }
+            } else {
+                if (tree_type_ == "queue") {
+                    tree_file = "nav_tree_queue.xml";
+                } else {
+                    tree_file = "nav_tree_naive.xml";
+                }
+            }
             tree_ = factory.createTreeFromFile(bt_xml_dir + "/" + tree_file);
 
             // Inject a pointer to node to initalize behaviors that need it.
@@ -147,6 +171,9 @@ class AutonomyNode : public rclcpp::Node {
         }
 
         // Member variables.
+        std::string tree_type_;
+        bool enable_vision_;
+        std::string target_color_;
         rclcpp::TimerBase::SharedPtr timer_;
         BT::Tree tree_;
         std::unique_ptr<BT::PublisherZMQ> publisher_zmq_ptr_;

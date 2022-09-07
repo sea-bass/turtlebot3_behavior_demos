@@ -13,32 +13,36 @@ using std::placeholders::_1;
 
 // LOOKFOROBJECT
 // Looks for an object of a certain color, specified by a parameter
-LookForObject::LookForObject(const std::string& name) :
-    BT::ConditionNode(name, {})
+LookForObject::LookForObject(const std::string& name, const BT::NodeConfiguration& config) :
+    BT::StatefulActionNode(name, config)
 {
     std::cout << "[" << this->name() << "] Initialized" << std::endl;
 }
 
 void LookForObject::init(rclcpp::Node::SharedPtr node_ptr) {
     node_ptr_ = node_ptr;
-    received_image_ = false;
+}
 
+BT::NodeStatus LookForObject::onStart() {
+    received_image_ = false;
     image_sub_ = image_transport::create_subscription(
         node_ptr_.get(), "/camera/image_raw",
         std::bind(&LookForObject::image_callback, this, _1),
         "raw", rmw_qos_profile_sensor_data);
+    return BT::NodeStatus::RUNNING;
 }
 
-BT::NodeStatus LookForObject::tick()
+BT::NodeStatus LookForObject::onRunning()
 {
-    std::string target_color = "blue";
-    // ros::param::get("target_color", target_color);
+    // std::string target_color = "blue";
+    std::string target_color =
+        node_ptr_->get_parameter("target_color").as_string();
     std::cout << "[" << this->name() << "] Looking for " << target_color << " object" << std::endl;
     
     // Wait to receive an image
     // TODO Add timeout?
     if (!received_image_) {
-        std::cout << "[" << this->name() << "] Waiting for image" << std::endl;
+        // std::cout << "[" << this->name() << "] Waiting for image" << std::endl;
         return BT::NodeStatus::RUNNING;
     }
 
@@ -71,7 +75,6 @@ BT::NodeStatus LookForObject::tick()
     cv::namedWindow("Image");
     cv::imshow("Image", img_keypoints);
     cv::waitKey(2000);
-    image_sub_.shutdown();
 
     if (keypoints.size() > 0) {
         std::cout << "[" << this->name() << "] Found object" << std::endl;
@@ -80,6 +83,11 @@ BT::NodeStatus LookForObject::tick()
         std::cout << "[" << this->name() << "] No object detected" << std::endl;
         return BT::NodeStatus::FAILURE;
     }
+}
+
+void LookForObject::onHalted() {
+    image_sub_.shutdown();
+    received_image_ = false;
 }
 
 void LookForObject::image_callback(

@@ -17,7 +17,7 @@ const ColorThresholdMap hsv_threshold_dict = {
 };
 
 // Look for an object of a particular color
-class LookForObject : public BT::ConditionNode
+class LookForObject : public BT::StatefulActionNode
 {
   public:
 
@@ -27,9 +27,12 @@ class LookForObject : public BT::ConditionNode
     image_transport::Subscriber image_sub_;
 
     // Method overrides
-    LookForObject(const std::string& name);
+    LookForObject(const std::string& name, const BT::NodeConfiguration& config);
     void init(rclcpp::Node::SharedPtr node_ptr);
-    BT::NodeStatus tick() override;
+    BT::NodeStatus onStart() override;
+    BT::NodeStatus onRunning() override;
+    void onHalted() override;
+    static BT::PortsList providedPorts() { return {}; };
 
     // Image subscriber callback
     void image_callback(const sensor_msgs::msg::Image::ConstSharedPtr& msg);

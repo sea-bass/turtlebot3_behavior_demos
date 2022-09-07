@@ -1,4 +1,4 @@
-<!-- Simple tree that sequentially navigates locations -->
+<!-- Behavior tree that sequentially navigates locations naively -->
 <root main_tree_to_execute = "MainTree" >
     <BehaviorTree ID="MainTree">
         <Sequence name="sequence">

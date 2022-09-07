@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Install basic apt packages
 RUN apt-get update && apt-get install -y \
- git libcanberra-gtk-module \
+ git libcanberra-gtk-module libcanberra-gtk3-module \
  python3-pip python3-opencv python3-tk python3-pyqt5.qtwebengine
 
 # Install additional Python modules
