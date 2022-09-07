@@ -1,4 +1,4 @@
-<!-- Behavior tree that looks for objects by looking through a queue of locations. -->
+<!-- Behavior tree that looks for objects by naively looking through locations. -->
 <root main_tree_to_execute = "MainTree" >
     <BehaviorTree ID="MainTree">
     <Sequence name="main_loop">

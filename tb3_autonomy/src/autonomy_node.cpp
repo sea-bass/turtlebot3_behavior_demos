@@ -16,53 +16,6 @@
 
 using namespace std::chrono_literals;
 
-// // "Naive" implementation where there is a hard-coded sequence for each location.
-// // Here, there is a top-level fallback node that tries locations sequentially.
-// // As you can see, this does not automatically scale with number of locations.
-// static const char* xml_text_naive = R"(
-//  <root main_tree_to_execute = "MainTree" >
-//      <BehaviorTree ID="MainTree">
-//         <Fallback name="root">
-//             <Sequence name="search_location1">
-//                 <GoToPose       name="go_to_location1"  loc="location1" />
-//                 <LookForObject  name="look_in_location1"/>
-//             </Sequence>
-//             <Sequence name="search_location2">
-//                 <GoToPose       name="go_to_location2" loc="location2"/>
-//                 <LookForObject  name="look_in_location2"/>
-//             </Sequence>
-//             <Sequence name="search_location3">
-//                 <GoToPose       name="go_to_location3" loc="location3"/>
-//                 <LookForObject  name="look_in_location3"/>
-//             </Sequence>
-//             <Sequence name="search_location3">
-//                 <GoToPose       name="go_to_location4" loc="location4"/>
-//                 <LookForObject  name="look_in_location4"/>
-//             </Sequence>
-//         </Fallback>
-//      </BehaviorTree>
-//  </root>
-//  )";
-
-// // A better implementation which uses a queue of location names to iterate through 
-// // visiting locations regardless of number of locations.
-// static const char* xml_text_queue = R"(
-// <root main_tree_to_execute = "MainTree" >
-//     <BehaviorTree ID="MainTree">
-//     <Sequence name="main_loop">
-//         <SetLocations                   name="set_locations" num_locs="{num_locs}"/>
-//         <RetryUntilSuccessful           num_attempts="{num_locs}">
-//             <Sequence                   name="search_location">
-//                 <GetLocationFromQueue   name="get_loc"      target_location="{target_location}"/>   
-//                 <GoToPose               name="go_to_loc"    loc="{target_location}"/>
-//                 <LookForObject          name="look_for_obj" />
-//             </Sequence>   
-//         </RetryUntilSuccessful>
-//     </Sequence>
-//     </BehaviorTree>
-// </root>
-// )";
-
 const std::string bt_xml_dir = 
     ament_index_cpp::get_package_share_directory("tb3_autonomy") + "/bt_xml";
 const std::string tb3_worlds_share_dir = 

@@ -1,4 +1,4 @@
-<!-- Behavior tree that sequentially navigates locations using a queue -->
+<!-- Behavior tree that sequentially navigates locations using a queue of locations. -->
 <root main_tree_to_execute = "MainTree" >
     <BehaviorTree ID="MainTree">
     <Sequence name="main_loop">
