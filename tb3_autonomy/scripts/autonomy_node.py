@@ -31,31 +31,29 @@ default_location_file = os.path.join(
     get_package_share_directory("tb3_worlds"),
     "maps", "sim_house_locations.yaml")
 
-class AutonomyBehavior:
-    def __init__(self, tree_type="queue", target_color="blue", enable_vision=True):
+class AutonomyBehavior(Node):
+    def __init__(self):
+        super().__init__("autonomy_node")
+        self.declare_parameter("location_file", value=default_location_file)
+        self.declare_parameter("tree_type", value="queue")
+        self.declare_parameter("enable_vision", value=True)
+        self.declare_parameter("target_color", value="blue")
+
         # Parse locations YAML file and shuffle the location list.
-        # location_file = self.get_parameter("location_file").value
-        location_file = default_location_file
+        location_file = self.get_parameter("location_file").value
         with open(location_file, "r") as f:
             self.locations = yaml.load(f, Loader=yaml.FullLoader)
         self.loc_list = list(self.locations.keys())
         random.shuffle(self.loc_list)
 
         # Create and setup the behavior tree
-        self.tree_type = tree_type
-        self.enable_vision = enable_vision
-        self.target_color = target_color
+        self.tree_type = self.get_parameter("tree_type").value
+        self.enable_vision = self.get_parameter("enable_vision").value
+        self.target_color = self.get_parameter("target_color").value
         self.create_behavior_tree(self.tree_type)
+
         self.tree.node.get_logger().info(
             f"Using location file: {location_file}")
-
-        # Set up parameters
-        #self.declare_parameter("location_file", value=default_location_file)
-        #self.declare_parameter("tree_type", value="naive")
-        #self.declare_parameter("enable_vision", value=True)
-        #self.declare_parameter("target_color", value="blue")
-        #self.enable_vision = self.get_parameter("enable_vision").value
-        #self.target_color = self.get_parameter("target_color").value
         self.tree.node.get_logger().info(
             f"Looking for color {self.target_color}...")
 
@@ -72,8 +70,8 @@ class AutonomyBehavior:
         if self.enable_vision:
             selector = py_trees.composites.Selector(name="navigation")
             root = py_trees.decorators.OneShot(selector)
-            tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=True)
-            tree.setup(timeout=15.0)  # Need the tree node to exist
+            tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=False)
+            tree.setup(timeout=15.0, node=self)
 
             for loc in self.loc_list:
                 pose = self.locations[loc]
@@ -94,8 +92,8 @@ class AutonomyBehavior:
         else:
             seq = py_trees.composites.Sequence(name="navigation")
             root = py_trees.decorators.OneShot(seq)
-            tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=True)
-            tree.setup(timeout=15.0)  # Need the tree node to exist
+            tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=False)
+            tree.setup(timeout=15.0, node=self)
 
             for loc in self.loc_list:
                 pose = self.locations[loc]
@@ -110,8 +108,8 @@ class AutonomyBehavior:
 
         seq = py_trees.composites.Sequence(name="search")
         root = py_trees.decorators.OneShot(seq)
-        tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=True)
-        tree.setup(timeout=15.0)  # Need the tree node to exist
+        tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=False)
+        tree.setup(timeout=15.0, node=self)
 
         seq.add_children([
             GetLocationFromQueue("get_next_location", self.locations),
@@ -122,7 +120,8 @@ class AutonomyBehavior:
                                         self.target_color, tree.node))
         return tree
 
-    def execute(self, period=1.0):
+    def execute(self, period=0.5):
+        """ Executes the behavior tree at the specified period. """
         self.tree.tick_tock(period_ms=period*1000.0)
         rclpy.spin(self.tree.node)
         rclpy.shutdown()
@@ -130,8 +129,5 @@ class AutonomyBehavior:
 
 if __name__=="__main__":
     rclpy.init()
-    behavior = AutonomyBehavior(
-        tree_type="queue",
-        target_color="blue",
-        enable_vision=True)
+    behavior = AutonomyBehavior()
     behavior.execute()

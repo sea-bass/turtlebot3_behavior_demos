@@ -48,8 +48,6 @@ def generate_launch_description():
         ),
         # Behavior tree visualization
         ExecuteProcess(
-            cmd=["py-trees-tree-viewer", "--no-sandbox"],
-            # output="screen",
-            # emulate_tty=True,
+            cmd=["py-trees-tree-viewer", "--no-sandbox"]
         ),
     ])

@@ -27,10 +27,11 @@ RUN mkdir -p /turtlebot3_ws/src \
  && git clone -b galactic-devel https://github.com/ROBOTIS-GIT/DynamixelSDK.git
 
 # Install py_trees and related packages.
+# NOTE: For now, using a personal fork of py_trees_ros
 RUN cd /turtlebot3_ws/src \
  && git clone -b devel https://github.com/splintered-reality/py_trees.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_js.git \
- && git clone -b devel https://github.com/splintered-reality/py_trees_ros.git \
+ && git clone -b devel https://github.com/sea-bass/py_trees_ros.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_ros_interfaces.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_ros_viewer.git
 
