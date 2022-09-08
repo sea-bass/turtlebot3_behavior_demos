@@ -2,6 +2,7 @@
 
 #include "navigation_behaviors.h"
 
+#include <random>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include "yaml-cpp/yaml.h"
@@ -42,12 +43,23 @@ BT::PortsList SetLocations::providedPorts()
 GetLocationFromQueue::GetLocationFromQueue(const std::string& name, const BT::NodeConfiguration& config) :
     BT::SyncActionNode(name, config)
 {
-    std::string yaml_file = "/overlay_ws/src/tb3_worlds/maps/sim_house_locations.yaml";
-    YAML::Node locations = YAML::LoadFile(yaml_file);
+    std::cout << "[" << this->name() << "] Initialized" << std::endl;
+}
+
+void GetLocationFromQueue::init(rclcpp::Node::SharedPtr node_ptr) {
+    node_ptr_ = node_ptr;
+
+    // Get the locations from the file specified in the ROS parameter, put them
+    // into the location queue, and shuffle it.
+    const std::string location_file = 
+        node_ptr_->get_parameter("location_file").as_string();
+    YAML::Node locations = YAML::LoadFile(location_file);
     for(YAML::const_iterator it=locations.begin(); it!=locations.end(); ++it) {
         location_queue_.push_front(it->first.as<std::string>());
     }
-    std::cout << "[" << this->name() << "] Initialized" << std::endl;
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::shuffle(location_queue_.begin(), location_queue_.end(), rng);
 }
 
 BT::NodeStatus GetLocationFromQueue::tick()

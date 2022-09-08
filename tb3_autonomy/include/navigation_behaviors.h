@@ -18,10 +18,11 @@ class SetLocations : public BT::SyncActionNode
 class GetLocationFromQueue : public BT::SyncActionNode
 {
   public:
-
+    rclcpp::Node::SharedPtr node_ptr_;
     std::deque<std::string> location_queue_;
 
     GetLocationFromQueue(const std::string& name, const BT::NodeConfiguration& config);
+    void init(rclcpp::Node::SharedPtr node_ptr);
     BT::NodeStatus tick() override;
     static BT::PortsList providedPorts();
 };

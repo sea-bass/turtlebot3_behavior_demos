@@ -3,6 +3,7 @@
  */
 
 #include <chrono>
+#include <random>
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
@@ -27,20 +28,13 @@ const std::string default_location_file =
 class AutonomyNode : public rclcpp::Node {
     public:
         AutonomyNode() : Node("autonomy_node") {
-            // Read the location file
+            // Read the location file and shuffle it
             this->declare_parameter<std::string>(
                 "location_file", default_location_file);
             const std::string location_file = 
                 this->get_parameter("location_file").as_string();
             RCLCPP_INFO(this->get_logger(),
                 "Using location file %s", location_file.c_str());
-            YAML::Node locations = YAML::LoadFile(location_file);
-            std::vector<std::string> loc_names;
-            for(YAML::const_iterator it=locations.begin(); it!=locations.end(); ++it) {
-                loc_names.push_back(it->first.as<std::string>());
-            }
-            std::srand(42);  // The answer
-            std::random_shuffle(loc_names.begin(), loc_names.end());
 
             // Declare and get the other node parameters.
             this->declare_parameter<std::string>("tree_type", "naive");
@@ -93,10 +87,13 @@ class AutonomyNode : public rclcpp::Node {
             tree_ = factory.createTreeFromFile(bt_xml_dir + "/" + tree_file);
 
             // Inject a pointer to node to initalize behaviors that need it.
+            // TODO is there a better way to do this?
             for (auto &node : tree_.nodes) {
                 if (auto node_ptr = dynamic_cast<GoToPose*>(node.get())) {
                     node_ptr->init(shared_from_this());
                 } else if (auto node_ptr = dynamic_cast<LookForObject*>(node.get())) {
+                    node_ptr->init(shared_from_this());
+                } else if (auto node_ptr = dynamic_cast<GetLocationFromQueue*>(node.get())) {
                     node_ptr->init(shared_from_this());
                 }
             }
