@@ -5,6 +5,8 @@ The autonomy in these examples are designed using **behavior trees**. For more i
 
 This also serves as an example for Docker + Make workflows in ROS based projects. For more information, refer to [this blog post](https://roboticseabass.com/2021/04/21/docker-and-ros/).
 
+If you want to use ROS1, check out the old version of this example from the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
+
 By Sebastian Castro, 2021-2022
 
 ---
@@ -29,7 +31,7 @@ git clone https://github.com/sea-bass/turtlebot3_behavior_demos.git
 cd turtlebot3_behavior_demos
 ```
 
-Build the base and overlay Docker images. This will take a while and requires approximately 4 GB of disk space.
+Build the base and overlay Docker images. This will take a while and requires approximately 5 GB of disk space.
 
 ```
 make build

@@ -12,11 +12,11 @@ RUN pip3 install transforms3d
 
 # Install additional ROS packages
 RUN apt-get install -y \
-  ros-galactic-gazebo-* \
-  ros-galactic-cartographer \
-  ros-galactic-cartographer-ros \
-  ros-galactic-navigation2 \
-  ros-galactic-nav2-bringup
+ ros-galactic-gazebo-* \
+ ros-galactic-cartographer \
+ ros-galactic-cartographer-ros \
+ ros-galactic-navigation2 \
+ ros-galactic-nav2-bringup
 
 # Create Colcon workspace with TurtleBot3 packages
 RUN mkdir -p /turtlebot3_ws/src \
