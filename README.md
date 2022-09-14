@@ -1,9 +1,11 @@
 # TurtleBot3 Behavior Demos
-In this repository, we demonstrate autonomous behavior with a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 20.04 and ROS Noetic.
+In this repository, we demonstrate autonomous behavior with a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 20.04 and ROS2 Galactic.
 
 The autonomy in these examples are designed using **behavior trees**. For more information, refer to [this blog post](https://roboticseabass.com/2021/05/08/introduction-to-behavior-trees/) or the [Behavior Trees in Robotics and AI textbook](https://arxiv.org/abs/1709.00084).
 
 This also serves as an example for Docker + Make workflows in ROS based projects. For more information, refer to [this blog post](https://roboticseabass.com/2021/04/21/docker-and-ros/).
+
+If you want to use ROS1, check out the old version of this example from the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
 
 By Sebastian Castro, 2021-2022
 
@@ -29,7 +31,7 @@ git clone https://github.com/sea-bass/turtlebot3_behavior_demos.git
 cd turtlebot3_behavior_demos
 ```
 
-Build the base and overlay Docker images. This will take a while and requires approximately 4 GB of disk space.
+Build the base and overlay Docker images. This will take a while and requires approximately 5 GB of disk space.
 
 ```
 make build
@@ -74,16 +76,16 @@ make demo-world
 To start the Python based demo, which uses [`py_trees`](https://py-trees.readthedocs.io/en/devel/):
 
 ```
-make demo-behavior
+make demo-behavior-py
 ```
 
 You can also include arguments: 
 
 ```
-make demo-behavior TARGET_COLOR=green BT_TYPE=queue USE_GPU=true
+make demo-behavior-py TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true USE_GPU=true
 ```
 
-Note that the behavior tree viewer ([`rqt_py_trees`](https://github.com/splintered-reality/rqt_py_trees)) does not select topics automatically. To view the tree, you should use the drop-down list to select the `/autonomy_node/log/tree` topic.
+Note that the behavior tree viewer ([`py_trees_ros_viewer`](https://github.com/splintered-reality/py_trees_ros_viewer)) should automatically discover the ROS node containing the behavior tree and visualize it.
 
 After starting the commands above (plus doing some waiting and window rearranging), you should see the following. The labeled images will appear once the robot reaches a target location.
 
@@ -91,7 +93,7 @@ After starting the commands above (plus doing some waiting and window rearrangin
 
 ### Behavior Trees in C++
 
-To start the C++ demo, which uses [`BehaviorTrees.CPP`](https://www.behaviortree.dev/):
+To start the C++ demo, which uses [`BehaviorTree.CPP`](https://www.behaviortree.dev/):
 
 ```
 make demo-behavior-cpp
@@ -100,10 +102,11 @@ make demo-behavior-cpp
 You can also include arguments: 
 
 ```
-make demo-behavior-cpp TARGET_COLOR=green BT_TYPE=queue USE_GPU=true
+make demo-behavior-cpp TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true USE_GPU=true
 ```
 
 Note that the behavior tree viewer ([`Groot`](https://github.com/BehaviorTree/Groot)) requires you to click the "Connect" button to display the active tree.
+Since the TurtleBot3 navigation stack uses its own behavior trees on the default ports (1666 and 1667), you should change the UI to use ports 1668 and 1669.
 
 After starting the commands above (plus doing some waiting and window rearranging), you should see the following. The labeled images will appear once the robot reaches a target location.
 

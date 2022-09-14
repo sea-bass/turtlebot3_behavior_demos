@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<sdf version="1.4">
+<sdf version="1.7">
   <model name="green_block">
     <pose>0 0 0.05 0 0 0</pose>
     <static>true</static>

@@ -4,41 +4,47 @@ SHELL ["/bin/bash", "-c"]
 
 # Install basic apt packages
 RUN apt-get update && apt-get install -y \
-  cmake \
-  g++ \
-  git \
-  gnupg gnupg1 gnupg2 \
-  libcanberra-gtk* \
-  python3-catkin-tools \
-  python3-pip \
-  python3-tk \
-  wget
+ git libcanberra-gtk-module libcanberra-gtk3-module libqt5svg5-dev \
+ python3-pip python3-opencv python3-tk python3-pyqt5.qtwebengine
+
+# Install additional Python modules
+RUN pip3 install transforms3d
 
 # Install additional ROS packages
 RUN apt-get install -y \
-  ros-noetic-gmapping \
-  ros-noetic-navigation \
-  ros-noetic-py-trees \
-  ros-noetic-py-trees-ros \
-  ros-noetic-rqt-py-trees
+ ros-galactic-gazebo-* \
+ ros-galactic-cartographer \
+ ros-galactic-cartographer-ros \
+ ros-galactic-navigation2 \
+ ros-galactic-nav2-bringup
 
-# Create Catkin workspace with TurtleBot3 package and behavior tree source
+# Create Colcon workspace with TurtleBot3 packages
 RUN mkdir -p /turtlebot3_ws/src \
  && cd /turtlebot3_ws/src \
- && source /opt/ros/noetic/setup.bash \
- && catkin_init_workspace \
- && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
- && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
- && git clone -b noetic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git \
- && git clone -b master https://github.com/BehaviorTree/BehaviorTree.CPP.git behavior_tree_cpp \
- && git clone -b master https://github.com/BehaviorTree/Groot.git groot
+ && git clone -b galactic-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
+ && git clone -b galactic-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
+ && git clone -b galactic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git \
+ && git clone -b galactic-devel https://github.com/ROBOTIS-GIT/DynamixelSDK.git
 
-# Build the base Catkin workspace
-# RUN pip3 install osrf-pycommon
+# Install py_trees and related packages.
+# NOTE: For now, using a personal fork of py_trees_ros
+RUN cd /turtlebot3_ws/src \
+ && git clone -b devel https://github.com/splintered-reality/py_trees.git \
+ && git clone -b devel https://github.com/splintered-reality/py_trees_js.git \
+ && git clone -b devel https://github.com/sea-bass/py_trees_ros.git \
+ && git clone -b devel https://github.com/splintered-reality/py_trees_ros_interfaces.git \
+ && git clone -b devel https://github.com/splintered-reality/py_trees_ros_viewer.git
+
+# Install Groot for visualizing behavior trees from BehaviorTree.CPP.
+RUN cd /turtlebot3_ws/src \
+ && git clone -b master https://github.com/BehaviorTree/Groot.git groot \
+ && cd groot \
+ && git submodule update --init --recursive
+
+# Build the base Colcon workspace
 RUN cd /turtlebot3_ws \
- && source /opt/ros/noetic/setup.bash \
- && rosdep install -y --from-paths src --ignore-src \
- && catkin build
+ && source /opt/ros/galactic/setup.bash \
+ && colcon build --symlink-install
 
 # Remove display warnings
 RUN mkdir /tmp/runtime-root

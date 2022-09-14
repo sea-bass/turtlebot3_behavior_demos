@@ -1,29 +1,39 @@
 // Vision behaviors for TurtleBot3
 
-#include <ros/ros.h>
-#include "sensor_msgs/Image.h"
+#include <map>
+
+#include "rclcpp/rclcpp.hpp"
+#include "image_transport/image_transport.hpp"
+#include "sensor_msgs/msg/image.hpp"
 #include "behaviortree_cpp_v3/behavior_tree.h"
 
 // HSV Thresholding parameters
 // The convention is {H_MIN, H_MAX, S_MIN, S_MAX, V_MIN, V_MAX}
 typedef std::map<std::string, std::vector<int>> ColorThresholdMap;
 const ColorThresholdMap hsv_threshold_dict = {
-    {"red", {0, 30, 220, 255, 0, 255}},
-    {"green", {40, 80, 220, 255, 0, 255}},
-    {"blue", {100, 140, 220, 255, 0, 255}},
+    {"red", {160, 180, 220, 255, 0, 255}},
+    {"green", {40, 90, 220, 255, 0, 255}},
+    {"blue", {100, 150, 220, 255, 0, 255}},
 };
 
 // Look for an object of a particular color
-class LookForObject : public BT::ConditionNode
+class LookForObject : public BT::StatefulActionNode
 {
   public:
 
-    ros::NodeHandle nh_;
+    rclcpp::Node::SharedPtr node_ptr_;
     bool received_image_;
-    sensor_msgs::ImageConstPtr latest_image_;
+    sensor_msgs::msg::Image::ConstSharedPtr latest_image_ptr_;
+    image_transport::Subscriber image_sub_;
 
-    LookForObject(const std::string& name);
-    void init(const ros::NodeHandle& nh);
-    BT::NodeStatus tick() override;
-    void imageCallback(const sensor_msgs::ImageConstPtr& msg);
+    // Method overrides
+    LookForObject(const std::string& name, const BT::NodeConfiguration& config);
+    void init(rclcpp::Node::SharedPtr node_ptr);
+    BT::NodeStatus onStart() override;
+    BT::NodeStatus onRunning() override;
+    void onHalted() override;
+    static BT::PortsList providedPorts() { return {}; };
+
+    // Image subscriber callback
+    void image_callback(const sensor_msgs::msg::Image::ConstSharedPtr& msg);
 };

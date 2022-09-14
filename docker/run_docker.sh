@@ -1,7 +1,7 @@
 # Sample script to run a command in a Docker container
 #
 # Usage Example:
-# ./run_docker.sh turtlebot3_base "roslaunch turtlebot3_gazebo turtlebot3_world.launch"
+# ./run_docker.sh turtlebot3_base "ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py"
 
 # Define Docker volumes and environment variables
 DOCKER_VOLUMES="
@@ -15,4 +15,4 @@ DOCKER_ENV_VARS="
 DOCKER_ARGS=${DOCKER_VOLUMES}" "${DOCKER_ENV_VARS}
 
 # Run the command
-docker run -it --net=host $DOCKER_ARGS $1 bash -c "$2"
+docker run -it --net=host --ipc=host $DOCKER_ARGS $1 bash -c "$2"

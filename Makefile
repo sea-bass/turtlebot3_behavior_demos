@@ -6,12 +6,13 @@
 # Examples:
 #   make term
 #   make demo-world USE_GPU=true
-#   make demo-behavior USE_GPU=false TARGET_COLOR=green BT_TYPE=queue
+#   make demo-behavior TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true
 
 # Command-line arguments
-TARGET_COLOR ?= blue    # Target color for behavior tree demo (red | green | blue)
 USE_GPU ?= false        # Use GPU devices (set to true if you have an NVIDIA GPU)
+TARGET_COLOR ?= blue    # Target color for behavior tree demo (red | green | blue)
 BT_TYPE ?= queue        # Behavior tree type (naive | queue)
+ENABLE_VISION ?= true   # Enable vision in behaviors if true, else just do navigation
 
 # Docker variables
 IMAGE_NAME = turtlebot3
@@ -31,7 +32,14 @@ DOCKER_ENV_VARS = \
 ifeq ("${USE_GPU}", "true")
 DOCKER_GPU_ARGS = "--gpus all"
 endif
-DOCKER_ARGS = ${DOCKER_VOLUMES} ${DOCKER_ENV_VARS} ${DOCKER_GPU_VARS}
+DOCKER_ARGS = --ipc=host --net=host \
+	${DOCKER_VOLUMES} ${DOCKER_ENV_VARS} ${DOCKER_GPU_VARS}
+
+# Set ROS launch arguments for examples
+LAUNCH_ARGS = \
+	target_color:=${TARGET_COLOR} \
+	tree_type:=${BT_TYPE} \
+	enable_vision:=${ENABLE_VISION}
 
 
 ###########
@@ -65,42 +73,40 @@ kill:
 # Start a terminal inside the Docker container
 .PHONY: term
 term:
-	@docker run -it --net=host \
+	@docker run -it \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
 		bash
 
 # Start basic simulation included with TurtleBot3 packages
 .PHONY: sim
 sim:
-	@docker run -it --net=host \
+	@docker run -it \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		roslaunch turtlebot3_gazebo turtlebot3_world.launch
+		ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 
 # Start Terminal for teleoperating the TurtleBot3
 .PHONY: teleop
 teleop:
-	@docker run -it --net=host \
+	@docker run -it \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
+		ros2 run turtlebot3_teleop teleop_keyboard
 
 # Start our own simulation demo world
 .PHONY: demo-world
 demo-world:
-	@docker run -it --net=host \
+	@docker run -it \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		roslaunch tb3_worlds tb3_demo_world.launch
+		ros2 launch tb3_worlds tb3_demo_world.launch.py
 
-# Start our own simulation demo behavior
-.PHONY: demo-behavior
-demo-behavior:
-	@docker run -it --net=host \
+# Start our own simulation demo behavior (Python or C++)
+.PHONY: demo-behavior-py
+demo-behavior-py:
+	@docker run -it \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		roslaunch tb3_autonomy tb3_demo_behavior_py.launch \
-		target_color:=${TARGET_COLOR} behavior_tree_type:=${BT_TYPE}
+		ros2 launch tb3_autonomy tb3_demo_behavior_py.launch.py ${LAUNCH_ARGS}
 
 .PHONY: demo-behavior-cpp
 demo-behavior-cpp:
-	@docker run -it --net=host \
+	@docker run -it \
 		${DOCKER_ARGS} ${IMAGE_NAME}_overlay \
-		roslaunch tb3_autonomy tb3_demo_behavior_cpp.launch \
-		target_color:=${TARGET_COLOR} behavior_tree_type:=${BT_TYPE}
+		ros2 launch tb3_autonomy tb3_demo_behavior_cpp.launch.py ${LAUNCH_ARGS}

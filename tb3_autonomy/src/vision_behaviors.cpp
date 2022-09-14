@@ -2,47 +2,54 @@
 
 #include "vision_behaviors.h"
 
-#include <ros/ros.h>
-#include "sensor_msgs/Image.h"
-#include <image_transport/image_transport.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/features2d.hpp>
 #include <cv_bridge/cv_bridge.h>
+#include <rmw/qos_profiles.h>
 
+#include <unistd.h>
+
+using std::placeholders::_1;
 
 // LOOKFOROBJECT
 // Looks for an object of a certain color, specified by a parameter
-LookForObject::LookForObject(const std::string& name) :
-    BT::ConditionNode(name, {})
+LookForObject::LookForObject(const std::string& name, const BT::NodeConfiguration& config) :
+    BT::StatefulActionNode(name, config)
 {
     std::cout << "[" << this->name() << "] Initialized" << std::endl;
 }
 
-void LookForObject::init(const ros::NodeHandle& nh) {
-    nh_ = nh;
+void LookForObject::init(rclcpp::Node::SharedPtr node_ptr) {
+    node_ptr_ = node_ptr;
 }
 
-BT::NodeStatus LookForObject::tick()
+BT::NodeStatus LookForObject::onStart() {
+    received_image_ = false;
+    image_sub_ = image_transport::create_subscription(
+        node_ptr_.get(), "/camera/image_raw",
+        std::bind(&LookForObject::image_callback, this, _1),
+        "raw", rmw_qos_profile_sensor_data);
+    return BT::NodeStatus::RUNNING;
+}
+
+BT::NodeStatus LookForObject::onRunning()
 {
-    std::string target_color;
-    ros::param::get("target_color", target_color);
+    // std::string target_color = "blue";
+    std::string target_color =
+        node_ptr_->get_parameter("target_color").as_string();
     std::cout << "[" << this->name() << "] Looking for " << target_color << " object" << std::endl;
     
-    // Receive an image
-    cv::namedWindow("Image");
-    image_transport::ImageTransport it(nh_);
-    image_transport::Subscriber sub = it.subscribe("/camera/rgb/image_raw", 1, &LookForObject::imageCallback, this);
-    ros::Duration(1.0).sleep();
-    received_image_ = false;
-    while (!received_image_) {
-        ros::spinOnce();
+    // Wait to receive an image
+    // TODO Add timeout?
+    if (!received_image_) {
+        // std::cout << "[" << this->name() << "] Waiting for image" << std::endl;
+        return BT::NodeStatus::RUNNING;
     }
-    sub.shutdown();
 
     // Convert to HSV and threshold
     std::vector<int> th = hsv_threshold_dict.at(target_color);
     cv::Mat img, img_hsv, img_threshold, img_keypoints;
-    img = cv_bridge::toCvShare(latest_image_, "bgr8")->image;
+    img = cv_bridge::toCvShare(latest_image_ptr_, "bgr8")->image;
     cv::cvtColor(img, img_hsv, cv::COLOR_BGR2HSV);
     cv::inRange(img_hsv, 
         cv::Scalar(th[0], th[2], th[4]), 
@@ -65,6 +72,7 @@ BT::NodeStatus LookForObject::tick()
         cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
     // Display the image
+    cv::namedWindow("Image");
     cv::imshow("Image", img_keypoints);
     cv::waitKey(2000);
 
@@ -77,7 +85,13 @@ BT::NodeStatus LookForObject::tick()
     }
 }
 
-void LookForObject::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
-    latest_image_ = msg;
+void LookForObject::onHalted() {
+    image_sub_.shutdown();
+    received_image_ = false;
+}
+
+void LookForObject::image_callback(
+    const sensor_msgs::msg::Image::ConstSharedPtr& msg) {
+    latest_image_ptr_ = msg;
     received_image_ = true;
 }
