@@ -27,7 +27,7 @@ RUN mkdir -p /turtlebot3_ws/src \
  && git clone -b galactic-devel https://github.com/ROBOTIS-GIT/DynamixelSDK.git
 
 # Install py_trees and related packages.
-# NOTE: For now, using a personal fork of py_trees_ros
+# NOTE: For now, using a personal fork of py_trees_ros for some slight interface changes.
 RUN cd /turtlebot3_ws/src \
  && git clone -b devel https://github.com/splintered-reality/py_trees.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_js.git \
@@ -36,8 +36,9 @@ RUN cd /turtlebot3_ws/src \
  && git clone -b devel https://github.com/splintered-reality/py_trees_ros_viewer.git
 
 # Install Groot for visualizing behavior trees from BehaviorTree.CPP.
+# TODO: For now, using a personal fork of Groot for autoconnect and port specification.
 RUN cd /turtlebot3_ws/src \
- && git clone -b master https://github.com/BehaviorTree/Groot.git groot \
+ && git clone -b scastro/monitor_port_connect_args https://github.com/sea-bass/Groot.git groot \
  && cd groot \
  && git submodule update --init --recursive
 

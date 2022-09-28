@@ -49,6 +49,8 @@ def generate_launch_description():
         ),
         # Behavior tree visualization
         ExecuteProcess(
-            cmd=["ros2", "run", "groot", "Groot", "--mode", "monitor"]
+            cmd=["ros2", "run", "groot", "Groot", "--mode", "monitor",
+                 "--publisher_port", "1668", "--server_port", "1669",
+                 "--autoconnect"]
         ),
     ])
