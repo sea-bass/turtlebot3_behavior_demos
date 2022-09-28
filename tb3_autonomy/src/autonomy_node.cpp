@@ -25,6 +25,19 @@ const std::string default_location_file =
     tb3_worlds_share_dir + "/maps/sim_house_locations.yaml";
 
 
+// Helper to register behaviors that accept a pointer to a ROS node.
+template <class NodeBehaviorT> 
+void registerRosNodeType(BT::BehaviorTreeFactory& factory,
+                         const std::string& registration_ID,
+                         rclcpp::Node::SharedPtr node_ptr) {
+    BT::NodeBuilder builder = [=](const std::string& name,
+                                  const BT::NodeConfiguration& config) {
+        return std::make_unique<NodeBehaviorT>(name, config, node_ptr);
+    };
+    factory.registerBuilder<NodeBehaviorT>(registration_ID, builder);
+}
+
+
 class AutonomyNode : public rclcpp::Node {
     public:
         AutonomyNode() : Node("autonomy_node") {
@@ -66,10 +79,14 @@ class AutonomyNode : public rclcpp::Node {
         void create_behavior_tree() {
             // Build a behavior tree from XML and set it up for logging
             BT::BehaviorTreeFactory factory;
-            factory.registerNodeType<GoToPose>("GoToPose");
             factory.registerNodeType<SetLocations>("SetLocations");
-            factory.registerNodeType<GetLocationFromQueue>("GetLocationFromQueue");
-            factory.registerNodeType<LookForObject>("LookForObject");
+            registerRosNodeType<GoToPose>(
+                factory, "GoToPose", shared_from_this());
+            registerRosNodeType<GetLocationFromQueue>(
+                factory, "GetLocationFromQueue", shared_from_this());
+            registerRosNodeType<LookForObject>(
+                factory, "LookForObject", shared_from_this());
+            
             std::string tree_file;
             if (enable_vision_) {
                 if (tree_type_ == "queue") {
@@ -86,18 +103,6 @@ class AutonomyNode : public rclcpp::Node {
             }
             tree_ = factory.createTreeFromFile(bt_xml_dir + "/" + tree_file);
 
-            // Inject a pointer to node to initalize behaviors that need it.
-            // TODO is there a better way to do this?
-            for (auto &node : tree_.nodes) {
-                if (auto node_ptr = dynamic_cast<GoToPose*>(node.get())) {
-                    node_ptr->init(shared_from_this());
-                } else if (auto node_ptr = dynamic_cast<LookForObject*>(node.get())) {
-                    node_ptr->init(shared_from_this());
-                } else if (auto node_ptr = dynamic_cast<GetLocationFromQueue*>(node.get())) {
-                    node_ptr->init(shared_from_this());
-                }
-            }
-            
             // Set up logging to monitor the tree in Groot.
             // Default ports (1666/1667) are used by Nav2 BT.
             publisher_zmq_ptr_ = std::make_unique<BT::PublisherZMQ>(

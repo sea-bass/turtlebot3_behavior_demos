@@ -13,14 +13,12 @@ using std::placeholders::_1;
 
 // LOOKFOROBJECT
 // Looks for an object of a certain color, specified by a parameter
-LookForObject::LookForObject(const std::string& name, const BT::NodeConfiguration& config) :
-    BT::StatefulActionNode(name, config)
+LookForObject::LookForObject(const std::string& name,
+                             const BT::NodeConfiguration& config,
+                             rclcpp::Node::SharedPtr node_ptr) :
+    BT::StatefulActionNode(name, config), node_ptr_{node_ptr}
 {
     std::cout << "[" << this->name() << "] Initialized" << std::endl;
-}
-
-void LookForObject::init(rclcpp::Node::SharedPtr node_ptr) {
-    node_ptr_ = node_ptr;
 }
 
 BT::NodeStatus LookForObject::onStart() {

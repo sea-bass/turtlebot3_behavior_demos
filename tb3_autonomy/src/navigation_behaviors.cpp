@@ -40,15 +40,13 @@ BT::PortsList SetLocations::providedPorts()
 // GETLOCATIONFROMQUEUE
 // Gets a location name from a queue of locations to visit.
 // If the queue is empty, this behavior fails.
-GetLocationFromQueue::GetLocationFromQueue(const std::string& name, const BT::NodeConfiguration& config) :
-    BT::SyncActionNode(name, config)
+GetLocationFromQueue::GetLocationFromQueue(const std::string& name,
+                                           const BT::NodeConfiguration& config,
+                                           rclcpp::Node::SharedPtr node_ptr) :
+    BT::SyncActionNode(name, config), node_ptr_{node_ptr}
 {
     std::cout << "[" << this->name() << "] Initialized" << std::endl;
-}
-
-void GetLocationFromQueue::init(rclcpp::Node::SharedPtr node_ptr) {
-    node_ptr_ = node_ptr;
-
+    
     // Get the locations from the file specified in the ROS parameter, put them
     // into the location queue, and shuffle it.
     const std::string location_file = 
@@ -85,12 +83,9 @@ BT::PortsList GetLocationFromQueue::providedPorts()
 // GOTOPOSE
 // Wrapper behavior around the `navigate_to_pose` action client,
 // whose status reflects the status of the ROS action.
-GoToPose::GoToPose(const std::string& name, const BT::NodeConfiguration& config) :
-    BT::StatefulActionNode(name, config) {}
-
-void GoToPose::init(rclcpp::Node::SharedPtr node_ptr) {
-    node_ptr_ = node_ptr;
-}
+GoToPose::GoToPose(const std::string& name, const BT::NodeConfiguration& config,
+                   rclcpp::Node::SharedPtr node_ptr) :
+    BT::StatefulActionNode(name, config), node_ptr_{node_ptr} {}
 
 BT::NodeStatus GoToPose::onStart() {
     // Validate that a node exists

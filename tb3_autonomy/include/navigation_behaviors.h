@@ -21,8 +21,9 @@ class GetLocationFromQueue : public BT::SyncActionNode
     rclcpp::Node::SharedPtr node_ptr_;
     std::deque<std::string> location_queue_;
 
-    GetLocationFromQueue(const std::string& name, const BT::NodeConfiguration& config);
-    void init(rclcpp::Node::SharedPtr node_ptr);
+    GetLocationFromQueue(
+        const std::string& name, const BT::NodeConfiguration& config,
+        rclcpp::Node::SharedPtr node_ptr);
     BT::NodeStatus tick() override;
     static BT::PortsList providedPorts();
 };
@@ -39,8 +40,8 @@ class GoToPose : public BT::StatefulActionNode
     rclcpp_action::Client<NavigateToPose>::SharedPtr client_ptr_;
 
     // Method overrides
-    GoToPose(const std::string& name, const BT::NodeConfiguration& config);
-    void init(rclcpp::Node::SharedPtr node_ptr);
+    GoToPose(const std::string& name, const BT::NodeConfiguration& config,
+             rclcpp::Node::SharedPtr node_ptr);
     BT::NodeStatus onStart() override;
     BT::NodeStatus onRunning() override;
     void onHalted() override {};
