@@ -1,9 +1,9 @@
 # Base Image for TurtleBot3 Simulation
-FROM osrf/ros:humble-desktop
+FROM ros:humble
 SHELL ["/bin/bash", "-c"]
 
 # Install basic apt packages
-RUN apt-get update && apt-get install -y --no-install-recommends\
+RUN apt-get update && apt-get install -y --no-install-recommends \
  git libcanberra-gtk-module libcanberra-gtk3-module libqt5svg5-dev \
  python3-pip python3-opencv python3-tk python3-pyqt5.qtwebengine
 
@@ -24,13 +24,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /turtlebot3_ws/src
 
 # Install py_trees and related packages.
-# NOTE: For now, using a personal fork of py_trees_ros for some slight interface changes.
+# NOTE: For now, using a personal fork of py_trees_ros and py_trees_ros_viewer
+# for some slight interface changes, bug fixes, and removing deprecation warnings.
 RUN cd /turtlebot3_ws/src \
  && git clone -b devel https://github.com/splintered-reality/py_trees.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_js.git \
  && git clone -b devel https://github.com/sea-bass/py_trees_ros.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_ros_interfaces.git \
- && git clone -b devel https://github.com/splintered-reality/py_trees_ros_viewer.git
+ && git clone -b devel https://github.com/sea-bass/py_trees_ros_viewer.git
 
 # Install Groot for visualizing behavior trees from BehaviorTree.CPP.
 # TODO: For now, using a personal fork of Groot for autoconnect and port specification.
@@ -46,6 +47,7 @@ RUN cd /turtlebot3_ws \
 # Remove display warnings
 RUN mkdir /tmp/runtime-root
 ENV XDG_RUNTIME_DIR "/tmp/runtime-root"
+RUN chmod -R 0700 /tmp/runtime-root
 ENV NO_AT_BRIDGE 1
 
 # Set up the work directory and entrypoint

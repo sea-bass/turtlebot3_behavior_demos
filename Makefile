@@ -31,7 +31,7 @@ DOCKER_ENV_VARS = \
 ifeq ("${USE_GPU}", "true")
 DOCKER_GPU_ARGS = "--gpus all"
 endif
-DOCKER_ARGS = --ipc=host --net=host --privileged \
+DOCKER_ARGS = --ipc=host --net=host \
 	${DOCKER_VOLUMES} ${DOCKER_ENV_VARS} ${DOCKER_GPU_VARS}
 
 # Set ROS launch arguments for examples
