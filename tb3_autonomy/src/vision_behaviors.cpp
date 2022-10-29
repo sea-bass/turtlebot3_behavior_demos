@@ -24,7 +24,7 @@ LookForObject::LookForObject(const std::string& name,
 BT::NodeStatus LookForObject::onStart() {
     received_image_ = false;
     image_sub_ = image_transport::create_subscription(
-        node_ptr_.get(), "/camera/image_raw",
+        node_ptr_.get(), "/intel_realsense_r200_depth/image_raw",
         std::bind(&LookForObject::image_callback, this, _1),
         "raw", rmw_qos_profile_sensor_data);
     return BT::NodeStatus::RUNNING;

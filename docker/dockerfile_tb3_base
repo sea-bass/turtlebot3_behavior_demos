@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends\
 RUN pip3 install transforms3d
 
 # Install additional ROS packages
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
  ros-humble-cartographer \
  ros-humble-cartographer-ros \
  ros-humble-gazebo-ros \

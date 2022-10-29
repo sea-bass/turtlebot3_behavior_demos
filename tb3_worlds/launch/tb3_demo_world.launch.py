@@ -8,42 +8,42 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    tb3_nav2_dir = get_package_share_directory("turtlebot3_navigation2")
-    pkg_tb3_worlds = get_package_share_directory("tb3_worlds")
-
-    default_map = join(pkg_tb3_worlds, "maps", "sim_house_map.yaml")
-    print(f"Using map file: {default_map}")
+    nav2_bringup_dir = get_package_share_directory("nav2_bringup")
+    tb3_world_dir = get_package_share_directory("tb3_worlds")
+    default_map = join(tb3_world_dir, "maps", "sim_house_map.yaml")
+    default_world = join(tb3_world_dir, "worlds", "sim_house.world")
 
     return LaunchDescription([
-        # Spawn the world
+        # Spawn the world and nav stack
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                join(pkg_tb3_worlds, "launch", "tb3_world.launch.py")
-            ),
-        ),
-        # Start navigation stack
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                join(tb3_nav2_dir, "launch", "navigation2.launch.py")
+                join(nav2_bringup_dir, "launch", "tb3_simulation_launch.py")
             ),
             launch_arguments={
+                "headless": LaunchConfiguration("headless", default=False),
                 "use_sim_time": LaunchConfiguration("use_sim_time", default="true"),
-                "map": LaunchConfiguration("map", default=default_map)
+                "world": LaunchConfiguration("world", default=default_world),
+                "map": LaunchConfiguration("map", default=default_map),
+                "x_pose": LaunchConfiguration("x_pose", default=0.0),
+                "y_pose": LaunchConfiguration("y_pose", default=0.0),
             }.items()
         ),
+
         # Set AMCL initial pose
         Node(
             package="tb3_worlds",
             executable="set_init_amcl_pose.py",
             name="init_pose_publisher",
         ),
+
         # Spawn blocks
         Node(
             package="tb3_worlds",
             executable="block_spawner.py",
             name="block_spawner",
             parameters=[{
-                "location_file": join(pkg_tb3_worlds, "maps", "sim_house_locations.yaml")
+                "location_file": join(tb3_world_dir, "maps", "sim_house_locations.yaml")
             }]
-        )
+        ),
+
     ])
