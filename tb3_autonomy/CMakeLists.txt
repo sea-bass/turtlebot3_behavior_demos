@@ -18,6 +18,9 @@ find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(image_transport REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
 # Install directories
@@ -46,8 +49,8 @@ set(AUTONOMY_SOURCES
 )
 set(TARGET_DEPENDS
     ament_index_cpp rclcpp rclcpp_action
-    sensor_msgs nav2_msgs cv_bridge image_transport
-    behaviortree_cpp_v3 yaml-cpp
+    nav2_msgs sensor_msgs cv_bridge image_transport
+    behaviortree_cpp_v3 tf2 tf2_ros tf2_geometry_msgs yaml-cpp
 )
 include_directories(include)
 add_executable(autonomy_node_cpp src/autonomy_node.cpp ${AUTONOMY_SOURCES})

@@ -16,23 +16,24 @@ ENABLE_VISION ?= true   # Enable vision in behaviors if true, else just do navig
 
 # Docker variables
 IMAGE_NAME = turtlebot3
-CORE_DOCKERFILE = ${PWD}/docker/dockerfile_nvidia_ros
-BASE_DOCKERFILE = ${PWD}/docker/dockerfile_tb3_base
-OVERLAY_DOCKERFILE = ${PWD}/docker/dockerfile_tb3_overlay
+BASE_DOCKERFILE = docker/dockerfile_tb3_base
+OVERLAY_DOCKERFILE = docker/dockerfile_tb3_overlay
 
 # Set Docker volumes and environment variables
 DOCKER_VOLUMES = \
 	--volume="${PWD}/tb3_autonomy":"/overlay_ws/src/tb3_autonomy":rw \
 	--volume="${PWD}/tb3_worlds":"/overlay_ws/src/tb3_worlds":rw \
+	--volume="${PWD}/turtlebot3":"/overlay_ws/src/turtlebot3":rw \
 	--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"
 DOCKER_ENV_VARS = \
+	--env="ROS_DOMAIN_ID=${ROS_DOMAIN_ID}" \
 	--env="NVIDIA_DRIVER_CAPABILITIES=all" \
 	--env="DISPLAY" \
 	--env="QT_X11_NO_MITSHM=1"
 ifeq ("${USE_GPU}", "true")
-DOCKER_GPU_ARGS = "--gpus all"
+DOCKER_GPU_ARGS = "--runtime nvidia --gpus all"
 endif
-DOCKER_ARGS = --ipc=host --net=host \
+DOCKER_ARGS = --ipc=host --net=host --privileged \
 	${DOCKER_VOLUMES} ${DOCKER_ENV_VARS} ${DOCKER_GPU_VARS}
 
 # Set ROS launch arguments for examples
@@ -45,14 +46,9 @@ LAUNCH_ARGS = \
 ###########
 #  SETUP  #
 ###########
-# Build the core image
-.PHONY: build-core
-build-core:
-	@docker build -f ${CORE_DOCKERFILE} -t nvidia_ros .
-
 # Build the base image (depends on core image build)
 .PHONY: build-base
-build-base: build-core
+build-base:
 	@docker build -f ${BASE_DOCKERFILE} -t ${IMAGE_NAME}_base .
 
 # Build the overlay image (depends on base image build)
