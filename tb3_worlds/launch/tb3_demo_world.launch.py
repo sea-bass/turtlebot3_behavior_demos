@@ -11,6 +11,9 @@ def generate_launch_description():
     tb3_nav2_dir = get_package_share_directory("turtlebot3_navigation2")
     pkg_tb3_worlds = get_package_share_directory("tb3_worlds")
 
+    default_map = join(pkg_tb3_worlds, "maps", "sim_house_map.yaml")
+    print(f"Using map file: {default_map}")
+
     return LaunchDescription([
         # Spawn the world
         IncludeLaunchDescription(
@@ -24,16 +27,16 @@ def generate_launch_description():
                 join(tb3_nav2_dir, "launch", "navigation2.launch.py")
             ),
             launch_arguments={
-                "use_sim_time": LaunchConfiguration("use_sim_time", default="True"),
-                "map": join(pkg_tb3_worlds, "maps", "sim_house_map.yaml")
+                "use_sim_time": LaunchConfiguration("use_sim_time", default="true"),
+                "map": LaunchConfiguration("map", default=default_map)
             }.items()
         ),
-        # # Set AMCL initial pose
-        # Node(
-        #     package="tb3_worlds",
-        #     executable="set_init_amcl_pose.py",
-        #     name="init_pose_publisher",
-        # ),
+        # Set AMCL initial pose
+        Node(
+            package="tb3_worlds",
+            executable="set_init_amcl_pose.py",
+            name="init_pose_publisher",
+        ),
         # Spawn blocks
         Node(
             package="tb3_worlds",

@@ -8,7 +8,10 @@ from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
-    use_sim_time = LaunchConfiguration("use_sim_time", default="True")
+    use_sim_time = LaunchConfiguration("use_sim_time", default="true")
+    x_pose = LaunchConfiguration("x_pose", default="0.0")
+    y_pose = LaunchConfiguration("y_pose", default="0.0")
+
     world = join(get_package_share_directory("tb3_worlds"),
                  "worlds", "sim_house.world")
     launch_file_dir = join(get_package_share_directory("turtlebot3_gazebo"),
@@ -29,13 +32,19 @@ def generate_launch_description():
             ),
         ),
 
-        ExecuteProcess(
-            cmd=["ros2", "param", "set", "/gazebo", "use_sim_time", use_sim_time],
-            output="screen"),
-
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 [launch_file_dir, "/robot_state_publisher.launch.py"]),
             launch_arguments={"use_sim_time": use_sim_time}.items(),
         ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                join(launch_file_dir, 'spawn_turtlebot3.launch.py')
+            ),
+            launch_arguments={
+                'x_pose': x_pose,
+                'y_pose': y_pose
+            }.items()
+        )
     ])

@@ -23,15 +23,13 @@ OVERLAY_DOCKERFILE = docker/dockerfile_tb3_overlay
 DOCKER_VOLUMES = \
 	--volume="${PWD}/tb3_autonomy":"/overlay_ws/src/tb3_autonomy":rw \
 	--volume="${PWD}/tb3_worlds":"/overlay_ws/src/tb3_worlds":rw \
-	--volume="${PWD}/turtlebot3":"/overlay_ws/src/turtlebot3":rw \
 	--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"
 DOCKER_ENV_VARS = \
-	--env="ROS_DOMAIN_ID=${ROS_DOMAIN_ID}" \
 	--env="NVIDIA_DRIVER_CAPABILITIES=all" \
-	--env="DISPLAY" \
+	--env="DISPLAY=${DISPLAY}" \
 	--env="QT_X11_NO_MITSHM=1"
 ifeq ("${USE_GPU}", "true")
-DOCKER_GPU_ARGS = "--runtime nvidia --gpus all"
+DOCKER_GPU_ARGS = "--gpus all"
 endif
 DOCKER_ARGS = --ipc=host --net=host --privileged \
 	${DOCKER_VOLUMES} ${DOCKER_ENV_VARS} ${DOCKER_GPU_VARS}

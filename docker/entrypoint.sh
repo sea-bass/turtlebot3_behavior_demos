@@ -20,6 +20,7 @@ fi
 # Set environment variables
 export TURTLEBOT3_MODEL=waffle_pi
 export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:$(ros2 pkg prefix tb3_worlds)/share/tb3_worlds/models
+# export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 # Execute the command passed into this entrypoint
 exec "$@"
