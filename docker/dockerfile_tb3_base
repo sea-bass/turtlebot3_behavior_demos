@@ -17,15 +17,11 @@ RUN apt-get install -y --no-install-recommends \
  ros-humble-gazebo-ros \
  ros-humble-navigation2 \
  ros-humble-nav2-bringup \
- ros-humble-rmw-cyclonedds-cpp
+ ros-humble-rmw-cyclonedds-cpp \
+ ros-humble-turtlebot3*
 
-# Create Colcon workspace with TurtleBot3 packages
-RUN mkdir -p /turtlebot3_ws/src \
- && cd /turtlebot3_ws/src \
- && git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
- && git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
- && git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git \
- && git clone -b humble-devel https://github.com/ROBOTIS-GIT/DynamixelSDK.git
+# Create Colcon workspace with extra packages
+RUN mkdir -p /turtlebot3_ws/src
 
 # Install py_trees and related packages.
 # NOTE: For now, using a personal fork of py_trees_ros for some slight interface changes.
