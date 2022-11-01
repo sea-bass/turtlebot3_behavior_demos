@@ -24,9 +24,9 @@ RUN mkdir -p /turtlebot3_ws/src
 WORKDIR /turtlebot3_ws/src
 
 # Install TurtleBot3 repos from source
-# TODO: Switch back to apt installs once this PR is merged:
+# TODO: Switch back to apt installs once this PR is in the binary release:
 # https://github.com/ROBOTIS-GIT/turtlebot3/pull/916
-RUN git clone -b fix-amcl-config https://github.com/sea-bass/turtlebot3.git \
+RUN git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
  && git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
  && git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
 
