@@ -27,7 +27,7 @@ class ColorThresholdTester(Node):
         # Define ROS subscriber
         super().__init__("test_vision")
         self.sub = self.create_subscription(
-            Image, "/intel_realsense_r200_depth/image_raw", self.img_callback, 10)
+            Image, "/camera/image_raw", self.img_callback, 10)
 
         # Define vision related variables
         self.bridge = cv_bridge.CvBridge()

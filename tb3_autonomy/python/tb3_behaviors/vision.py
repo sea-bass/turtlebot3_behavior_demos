@@ -58,7 +58,7 @@ class LookForObject(py_trees.behaviour.Behaviour):
         self.start_time = self.node.get_clock().now()
         self.latest_img_msg = None
         self.img_sub = self.node.create_subscription(
-            Image, "/intel_realsense_r200_depth/image_raw", self.img_callback, 10)
+            Image, "/camera/image_raw", self.img_callback, 10)
         
 
     def update(self):

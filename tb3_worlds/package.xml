@@ -11,7 +11,9 @@
 
   <depend>rclpy</depend>
   <depend>gazebo_msgs</depend>
+  <depend>gazebo_ros</depend>
   <depend>geometry_msgs</depend>
+  <depend>turtlebot3_gazebo</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

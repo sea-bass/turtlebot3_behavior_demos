@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  python3-pip python3-opencv python3-tk python3-pyqt5.qtwebengine
 
 # Install additional Python modules
-RUN pip3 install transforms3d
+RUN pip3 install matplotlib transforms3d
 
 # Install additional ROS packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -17,17 +17,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  ros-humble-gazebo-ros \
  ros-humble-navigation2 \
  ros-humble-nav2-bringup \
- ros-humble-rmw-cyclonedds-cpp \
- ros-humble-turtlebot3*
+ ros-humble-rmw-cyclonedds-cpp
 
 # Create Colcon workspace with extra packages
 RUN mkdir -p /turtlebot3_ws/src
+WORKDIR /turtlebot3_ws/src
+
+# Install TurtleBot3 repos from source
+# TODO: Switch back to apt installs once this PR is merged:
+# https://github.com/ROBOTIS-GIT/turtlebot3/pull/916
+RUN git clone -b fix-amcl-config https://github.com/sea-bass/turtlebot3.git \
+ && git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
+ && git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
 
 # Install py_trees and related packages.
 # NOTE: For now, using a personal fork of py_trees_ros and py_trees_ros_viewer
 # for some slight interface changes, bug fixes, and removing deprecation warnings.
-RUN cd /turtlebot3_ws/src \
- && git clone -b devel https://github.com/splintered-reality/py_trees.git \
+RUN git clone -b devel https://github.com/splintered-reality/py_trees.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_js.git \
  && git clone -b devel https://github.com/sea-bass/py_trees_ros.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_ros_interfaces.git \
@@ -35,12 +41,11 @@ RUN cd /turtlebot3_ws/src \
 
 # Install Groot for visualizing behavior trees from BehaviorTree.CPP.
 # TODO: For now, using a personal fork of Groot for autoconnect and port specification.
-RUN cd /turtlebot3_ws/src \
- && git clone -b scastro/monitor_port_connect_args https://github.com/sea-bass/Groot.git groot
+RUN git clone -b scastro/monitor_port_connect_args https://github.com/sea-bass/Groot.git groot
 
 # Build the base Colcon workspace, handing any extra missed dependencies.
-RUN cd /turtlebot3_ws \
- && source /opt/ros/humble/setup.bash \
+WORKDIR /turtlebot3_ws
+RUN source /opt/ros/humble/setup.bash \
  && rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y \
  && colcon build --symlink-install
 
@@ -50,7 +55,6 @@ ENV XDG_RUNTIME_DIR "/tmp/runtime-root"
 RUN chmod -R 0700 /tmp/runtime-root
 ENV NO_AT_BRIDGE 1
 
-# Set up the work directory and entrypoint
-WORKDIR /turtlebot3_ws
+# Set up the entrypoint
 COPY ./docker/entrypoint.sh /
 ENTRYPOINT [ "/entrypoint.sh" ]
