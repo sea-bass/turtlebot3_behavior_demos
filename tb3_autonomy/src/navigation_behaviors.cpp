@@ -128,9 +128,16 @@ BT::NodeStatus GoToPose::onStart() {
 }
 
 BT::NodeStatus GoToPose::onRunning() {
+    // If there is a result, we can check the status of the action directly.
+    // Otherwise, the action is still running.
     if (done_flag_) {
-        std::cout << "[" << this->name() << "] Goal reached" << std::endl;
-        return BT::NodeStatus::SUCCESS;   
+        if (nav_result_ == rclcpp_action::ResultCode::SUCCEEDED) {
+            std::cout << "[" << this->name() << "] Goal reached" << std::endl;
+            return BT::NodeStatus::SUCCESS;   
+        } else {
+            std::cout << "[" << this->name() << "] Failed to reach goal" << std::endl;
+            return BT::NodeStatus::FAILURE;   
+        }
     } else {
         return BT::NodeStatus::RUNNING;
     }
@@ -140,10 +147,11 @@ BT::PortsList GoToPose::providedPorts() {
     return { BT::InputPort<std::string>("loc") };
 }
 
-void GoToPose::result_callback(const GoalHandleNav::WrappedResult & result) {
+void GoToPose::result_callback(const GoalHandleNav::WrappedResult& result) {
     // If there is a result, we consider navigation completed.
     // bt_navigator only sends an empty message without status because reasons.
     if (result.result) {
         done_flag_ = true;
+        nav_result_ = result.code;
     }
 }
