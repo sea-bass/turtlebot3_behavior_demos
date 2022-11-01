@@ -6,7 +6,7 @@ RUN mkdir -p /overlay_ws/src \
  && cd /overlay_ws
 COPY ./tb3_autonomy/ /overlay_ws/src/tb3_autonomy/
 COPY ./tb3_worlds/ /overlay_ws/src/tb3_worlds/
-RUN source /opt/ros/galactic/setup.bash \
+RUN source /opt/ros/humble/setup.bash \
  && source /turtlebot3_ws/install/setup.bash \
  && cd /overlay_ws \
  && colcon build

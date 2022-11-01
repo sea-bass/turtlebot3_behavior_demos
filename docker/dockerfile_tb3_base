@@ -1,58 +1,60 @@
 # Base Image for TurtleBot3 Simulation
-FROM nvidia_ros:latest
+FROM ros:humble
 SHELL ["/bin/bash", "-c"]
 
 # Install basic apt packages
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
  git libcanberra-gtk-module libcanberra-gtk3-module libqt5svg5-dev \
  python3-pip python3-opencv python3-tk python3-pyqt5.qtwebengine
 
 # Install additional Python modules
-RUN pip3 install transforms3d
+RUN pip3 install matplotlib transforms3d
 
 # Install additional ROS packages
-RUN apt-get install -y \
- ros-galactic-gazebo-* \
- ros-galactic-cartographer \
- ros-galactic-cartographer-ros \
- ros-galactic-navigation2 \
- ros-galactic-nav2-bringup
+RUN apt-get update && apt-get install -y --no-install-recommends \
+ ros-humble-cartographer \
+ ros-humble-cartographer-ros \
+ ros-humble-gazebo-ros \
+ ros-humble-navigation2 \
+ ros-humble-nav2-bringup \
+ ros-humble-rmw-cyclonedds-cpp
 
-# Create Colcon workspace with TurtleBot3 packages
-RUN mkdir -p /turtlebot3_ws/src \
- && cd /turtlebot3_ws/src \
- && git clone -b galactic-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
- && git clone -b galactic-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
- && git clone -b galactic-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git \
- && git clone -b galactic-devel https://github.com/ROBOTIS-GIT/DynamixelSDK.git
+# Create Colcon workspace with extra packages
+RUN mkdir -p /turtlebot3_ws/src
+WORKDIR /turtlebot3_ws/src
+
+# Install TurtleBot3 repos from source
+# TODO: Switch back to apt installs once this PR is merged:
+# https://github.com/ROBOTIS-GIT/turtlebot3/pull/916
+RUN git clone -b fix-amcl-config https://github.com/sea-bass/turtlebot3.git \
+ && git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
+ && git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
 
 # Install py_trees and related packages.
-# NOTE: For now, using a personal fork of py_trees_ros for some slight interface changes.
-RUN cd /turtlebot3_ws/src \
- && git clone -b devel https://github.com/splintered-reality/py_trees.git \
+# NOTE: For now, using a personal fork of py_trees_ros and py_trees_ros_viewer
+# for some slight interface changes, bug fixes, and removing deprecation warnings.
+RUN git clone -b devel https://github.com/splintered-reality/py_trees.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_js.git \
  && git clone -b devel https://github.com/sea-bass/py_trees_ros.git \
  && git clone -b devel https://github.com/splintered-reality/py_trees_ros_interfaces.git \
- && git clone -b devel https://github.com/splintered-reality/py_trees_ros_viewer.git
+ && git clone -b devel https://github.com/sea-bass/py_trees_ros_viewer.git
 
 # Install Groot for visualizing behavior trees from BehaviorTree.CPP.
 # TODO: For now, using a personal fork of Groot for autoconnect and port specification.
-RUN cd /turtlebot3_ws/src \
- && git clone -b scastro/monitor_port_connect_args https://github.com/sea-bass/Groot.git groot \
- && cd groot \
- && git submodule update --init --recursive
+RUN git clone -b scastro/monitor_port_connect_args https://github.com/sea-bass/Groot.git groot
 
-# Build the base Colcon workspace
-RUN cd /turtlebot3_ws \
- && source /opt/ros/galactic/setup.bash \
+# Build the base Colcon workspace, handing any extra missed dependencies.
+WORKDIR /turtlebot3_ws
+RUN source /opt/ros/humble/setup.bash \
+ && rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y \
  && colcon build --symlink-install
 
 # Remove display warnings
 RUN mkdir /tmp/runtime-root
 ENV XDG_RUNTIME_DIR "/tmp/runtime-root"
+RUN chmod -R 0700 /tmp/runtime-root
 ENV NO_AT_BRIDGE 1
 
-# Set up the work directory and entrypoint
-WORKDIR /turtlebot3_ws
+# Set up the entrypoint
 COPY ./docker/entrypoint.sh /
 ENTRYPOINT [ "/entrypoint.sh" ]

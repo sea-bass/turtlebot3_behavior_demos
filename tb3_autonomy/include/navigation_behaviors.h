@@ -36,6 +36,7 @@ class GoToPose : public BT::StatefulActionNode
     using GoalHandleNav = rclcpp_action::ClientGoalHandle<NavigateToPose>;
 
     bool done_flag_;
+    rclcpp_action::ResultCode nav_result_;
     rclcpp::Node::SharedPtr node_ptr_;
     rclcpp_action::Client<NavigateToPose>::SharedPtr client_ptr_;
 

@@ -20,7 +20,6 @@ import cv_bridge
 import cv2
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image
 
 class ColorThresholdTester(Node):
@@ -28,8 +27,7 @@ class ColorThresholdTester(Node):
         # Define ROS subscriber
         super().__init__("test_vision")
         self.sub = self.create_subscription(
-            Image, "/camera/image_raw", self.img_callback,
-            qos_profile=qos_profile_sensor_data)
+            Image, "/camera/image_raw", self.img_callback, 10)
 
         # Define vision related variables
         self.bridge = cv_bridge.CvBridge()

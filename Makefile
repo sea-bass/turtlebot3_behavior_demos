@@ -16,9 +16,8 @@ ENABLE_VISION ?= true   # Enable vision in behaviors if true, else just do navig
 
 # Docker variables
 IMAGE_NAME = turtlebot3
-CORE_DOCKERFILE = ${PWD}/docker/dockerfile_nvidia_ros
-BASE_DOCKERFILE = ${PWD}/docker/dockerfile_tb3_base
-OVERLAY_DOCKERFILE = ${PWD}/docker/dockerfile_tb3_overlay
+BASE_DOCKERFILE = docker/dockerfile_tb3_base
+OVERLAY_DOCKERFILE = docker/dockerfile_tb3_overlay
 
 # Set Docker volumes and environment variables
 DOCKER_VOLUMES = \
@@ -27,7 +26,7 @@ DOCKER_VOLUMES = \
 	--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"
 DOCKER_ENV_VARS = \
 	--env="NVIDIA_DRIVER_CAPABILITIES=all" \
-	--env="DISPLAY" \
+	--env="DISPLAY=${DISPLAY}" \
 	--env="QT_X11_NO_MITSHM=1"
 ifeq ("${USE_GPU}", "true")
 DOCKER_GPU_ARGS = "--gpus all"
@@ -45,14 +44,9 @@ LAUNCH_ARGS = \
 ###########
 #  SETUP  #
 ###########
-# Build the core image
-.PHONY: build-core
-build-core:
-	@docker build -f ${CORE_DOCKERFILE} -t nvidia_ros .
-
 # Build the base image (depends on core image build)
 .PHONY: build-base
-build-base: build-core
+build-base:
 	@docker build -f ${BASE_DOCKERFILE} -t ${IMAGE_NAME}_base .
 
 # Build the overlay image (depends on base image build)

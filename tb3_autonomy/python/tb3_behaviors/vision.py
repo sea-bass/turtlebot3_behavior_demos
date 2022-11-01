@@ -6,7 +6,6 @@ import cv2
 import cv_bridge
 import rclpy
 from rclpy.duration import Duration
-from rclpy.qos import qos_profile_sensor_data
 import py_trees
 from sensor_msgs.msg import Image
 
@@ -59,8 +58,7 @@ class LookForObject(py_trees.behaviour.Behaviour):
         self.start_time = self.node.get_clock().now()
         self.latest_img_msg = None
         self.img_sub = self.node.create_subscription(
-            Image, "/camera/image_raw", self.img_callback,
-            qos_profile=qos_profile_sensor_data)
+            Image, "/camera/image_raw", self.img_callback, 10)
         
 
     def update(self):

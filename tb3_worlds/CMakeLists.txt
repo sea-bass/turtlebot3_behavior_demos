@@ -9,7 +9,9 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(gazebo_msgs REQUIRED)
+find_package(gazebo_ros REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(turtlebot3_gazebo REQUIRED)
 
 # Install programs
 install(PROGRAMS

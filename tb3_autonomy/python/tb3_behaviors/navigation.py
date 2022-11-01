@@ -3,9 +3,11 @@ Navigation behaviors for TurtleBot3.
 """
 
 import py_trees
+import transforms3d
+
+from action_msgs.msg import GoalStatus
 from rclpy.action import ActionClient
 from nav2_msgs.action import NavigateToPose
-import transforms3d
 
 
 class GetLocationFromQueue(py_trees.behaviour.Behaviour):
@@ -55,7 +57,7 @@ class GoToPose(py_trees.behaviour.Behaviour):
         self.client = ActionClient(self.node, NavigateToPose, "/navigate_to_pose")
         self.client.wait_for_server()
 
-        self.goal_result = None
+        self.goal_status = None
         x, y, theta = self.pose
         self.logger.info(f"Going to [x: {x}, y: {y}, theta: {theta}] ...")
         self.goal = self.create_move_base_goal(x, y, theta)
@@ -70,14 +72,17 @@ class GoToPose(py_trees.behaviour.Behaviour):
         future.add_done_callback(self.goal_result_callback)
 
     def goal_result_callback(self, future):
-        self.goal_result = future.result().result
+        self.goal_status = future.result().status
 
     def update(self):
         """ Checks for the status of the navigation action """
-        # If there is a result, we consider navigation completed.
-        # bt_navigator only sends an empty message without status because reasons.
-        if self.goal_result is not None:
-            return py_trees.common.Status.SUCCESS
+        # If there is a result, we can check the status of the action directly.
+        # Otherwise, the action is still running.
+        if self.goal_status is not None:
+            if self.goal_status == GoalStatus.STATUS_SUCCEEDED:
+                return py_trees.common.Status.SUCCESS
+            else:
+                return py_trees.common.Status.FAILURE
         return py_trees.common.Status.RUNNING
 
     def terminate(self, new_status):
