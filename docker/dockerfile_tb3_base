@@ -19,33 +19,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  ros-humble-nav2-bringup \
  ros-humble-rmw-cyclonedds-cpp
 
-# Create Colcon workspace with extra packages
+# Create Colcon workspace with external dependencies
 RUN mkdir -p /turtlebot3_ws/src
 WORKDIR /turtlebot3_ws/src
-
-# Install TurtleBot3 repos from source
-# TODO: Switch back to apt installs once this PR is in the binary release:
-# https://github.com/ROBOTIS-GIT/turtlebot3/pull/916
-RUN git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3.git \
- && git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
- && git clone -b humble-devel https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
-
-# Install py_trees and related packages.
-# NOTE: For now, using a personal fork of py_trees_ros and py_trees_ros_viewer
-# for some slight interface changes, bug fixes, and removing deprecation warnings.
-RUN git clone -b devel https://github.com/splintered-reality/py_trees.git \
- && git clone -b devel https://github.com/splintered-reality/py_trees_js.git \
- && git clone -b devel https://github.com/sea-bass/py_trees_ros.git \
- && git clone -b devel https://github.com/splintered-reality/py_trees_ros_interfaces.git \
- && git clone -b devel https://github.com/sea-bass/py_trees_ros_viewer.git
-
-# Install Groot for visualizing behavior trees from BehaviorTree.CPP.
-# TODO: For now, using a personal fork of Groot for autoconnect and port specification.
-RUN git clone -b scastro/monitor_port_connect_args https://github.com/sea-bass/Groot.git groot
+COPY dependencies.repos ./
+RUN vcs import < dependencies.repos
 
 # Build the base Colcon workspace, handing any extra missed dependencies.
 WORKDIR /turtlebot3_ws
 RUN source /opt/ros/humble/setup.bash \
+ && apt-get update -y \
  && rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y \
  && colcon build --symlink-install
 

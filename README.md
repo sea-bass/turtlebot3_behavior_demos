@@ -11,7 +11,7 @@ By Sebastian Castro, 2021-2022
 
 ---
 
-## Setup
+## Docker Setup (Recommended)
 First, install Docker using [the official install guide](https://docs.docker.com/engine/install/ubuntu/).
 
 To run Docker containers with graphics and GPU support, you will also need the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker).
@@ -21,8 +21,6 @@ To use GUI based tools (e.g., RViz, Gazebo) inside Docker, there is additional s
 ```
 xhost + local:docker
 ```
-
-Technically, you should be able to bypass Docker, directly clone this package to a Catkin workspace, and build it provided you have the necessary dependencies. As long as you can run the examples in the [TurtleBot3 manual](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview), you should be in good shape.
 
 First, clone this repository and go into the top-level folder:
 
@@ -35,6 +33,38 @@ Build the base and overlay Docker images. This will take a while and requires ap
 
 ```
 make build
+```
+
+## Local Setup
+
+Technically, you should be able to bypass Docker, directly clone this package to a Colcon workspace, and build it provided you have the necessary dependencies. As long as you can run the examples in the [TurtleBot3 manual](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview), you should be in good shape.
+
+First, make a Colcon workspace and clone this repo there:
+
+```
+mkdir -p turtlebot3_ws/src
+cd turtlebot3_ws/src
+git clone https://github.com/sea-bass/turtlebot3_behavior_demos.git
+```
+
+Clone the external dependencies:
+
+```
+sudo apt-get install python3-vcstool
+vcs import < turtlebot3_behavior_demos/dependencies.repos
+```
+
+Set up any additional dependencies using rosdep:
+
+```
+sudo apt update && rosdep install -r --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
+```
+
+Then, build the workspace.
+
+```
+cd turtlebot3_ws
+colcon build
 ```
 
 ---
