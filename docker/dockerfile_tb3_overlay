@@ -9,7 +9,7 @@ COPY ./tb3_worlds/ /overlay_ws/src/tb3_worlds/
 RUN source /opt/ros/humble/setup.bash \
  && source /turtlebot3_ws/install/setup.bash \
  && cd /overlay_ws \
- && colcon build
+ && colcon build --symlink-install
 
 # Set up the work directory and entrypoint
 WORKDIR /overlay_ws
