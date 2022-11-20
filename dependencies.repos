@@ -1,0 +1,49 @@
+repositories:
+
+  # TurtleBot3 Repos
+  # TODO: Switch back to apt installs once this PR is in the binary release:
+  # https://github.com/ROBOTIS-GIT/turtlebot3/pull/916
+  turtlebot3:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/turtlebot3.git
+    version: humble-devel
+  turtlebot3_msgs:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
+    version: humble-devel
+  turtlebot3_simulations:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+    version: humble-devel
+
+  # py_trees and related packages.
+  # NOTE: For now, using a personal fork of py_trees_ros and py_trees_ros_viewer
+  # for some slight interface changes, bug fixes, and removing deprecation warnings.
+  py_trees:
+    type: git
+    url: https://github.com/splintered-reality/py_trees.git
+    version: devel
+  py_trees_js:
+    type: git
+    url: https://github.com/splintered-reality/py_trees_js.git
+    version: devel
+  py_trees_ros:
+    type: git
+    url: https://github.com/sea-bass/py_trees_ros.git
+    version: devel
+  py_trees_ros_interfaces:
+    type: git
+    url: https://github.com/splintered-reality/py_trees_ros_interfaces.git
+    version: devel
+  py_trees_ros_viewer:
+    type: git
+    url: https://github.com/sea-bass/py_trees_ros_viewer.git
+    version: devel
+
+  # Groot for visualizing behavior trees from BehaviorTree.CPP.
+  # TODO: For now, using a personal fork of Groot for autoconnect and port specification.
+  # Pull request is https://github.com/BehaviorTree/Groot/pull/170
+  groot:
+    type: git
+    url: https://github.com/sea-bass/Groot.git
+    version: scastro/monitor_port_connect_args
