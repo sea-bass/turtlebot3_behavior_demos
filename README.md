@@ -3,7 +3,7 @@ In this repository, we demonstrate autonomous behavior with a simulated [ROBOTIS
 
 The autonomy in these examples are designed using **behavior trees**. For more information, refer to [this blog post](https://roboticseabass.com/2021/05/08/introduction-to-behavior-trees/) or the [Behavior Trees in Robotics and AI textbook](https://arxiv.org/abs/1709.00084).
 
-This also serves as an example for Docker + Make workflows in ROS based projects. For more information, refer to [this blog post](https://roboticseabass.com/2021/04/21/docker-and-ros/).
+This also serves as an example for Docker workflows in ROS based projects. For more information, refer to [this blog post](https://roboticseabass.com/2021/04/21/docker-and-ros/).
 
 If you want to use ROS1, check out the old version of this example from the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
 
@@ -12,7 +12,7 @@ By Sebastian Castro, 2021-2022
 ---
 
 ## Docker Setup (Recommended)
-First, install Docker using [the official install guide](https://docs.docker.com/engine/install/ubuntu/).
+First, install Docker and Docker Compose using [the official install guide](https://docs.docker.com/engine/install/ubuntu/).
 
 To run Docker containers with graphics and GPU support, you will also need the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker).
 
@@ -29,10 +29,10 @@ git clone https://github.com/sea-bass/turtlebot3_behavior_demos.git
 cd turtlebot3_behavior_demos
 ```
 
-Build the base and overlay Docker images. This will take a while and requires approximately 5 GB of disk space.
+Build the Docker images. This will take a while and requires approximately 5 GB of disk space.
 
 ```
-make build
+docker compose build
 ```
 
 ## Local Setup
@@ -70,24 +70,24 @@ colcon build
 ---
 
 ## Basic Usage
-We use `make` to automate building, as shown above, but also for various useful entry points into the Docker container once it has been built. **All `make` commands below should be run from your host machine, and not from inside the container**.
+We use [Docker Compose](https://docs.docker.com/compose/) to automate building, as shown above, but also for various useful entry points into the Docker container once it has been built. **All `docker compose` commands below should be run from your host machine, and not from inside the container**.
 
-To enter a Terminal in the overlay container:
-
-```
-make term
-```
-
-If you have an NVIDIA GPU and want to give your container access to the devices, add the following argument (this is true for all targets):
+To enter a Terminal in the overlay container, first start a container:
 
 ```
-make term USE_GPU=true
+docker compose up overlay
+```
+
+Then, in a separate Terminal, you can access the running container:
+
+```
+docker exec -it turtlebot3_behavior_demos-overlay-1 bash
 ```
 
 You can verify that display in Docker works by starting a basic Gazebo simulation included in the standard TurtleBot3 packages:
 
 ```
-make sim
+docker compose up sim
 ```
 
 ---
@@ -98,7 +98,7 @@ In this example, the robot navigates around known locations with the goal of fin
 To start the demo world, run the following command:
 
 ```
-make demo-world
+docker compose up demo-world
 ```
 
 ### Behavior Trees in Python
@@ -106,13 +106,13 @@ make demo-world
 To start the Python based demo, which uses [`py_trees`](https://py-trees.readthedocs.io/en/devel/):
 
 ```
-make demo-behavior-py
+docker compose up demo-behavior-py
 ```
 
 You can also include arguments: 
 
 ```
-make demo-behavior-py TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true USE_GPU=true
+TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true docker compose up demo-behavior-py
 ```
 
 Note that the behavior tree viewer ([`py_trees_ros_viewer`](https://github.com/splintered-reality/py_trees_ros_viewer)) should automatically discover the ROS node containing the behavior tree and visualize it.
@@ -126,13 +126,13 @@ After starting the commands above (plus doing some waiting and window rearrangin
 To start the C++ demo, which uses [`BehaviorTree.CPP`](https://www.behaviortree.dev/):
 
 ```
-make demo-behavior-cpp
+docker compose up demo-behavior-cpp
 ```
 
 You can also include arguments: 
 
 ```
-make demo-behavior-cpp TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true USE_GPU=true
+TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true docker compose up demo-behavior-cpp
 ```
 
 Note that the behavior tree viewer ([`Groot`](https://github.com/BehaviorTree/Groot)) requires you to click the "Connect" button to display the active tree.

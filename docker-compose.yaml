@@ -59,4 +59,3 @@ services:
   demo-behavior-cpp:
     extends: overlay
     command: ros2 launch tb3_autonomy tb3_demo_behavior_cpp.launch.py tree_type:=${BT_TYPE:?} enable_vision:=${ENABLE_VISION:?} target_color:=${TARGET_COLOR:?}
-  
