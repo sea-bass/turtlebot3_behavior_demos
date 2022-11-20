@@ -148,8 +148,8 @@ BT::PortsList GoToPose::providedPorts() {
 }
 
 void GoToPose::result_callback(const GoalHandleNav::WrappedResult& result) {
-    // If there is a result, we consider navigation completed.
-    // bt_navigator only sends an empty message without status because reasons.
+    // If there is a result, we consider navigation completed and save the
+    // result code to be checked in the `onRunning()` method.
     if (result.result) {
         done_flag_ = true;
         nav_result_ = result.code;

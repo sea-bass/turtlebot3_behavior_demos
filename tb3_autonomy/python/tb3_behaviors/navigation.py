@@ -72,6 +72,8 @@ class GoToPose(py_trees.behaviour.Behaviour):
         future.add_done_callback(self.goal_result_callback)
 
     def goal_result_callback(self, future):
+        # If there is a result, we consider navigation completed and save the
+        # result code to be checked in the `update()` method.
         self.goal_status = future.result().status
 
     def update(self):
