@@ -5,13 +5,15 @@ The autonomy in these examples are designed using **behavior trees**. For more i
 
 This also serves as an example for Docker workflows in ROS based projects. For more information, refer to [this blog post](https://roboticseabass.com/2021/04/21/docker-and-ros/).
 
-If you want to use ROS1, check out the old version of this example from the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
+If you want to use ROS 1, check out the old version of this example from the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
 
 By Sebastian Castro, 2021-2022
 
 ---
 
-## Docker Setup (Recommended)
+## Setup
+
+### Docker Setup (Recommended)
 First, install Docker and Docker Compose using [the official install guide](https://docs.docker.com/engine/install/ubuntu/).
 
 To run Docker containers with graphics and GPU support, you will also need the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker).
@@ -35,9 +37,9 @@ Build the Docker images. This will take a while and requires approximately 5 GB 
 docker compose build
 ```
 
-## Local Setup
+### Local Setup
 
-Technically, you should be able to bypass Docker, directly clone this package to a Colcon workspace, and build it provided you have the necessary dependencies. As long as you can run the examples in the [TurtleBot3 manual](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview), you should be in good shape.
+If you do not want to use Docker, you can directly clone this package to a Colcon workspace and build it provided you have the necessary dependencies. As long as you can run the examples in the [TurtleBot3 manual](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview), you should be in good shape.
 
 First, make a Colcon workspace and clone this repo there:
 
@@ -70,6 +72,7 @@ colcon build
 ---
 
 ## Basic Usage
+
 We use [Docker Compose](https://docs.docker.com/compose/) to automate building, as shown above, but also for various useful entry points into the Docker container once it has been built. **All `docker compose` commands below should be run from your host machine, and not from inside the container**.
 
 To enter a Terminal in the overlay container, first start a container:
@@ -93,6 +96,7 @@ docker compose up sim
 ---
 
 ## Behavior Trees Demo
+
 In this example, the robot navigates around known locations with the goal of finding a block of a specified color (red, green, or blue). Object detection is done using simple thresholding in the [HSV color space](https://en.wikipedia.org/wiki/HSL_and_HSV) with calibrated values.
 
 To start the demo world, run the following command:
@@ -109,7 +113,7 @@ To start the Python based demo, which uses [`py_trees`](https://py-trees.readthe
 docker compose up demo-behavior-py
 ```
 
-You can also include arguments: 
+You can also change the following environment variables to set arguments for the launch files, or by modifying the defaults in the `.env` file:
 
 ```
 TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true docker compose up demo-behavior-py
@@ -129,7 +133,7 @@ To start the C++ demo, which uses [`BehaviorTree.CPP`](https://www.behaviortree.
 docker compose up demo-behavior-cpp
 ```
 
-You can also include arguments: 
+You can also change the following environment variables to set arguments for the launch files, or by modifying the defaults in the `.env` file:
 
 ```
 TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true docker compose up demo-behavior-cpp
