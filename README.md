@@ -139,7 +139,7 @@ You can also change the following environment variables to set arguments for the
 TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true docker compose up demo-behavior-cpp
 ```
 
-Note that the behavior tree viewer ([`Groot`](https://github.com/BehaviorTree/Groot)) requires you to click the "Connect" button to display the active tree.
+This example uses the behavior tree viewer ([`Groot`](https://github.com/BehaviorTree/Groot)).
 Since the TurtleBot3 navigation stack uses its own behavior trees on the default ports (1666 and 1667), we use ports 1668 and 1669 for this demo.
 You can change the ports in the UI to view the navigation behavior trees instead, though.
 

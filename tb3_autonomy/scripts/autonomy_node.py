@@ -68,8 +68,10 @@ class AutonomyBehavior(Node):
     def create_naive_tree(self):
         """ Create behavior tree with explicit nodes for each location. """
         if self.enable_vision:
-            selector = py_trees.composites.Selector(name="navigation")
-            root = py_trees.decorators.OneShot(selector)
+            selector = py_trees.composites.Selector(name="navigation", memory=True)
+            root = py_trees.decorators.OneShot(
+                name="root", child=selector, policy=OneShotPolicy.ON_SUCCESSFUL_COMPLETION
+            )
             tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=False)
             tree.setup(timeout=15.0, node=self)
 
@@ -77,21 +79,25 @@ class AutonomyBehavior(Node):
                 pose = self.locations[loc]
                 selector.add_child(
                     py_trees.decorators.OneShot(
-                        py_trees.composites.Sequence(
+                        name=f"try_{loc}",
+                        child=py_trees.composites.Sequence(
                             name=f"search_{loc}",
                             children=[
                                 GoToPose(f"go_to_{loc}", pose, tree.node),
                                 LookForObject(f"find_{self.target_color}_{loc}",
                                               self.target_color, tree.node)
-                            ]
+                            ],
+                            memory=True,
                         ),
                         policy=OneShotPolicy.ON_COMPLETION
                     )
                 )
             
         else:
-            seq = py_trees.composites.Sequence(name="navigation")
-            root = py_trees.decorators.OneShot(seq)
+            seq = py_trees.composites.Sequence(name="navigation", memory=True)
+            root = py_trees.decorators.OneShot(
+                name="root", child=seq, policy=OneShotPolicy.ON_SUCCESSFUL_COMPLETION
+            )
             tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=False)
             tree.setup(timeout=15.0, node=self)
 
@@ -106,8 +112,10 @@ class AutonomyBehavior(Node):
         bb = py_trees.blackboard.Blackboard()
         bb.set("loc_list", self.loc_list)
 
-        seq = py_trees.composites.Sequence(name="search")
-        root = py_trees.decorators.OneShot(seq)
+        seq = py_trees.composites.Sequence(name="search", memory=True)
+        root = py_trees.decorators.OneShot(
+            name="root", child=seq, policy=OneShotPolicy.ON_SUCCESSFUL_COMPLETION
+        )
         tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=False)
         tree.setup(timeout=15.0, node=self)
 
