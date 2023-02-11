@@ -7,7 +7,7 @@ This also serves as an example for Docker workflows in ROS based projects. For m
 
 If you want to use ROS 1, check out the old version of this example from the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
 
-By Sebastian Castro, 2021-2022
+By Sebastian Castro, 2021-2023
 
 ---
 
