@@ -140,7 +140,8 @@ TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true docker compose up demo-behav
 ```
 
 Note that the behavior tree viewer ([`Groot`](https://github.com/BehaviorTree/Groot)) requires you to click the "Connect" button to display the active tree.
-Since the TurtleBot3 navigation stack uses its own behavior trees on the default ports (1666 and 1667), you should change the UI to use ports 1668 and 1669.
+Since the TurtleBot3 navigation stack uses its own behavior trees on the default ports (1666 and 1667), we use ports 1668 and 1669 for this demo.
+You can change the ports in the UI to view the navigation behavior trees instead, though.
 
 After starting the commands above (plus doing some waiting and window rearranging), you should see the following. The labeled images will appear once the robot reaches a target location.
 
