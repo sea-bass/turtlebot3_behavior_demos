@@ -17,8 +17,6 @@ repositories:
     version: humble-devel
 
   # py_trees and related packages.
-  # NOTE: For now, using a personal fork of py_trees_ros and py_trees_ros_viewer
-  # for some slight interface changes, bug fixes, and removing deprecation warnings.
   py_trees:
     type: git
     url: https://github.com/splintered-reality/py_trees.git
@@ -29,21 +27,21 @@ repositories:
     version: devel
   py_trees_ros:
     type: git
-    url: https://github.com/sea-bass/py_trees_ros.git
+    url: https://github.com/splintered-reality/py_trees_ros.git
     version: devel
   py_trees_ros_interfaces:
     type: git
     url: https://github.com/splintered-reality/py_trees_ros_interfaces.git
     version: devel
+  # NOTE: For now, using a personal fork to remove deprecation warnings:
+  # https://github.com/splintered-reality/py_trees_ros_viewer/pull/34
   py_trees_ros_viewer:
     type: git
     url: https://github.com/sea-bass/py_trees_ros_viewer.git
     version: devel
 
   # Groot for visualizing behavior trees from BehaviorTree.CPP.
-  # TODO: For now, using a personal fork of Groot for autoconnect and port specification.
-  # Pull request is https://github.com/BehaviorTree/Groot/pull/170
   groot:
     type: git
-    url: https://github.com/sea-bass/Groot.git
-    version: scastro/monitor_port_connect_args
+    url: https://github.com/BehaviorTree/Groot.git
+    version: master

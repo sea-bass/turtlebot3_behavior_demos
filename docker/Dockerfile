@@ -24,6 +24,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Use Cyclone DDS as middleware
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
+# Downgrade mesa packages because of Ubuntu bug
+# https://bugs.launchpad.net/ubuntu/+source/mesa/+bug/2004649
+RUN apt-get update && apt-get install -q -y --allow-downgrades --no-install-recommends \
+    libegl-mesa0=22.0.1-1ubuntu2 \
+    libgbm1=22.0.1-1ubuntu2 \
+    libgbm-dev=22.0.1-1ubuntu2 \
+    libgl1-mesa-dri=22.0.1-1ubuntu2 \
+    libglapi-mesa=22.0.1-1ubuntu2 \
+    libglx-mesa0=22.0.1-1ubuntu2
+
 # Create Colcon workspace with external dependencies
 RUN mkdir -p /turtlebot3_ws/src
 WORKDIR /turtlebot3_ws/src
