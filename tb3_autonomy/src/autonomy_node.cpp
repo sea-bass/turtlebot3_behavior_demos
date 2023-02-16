@@ -31,7 +31,7 @@ void registerRosNodeType(BT::BehaviorTreeFactory& factory,
                          const std::string& registration_ID,
                          rclcpp::Node::SharedPtr node_ptr) {
     BT::NodeBuilder builder = [=](const std::string& name,
-                                  const BT::NodeConfiguration& config) {
+                                  const BT::NodeConfig& config) {
         return std::make_unique<NodeBehaviorT>(name, config, node_ptr);
     };
     factory.registerBuilder<NodeBehaviorT>(registration_ID, builder);

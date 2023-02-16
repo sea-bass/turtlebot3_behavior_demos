@@ -10,7 +10,7 @@
 
 // SETLOCATIONS
 // Gets a list of locations from a YAML file and ensures they are not empty
-SetLocations::SetLocations(const std::string& name, const BT::NodeConfiguration& config) :
+SetLocations::SetLocations(const std::string& name, const BT::NodeConfig& config) :
     BT::SyncActionNode(name, config)
 {
     std::cout << "[" << this->name() << "] Initialized" << std::endl;
@@ -41,7 +41,7 @@ BT::PortsList SetLocations::providedPorts()
 // Gets a location name from a queue of locations to visit.
 // If the queue is empty, this behavior fails.
 GetLocationFromQueue::GetLocationFromQueue(const std::string& name,
-                                           const BT::NodeConfiguration& config,
+                                           const BT::NodeConfig& config,
                                            rclcpp::Node::SharedPtr node_ptr) :
     BT::SyncActionNode(name, config), node_ptr_{node_ptr}
 {
@@ -83,7 +83,7 @@ BT::PortsList GetLocationFromQueue::providedPorts()
 // GOTOPOSE
 // Wrapper behavior around the `navigate_to_pose` action client,
 // whose status reflects the status of the ROS action.
-GoToPose::GoToPose(const std::string& name, const BT::NodeConfiguration& config,
+GoToPose::GoToPose(const std::string& name, const BT::NodeConfig& config,
                    rclcpp::Node::SharedPtr node_ptr) :
     BT::StatefulActionNode(name, config), node_ptr_{node_ptr} {}
 
@@ -95,7 +95,7 @@ BT::NodeStatus GoToPose::onStart() {
     }
 
     // Read the YAML file
-    BT::Optional<std::string> loc = getInput<std::string>("loc");
+    BT::Expected<std::string> loc = getInput<std::string>("loc");
     const std::string location_file = 
         node_ptr_->get_parameter("location_file").as_string();
     YAML::Node locations = YAML::LoadFile(location_file);

@@ -27,7 +27,7 @@ class LookForObject : public BT::StatefulActionNode
     image_transport::Subscriber image_sub_;
 
     // Method overrides
-    LookForObject(const std::string& name, const BT::NodeConfiguration& config,
+    LookForObject(const std::string& name, const BT::NodeConfig& config,
                   rclcpp::Node::SharedPtr node_ptr);
     BT::NodeStatus onStart() override;
     BT::NodeStatus onRunning() override;
