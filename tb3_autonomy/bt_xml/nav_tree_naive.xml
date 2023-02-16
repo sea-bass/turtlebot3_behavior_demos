@@ -1,5 +1,5 @@
 <!-- Behavior tree that sequentially navigates locations naively -->
-<root main_tree_to_execute = "MainTree" >
+<root BTCPP_format="4"main_tree_to_execute = "MainTree" >
     <BehaviorTree ID="MainTree">
         <Sequence name="sequence">
             <GoToPose       name="go_to_location1"  loc="location1" />
