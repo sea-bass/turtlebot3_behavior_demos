@@ -5,7 +5,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "image_transport/image_transport.hpp"
 #include "sensor_msgs/msg/image.hpp"
-#include "behaviortree_cpp_v3/behavior_tree.h"
+#include "behaviortree_cpp/behavior_tree.h"
 
 // HSV Thresholding parameters
 // The convention is {H_MIN, H_MAX, S_MIN, S_MAX, V_MIN, V_MAX}
