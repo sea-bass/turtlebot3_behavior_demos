@@ -40,8 +40,13 @@ repositories:
     url: https://github.com/sea-bass/py_trees_ros_viewer.git
     version: devel
 
-  # Groot for visualizing behavior trees from BehaviorTree.CPP.
+  # BehaviorTree.CPP and Groot for visualizing behavior trees from BehaviorTree.CPP.
+  behaviortree_cpp:
+    type: git
+    url: https://github.com/BehaviorTree/BehaviorTree.CPP.git
+    version: master
   groot:
     type: git
     url: https://github.com/BehaviorTree/Groot.git
     version: master
+  

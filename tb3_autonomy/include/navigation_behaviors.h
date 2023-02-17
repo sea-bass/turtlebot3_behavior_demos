@@ -3,13 +3,13 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "nav2_msgs/action/navigate_to_pose.hpp"
-#include "behaviortree_cpp_v3/behavior_tree.h"
+#include "behaviortree_cpp/behavior_tree.h"
 
 // Sets number of locations from list.
 class SetLocations : public BT::SyncActionNode
 {
   public:
-    SetLocations(const std::string& name, const BT::NodeConfiguration& config);
+    SetLocations(const std::string& name, const BT::NodeConfig& config);
     BT::NodeStatus tick() override;
     static BT::PortsList providedPorts();
 };
@@ -22,7 +22,7 @@ class GetLocationFromQueue : public BT::SyncActionNode
     std::deque<std::string> location_queue_;
 
     GetLocationFromQueue(
-        const std::string& name, const BT::NodeConfiguration& config,
+        const std::string& name, const BT::NodeConfig& config,
         rclcpp::Node::SharedPtr node_ptr);
     BT::NodeStatus tick() override;
     static BT::PortsList providedPorts();
@@ -41,7 +41,7 @@ class GoToPose : public BT::StatefulActionNode
     rclcpp_action::Client<NavigateToPose>::SharedPtr client_ptr_;
 
     // Method overrides
-    GoToPose(const std::string& name, const BT::NodeConfiguration& config,
+    GoToPose(const std::string& name, const BT::NodeConfig& config,
              rclcpp::Node::SharedPtr node_ptr);
     BT::NodeStatus onStart() override;
     BT::NodeStatus onRunning() override;

@@ -8,8 +8,8 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "ament_index_cpp/get_package_share_directory.hpp"
-#include "behaviortree_cpp_v3/bt_factory.h"
-#include "behaviortree_cpp_v3/loggers/bt_zmq_publisher.h"
+#include "behaviortree_cpp/bt_factory.h"
+#include "behaviortree_cpp/loggers/bt_zmq_publisher.h"
 #include "yaml-cpp/yaml.h"
 
 #include "navigation_behaviors.h"
@@ -31,7 +31,7 @@ void registerRosNodeType(BT::BehaviorTreeFactory& factory,
                          const std::string& registration_ID,
                          rclcpp::Node::SharedPtr node_ptr) {
     BT::NodeBuilder builder = [=](const std::string& name,
-                                  const BT::NodeConfiguration& config) {
+                                  const BT::NodeConfig& config) {
         return std::make_unique<NodeBehaviorT>(name, config, node_ptr);
     };
     factory.registerBuilder<NodeBehaviorT>(registration_ID, builder);
@@ -111,7 +111,7 @@ class AutonomyNode : public rclcpp::Node {
 
         void update_behavior_tree() {
             // Tick the behavior tree.
-            BT::NodeStatus tree_status = tree_.tickRoot();
+            BT::NodeStatus tree_status = tree_.tickOnce();
             if (tree_status == BT::NodeStatus::RUNNING) {
                 return;
             }

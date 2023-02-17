@@ -14,7 +14,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(nav2_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(behaviortree_cpp_v3 REQUIRED)
+find_package(behaviortree_cpp REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(image_transport REQUIRED)
@@ -50,7 +50,7 @@ set(AUTONOMY_SOURCES
 set(TARGET_DEPENDS
     ament_index_cpp rclcpp rclcpp_action
     nav2_msgs sensor_msgs cv_bridge image_transport
-    behaviortree_cpp_v3 tf2 tf2_ros tf2_geometry_msgs yaml-cpp
+    behaviortree_cpp tf2 tf2_ros tf2_geometry_msgs yaml-cpp
 )
 include_directories(include)
 add_executable(autonomy_node_cpp src/autonomy_node.cpp ${AUTONOMY_SOURCES})

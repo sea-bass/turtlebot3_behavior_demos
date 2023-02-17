@@ -1,5 +1,5 @@
 <!-- Behavior tree that sequentially navigates locations using a queue of locations. -->
-<root main_tree_to_execute = "MainTree" >
+<root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
     <Sequence name="main_loop">
         <SetLocations                   name="set_locations" num_locs="{num_locs}"/>
