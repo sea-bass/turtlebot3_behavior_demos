@@ -4,6 +4,28 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "nav2_msgs/action/navigate_to_pose.hpp"
 #include "behaviortree_cpp/behavior_tree.h"
+#include "yaml-cpp/yaml.h"
+
+struct Pose{
+  double x;
+  double y;
+  double theta;
+};
+
+namespace YAML {
+    template<>
+    struct convert<Pose> {
+        static bool decode(const Node& node, Pose& pose) {
+            if (!node.IsSequence() || node.size() != 3) {
+                return false;
+            }
+            pose.x = node[0].as<double>();
+            pose.y = node[1].as<double>();
+            pose.theta = node[2].as<double>();
+            return true;
+        }
+    };
+}
 
 // Sets number of locations from list.
 class SetLocations : public BT::SyncActionNode
@@ -18,14 +40,14 @@ class SetLocations : public BT::SyncActionNode
 class GetLocationFromQueue : public BT::SyncActionNode
 {
   public:
-    rclcpp::Node::SharedPtr node_ptr_;
-    std::deque<std::string> location_queue_;
-
-    GetLocationFromQueue(
-        const std::string& name, const BT::NodeConfig& config,
-        rclcpp::Node::SharedPtr node_ptr);
+    GetLocationFromQueue(const std::string& name, const BT::NodeConfig& config);
     BT::NodeStatus tick() override;
     static BT::PortsList providedPorts();
+  
+    rclcpp::Node::SharedPtr node_ptr_;
+  private:
+    bool initialized_{};
+    std::deque<std::string> location_queue_;
 };
 
 // Go to a target location (wraps around `navigate_to_pose` action).

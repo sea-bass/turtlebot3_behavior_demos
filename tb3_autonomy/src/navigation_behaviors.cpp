@@ -5,8 +5,6 @@
 #include <random>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
-#include "yaml-cpp/yaml.h"
-
 
 // SETLOCATIONS
 // Gets a list of locations from a YAML file and ensures they are not empty
@@ -18,22 +16,44 @@ SetLocations::SetLocations(const std::string& name, const BT::NodeConfig& config
 
 BT::NodeStatus SetLocations::tick()
 {
-    std::string yaml_file = "/overlay_ws/src/tb3_worlds/maps/sim_house_locations.yaml";
-    // ros::param::get("location_file", yaml_file);
-    YAML::Node locations = YAML::LoadFile(yaml_file);
-    int num_locs = locations.size();
-    if (num_locs == 0) {
-        std::cout << "[" << this->name() << "] No locations found." << std::endl;
+    std::string location_file;
+    config().blackboard->get("location_file",location_file);
+
+    try{
+        YAML::Node locations = YAML::LoadFile(location_file);
+        int num_locs = locations.size();
+        if (num_locs == 0) {
+            std::cout << "[" << this->name() << "] No locations found." << std::endl;
+            return BT::NodeStatus::FAILURE;
+        }
+        setOutput("num_locs", num_locs);
+        std::cout << "[" << this->name() << "] Found " << num_locs << " locations." << std::endl;
+
+        std::vector<std::string> location_names{};
+        std::map<std::string, Pose> location_poses{};
+        for(YAML::const_iterator it=locations.begin(); it!=locations.end(); ++it) {
+            auto name = it->first.as<std::string>();
+            location_names.push_back(name);
+            Pose pose = it->second.as<Pose>();
+            location_poses.emplace(name, pose);
+        }
+        setOutput("loc_names", location_names);
+        setOutput("loc_poses", location_poses);
+        
+    } catch(YAML::Exception const& e) {
+        std::cerr << "Couldn't load locations file: " << location_file << ". Error: " << e.what() << std::endl;
         return BT::NodeStatus::FAILURE;
     }
-    setOutput("num_locs", num_locs);
-    std::cout << "[" << this->name() << "] Found " << num_locs << " locations." << std::endl;
+
     return BT::NodeStatus::SUCCESS;
 }
 
 BT::PortsList SetLocations::providedPorts()
 {
-    return { BT::OutputPort<int>("num_locs") };
+    return { BT::OutputPort<int>("num_locs")
+            ,BT::OutputPort<std::vector<std::string> >("loc_names")
+            ,BT::OutputPort<std::map<std::string, Pose>>("loc_poses")
+         };
 }
 
 
@@ -41,27 +61,30 @@ BT::PortsList SetLocations::providedPorts()
 // Gets a location name from a queue of locations to visit.
 // If the queue is empty, this behavior fails.
 GetLocationFromQueue::GetLocationFromQueue(const std::string& name,
-                                           const BT::NodeConfig& config,
-                                           rclcpp::Node::SharedPtr node_ptr) :
-    BT::SyncActionNode(name, config), node_ptr_{node_ptr}
+                                           const BT::NodeConfig& config) :
+    BT::SyncActionNode(name, config)
 {
     std::cout << "[" << this->name() << "] Initialized" << std::endl;
-    
-    // Get the locations from the file specified in the ROS parameter, put them
-    // into the location queue, and shuffle it.
-    const std::string location_file = 
-        node_ptr_->get_parameter("location_file").as_string();
-    YAML::Node locations = YAML::LoadFile(location_file);
-    for(YAML::const_iterator it=locations.begin(); it!=locations.end(); ++it) {
-        location_queue_.push_front(it->first.as<std::string>());
-    }
-    std::random_device rd;
-    std::mt19937 rng(rd());
-    std::shuffle(location_queue_.begin(), location_queue_.end(), rng);
 }
 
 BT::NodeStatus GetLocationFromQueue::tick()
-{
+{   
+    if (!initialized_){
+        // Get the locations from the file specified in the ROS parameter, put them
+        // into the location queue, and shuffle it.
+        auto locations = getInput<std::vector<std::string>>("loc_names");
+        if (!locations.has_value()){
+            std::cerr << "Couldn't get loc_names!" << std::endl;
+            return BT::NodeStatus::FAILURE;
+        }
+        for (auto& loc: locations.value()){
+            location_queue_.push_front(loc);
+        }
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        std::shuffle(location_queue_.begin(), location_queue_.end(), rng);
+        initialized_ = true;
+    }
     if (location_queue_.empty()) {
         std::cout << "[" << this->name() << "] No more locations!" << std::endl;
         return BT::NodeStatus::FAILURE;
@@ -76,7 +99,8 @@ BT::NodeStatus GetLocationFromQueue::tick()
 
 BT::PortsList GetLocationFromQueue::providedPorts()
 {
-    return { BT::OutputPort<std::string>("target_location") };
+    return { BT::OutputPort<std::string>("target_location")
+            ,BT::InputPort<std::vector<std::string> >("loc_names") };
 }
 
 
@@ -96,11 +120,19 @@ BT::NodeStatus GoToPose::onStart() {
 
     // Read the YAML file
     BT::Expected<std::string> loc = getInput<std::string>("loc");
-    const std::string location_file = 
-        node_ptr_->get_parameter("location_file").as_string();
-    YAML::Node locations = YAML::LoadFile(location_file);
-    std::vector<float> pose = locations[loc.value()].as<std::vector<float>>();
 
+    auto location_poses = getInput<std::map<std::string,Pose>>("loc_poses");
+    if (!location_poses.has_value()){
+        std::cerr << "Couldn't get loc_poses!" << std::endl;
+        return BT::NodeStatus::FAILURE;
+    }
+    auto target_loc = getInput<std::string>("loc");
+    if (!target_loc.has_value()){
+        std::cerr << "Couldn't get target loc!" << std::endl;
+        return BT::NodeStatus::FAILURE;
+    }
+    auto target_pose = location_poses.value().at(target_loc.value());
+    
     // Set up the action client
     using namespace std::placeholders;
     auto send_goal_options = 
@@ -113,10 +145,10 @@ BT::NodeStatus GoToPose::onStart() {
     // Package up the node
     auto goal_msg = NavigateToPose::Goal();
     goal_msg.pose.header.frame_id = "map";
-    goal_msg.pose.pose.position.x = pose[0];
-    goal_msg.pose.pose.position.y = pose[1];
+    goal_msg.pose.pose.position.x = target_pose.x;
+    goal_msg.pose.pose.position.y = target_pose.y;
     tf2::Quaternion q;
-    q.setRPY(0, 0, pose[2]);
+    q.setRPY(0, 0, target_pose.theta);
     q.normalize();
     goal_msg.pose.pose.orientation = tf2::toMsg(q);
 
@@ -144,7 +176,8 @@ BT::NodeStatus GoToPose::onRunning() {
 }
 
 BT::PortsList GoToPose::providedPorts() {
-    return { BT::InputPort<std::string>("loc") };
+    return { BT::InputPort<std::string>("loc")
+            ,BT::InputPort<std::map<std::string, Pose> >("loc_poses") };
 }
 
 void GoToPose::result_callback(const GoalHandleNav::WrappedResult& result) {

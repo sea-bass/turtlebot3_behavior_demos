@@ -2,11 +2,11 @@
 <root BTCPP_format="4">
     <BehaviorTree ID="MainTree">
     <Sequence name="main_loop">
-        <SetLocations                   name="set_locations" num_locs="{num_locs}"/>
+        <SetLocations                   name="set_locations" num_locs="{num_locs}" loc_names="{loc_names}" loc_poses="{loc_poses}"/>
         <KeepRunningUntilFailure>
             <Sequence                   name="search_location">
-                <GetLocationFromQueue   name="get_loc"      target_location="{target_location}"/>   
-                <GoToPose               name="go_to_loc"    loc="{target_location}"/>
+                <GetLocationFromQueue   name="get_loc"      loc_names="{loc_names}" target_location="{target_location}"/>   
+                <GoToPose               name="go_to_loc"    loc_poses="{loc_poses}" loc="{target_location}"/>
             </Sequence>   
         </KeepRunningUntilFailure>
     </Sequence>
