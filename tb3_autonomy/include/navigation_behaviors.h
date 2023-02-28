@@ -6,12 +6,14 @@
 #include "behaviortree_cpp/behavior_tree.h"
 #include "yaml-cpp/yaml.h"
 
+// Struct to keep location pose data
 struct Pose{
   double x;
   double y;
   double theta;
 };
 
+// YAML parsing template specialization for the Pose type, which is used to parse locations directly
 namespace YAML {
     template<>
     struct convert<Pose> {
@@ -44,9 +46,7 @@ class GetLocationFromQueue : public BT::SyncActionNode
     BT::NodeStatus tick() override;
     static BT::PortsList providedPorts();
   
-    rclcpp::Node::SharedPtr node_ptr_;
   private:
-    bool initialized_{};
     std::deque<std::string> location_queue_;
 };
 

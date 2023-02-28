@@ -86,9 +86,9 @@ class AutonomyNode : public rclcpp::Node {
             registerRosNodeType<LookForObject>(
                 factory, "LookForObject", shared_from_this());
             
-            std::string tree_file = (enable_vision_ ? "tree_" : "nav_tree_") + tree_type_ + ".xml";
+            const std::string tree_file = (enable_vision_ ? std::string{} : "nav_") + "tree_" + tree_type_ + ".xml";
             auto blackboard = BT::Blackboard::create();
-            blackboard->set<std::string>("location_file",location_file_);
+            blackboard->set<std::string>("location_file", location_file_);
             tree_ = factory.createTreeFromFile(bt_xml_dir + "/" + tree_file, blackboard);
             
             // Set up logging to monitor the tree in Groot.
