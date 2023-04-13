@@ -25,19 +25,6 @@ const std::string default_location_file =
     tb3_worlds_share_dir + "/maps/sim_house_locations.yaml";
 
 
-// Helper to register behaviors that accept a pointer to a ROS node.
-template <class NodeBehaviorT> 
-void registerRosNodeType(BT::BehaviorTreeFactory& factory,
-                         const std::string& registration_ID,
-                         rclcpp::Node::SharedPtr node_ptr) {
-    BT::NodeBuilder builder = [=](const std::string& name,
-                                  const BT::NodeConfig& config) {
-        return std::make_unique<NodeBehaviorT>(name, config, node_ptr);
-    };
-    factory.registerBuilder<NodeBehaviorT>(registration_ID, builder);
-}
-
-
 class AutonomyNode : public rclcpp::Node {
     public:
         AutonomyNode() : Node("autonomy_node") {
@@ -81,10 +68,8 @@ class AutonomyNode : public rclcpp::Node {
             BT::BehaviorTreeFactory factory;
             factory.registerNodeType<SetLocations>("SetLocations");
             factory.registerNodeType<GetLocationFromQueue>("GetLocationFromQueue");
-            registerRosNodeType<GoToPose>(
-                factory, "GoToPose", shared_from_this());
-            registerRosNodeType<LookForObject>(
-                factory, "LookForObject", shared_from_this());
+            factory.registerNodeType<GoToPose>("GoToPose", shared_from_this());
+            factory.registerNodeType<LookForObject>("LookForObject", shared_from_this());
             
             const std::string tree_file = (enable_vision_ ? std::string{} : "nav_") + "tree_" + tree_type_ + ".xml";
             auto blackboard = BT::Blackboard::create();

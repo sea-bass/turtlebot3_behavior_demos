@@ -44,8 +44,7 @@ RUN vcs import < dependencies.repos
 WORKDIR /turtlebot3_ws
 RUN source /opt/ros/humble/setup.bash \
  && apt-get update -y \
- && rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
-RUN source /opt/ros/humble/setup.bash \
+ && rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y \
  && colcon build --symlink-install
 
 # Remove display warnings
@@ -69,6 +68,7 @@ WORKDIR /overlay_ws
 COPY ./tb3_autonomy/ ./src/tb3_autonomy/
 COPY ./tb3_worlds/ ./src/tb3_worlds/
 RUN source /turtlebot3_ws/install/setup.bash \
+ && rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y \
  && colcon build --symlink-install
 
 # Set up the entrypoint
