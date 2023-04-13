@@ -19,7 +19,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  ros-humble-gazebo-ros \
  ros-humble-navigation2 \
  ros-humble-nav2-bringup \
- ros-humble-rmw-cyclonedds-cpp
+ ros-humble-rmw-cyclonedds-cpp \
+ ros-humble-turtlebot3 \
+ ros-humble-turtlebot3-gazebo
 
 # Use Cyclone DDS as middleware
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
@@ -44,8 +46,7 @@ RUN vcs import < dependencies.repos
 WORKDIR /turtlebot3_ws
 RUN source /opt/ros/humble/setup.bash \
  && apt-get update -y \
- && rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
-RUN source /opt/ros/humble/setup.bash \
+ && rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y \
  && colcon build --symlink-install
 
 # Remove display warnings

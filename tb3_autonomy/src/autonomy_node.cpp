@@ -68,8 +68,8 @@ class AutonomyNode : public rclcpp::Node {
             BT::BehaviorTreeFactory factory;
             factory.registerNodeType<SetLocations>("SetLocations");
             factory.registerNodeType<GetLocationFromQueue>("GetLocationFromQueue");
-            factory.registerNodeType<GoToPose>(factory, "GoToPose", shared_from_this());
-            factory.registerNodeType<LookForObject>(factory, "LookForObject", shared_from_this());
+            factory.registerNodeType<GoToPose>("GoToPose", shared_from_this());
+            factory.registerNodeType<LookForObject>("LookForObject", shared_from_this());
             
             const std::string tree_file = (enable_vision_ ? std::string{} : "nav_") + "tree_" + tree_type_ + ".xml";
             auto blackboard = BT::Blackboard::create();
