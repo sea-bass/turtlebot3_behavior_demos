@@ -13,6 +13,7 @@
   <depend>gazebo_msgs</depend>
   <depend>gazebo_ros</depend>
   <depend>geometry_msgs</depend>
+  <depend>turtlebot3</depend>
   <depend>turtlebot3_gazebo</depend>
 
   <export>
