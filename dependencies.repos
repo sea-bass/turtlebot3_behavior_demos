@@ -1,5 +1,21 @@
 repositories:
 
+  # TurtleBot3 Repos
+  # TODO: Switch back to apt installs once this PR is in the binary release:
+  # https://github.com/ROBOTIS-GIT/turtlebot3/pull/916
+  turtlebot3:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/turtlebot3.git
+    version: humble-devel
+  turtlebot3_msgs:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
+    version: humble-devel
+  turtlebot3_simulations:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+    version: humble-devel
+
   # py_trees and related packages.
   py_trees:
     type: git

@@ -19,9 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  ros-humble-gazebo-ros \
  ros-humble-navigation2 \
  ros-humble-nav2-bringup \
- ros-humble-rmw-cyclonedds-cpp \
- ros-humble-turtlebot3 \
- ros-humble-turtlebot3-gazebo
+ ros-humble-rmw-cyclonedds-cpp
 
 # Use Cyclone DDS as middleware
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
