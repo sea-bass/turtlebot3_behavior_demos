@@ -11,6 +11,9 @@ def generate_launch_description():
     pkg_tb3_worlds = get_package_share_directory("tb3_worlds")
     default_world_dir = join(pkg_tb3_worlds, "maps", "sim_house_locations.yaml")
 
+    # TODO: Update
+    xml_file="/overlay_ws/src/tb3_autonomy/bt_xml/nav_tree_naive.xml"
+
     return LaunchDescription([
         # Arguments
         DeclareLaunchArgument(
@@ -43,14 +46,17 @@ def generate_launch_description():
             parameters=[{
                 "location_file": LaunchConfiguration("location_file"),
                 "target_color": LaunchConfiguration("target_color"),
-                "tree_type": LaunchConfiguration("tree_type"),
-                "enable_vision": LaunchConfiguration("enable_vision")
+                "tree_type": "naive", #LaunchConfiguration("tree_type"),
+                "enable_vision": "False", #LaunchConfiguration("enable_vision")
             }]
         ),
         # Behavior tree visualization
         ExecuteProcess(
-            cmd=["ros2", "run", "groot", "Groot", "--mode", "monitor",
-                 "--publisher_port", "1668", "--server_port", "1669",
-                 "--autoconnect"]
+            cwd="/opt/groot",
+            cmd=[
+                "./Groot2.AppImage",
+                "--nosplash", "true",
+                "--file", xml_file
+            ]
         ),
     ])

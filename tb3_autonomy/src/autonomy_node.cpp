@@ -9,7 +9,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "ament_index_cpp/get_package_share_directory.hpp"
 #include "behaviortree_cpp/bt_factory.h"
-#include "behaviortree_cpp/loggers/bt_zmq_publisher.h"
+#include "behaviortree_cpp/xml_parsing.h"
+#include "behaviortree_cpp/loggers/groot2_publisher.h"
 #include "yaml-cpp/yaml.h"
 
 #include "navigation_behaviors.h"
@@ -76,10 +77,11 @@ class AutonomyNode : public rclcpp::Node {
             blackboard->set<std::string>("location_file", location_file_);
             tree_ = factory.createTreeFromFile(bt_xml_dir + "/" + tree_file, blackboard);
             
-            // Set up logging to monitor the tree in Groot.
+            // Set up tree nodespublisher model XML and logging to monitor the tree in Groot2.
             // Default ports (1666/1667) are used by Nav2 BT.
-            publisher_zmq_ptr_ = std::make_unique<BT::PublisherZMQ>(
-                tree_, 25, 1668, 1669);
+            // TODO: Write tree nodes model XML automatically
+            std::string xml_models = BT::writeTreeNodesModelXML(factory);
+            publisher_ptr_ = std::make_unique<BT::Groot2Publisher>(tree_, 1668);
         }
 
         void update_behavior_tree() {
@@ -105,7 +107,7 @@ class AutonomyNode : public rclcpp::Node {
         std::string target_color_;
         rclcpp::TimerBase::SharedPtr timer_;
         BT::Tree tree_;
-        std::unique_ptr<BT::PublisherZMQ> publisher_zmq_ptr_;
+        std::unique_ptr<BT::Groot2Publisher> publisher_ptr_;
 };
 
 
