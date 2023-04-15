@@ -10,7 +10,7 @@
         </Sequence>
     </BehaviorTree>
 
-    <!-- Description of Node Models (used by Groot) -->
+    <!-- Description of Node Models (used by Groot2) -->
     <TreeNodesModel>
         <Action ID="SetLocations">
             <output_port name="num_locs"/>

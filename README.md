@@ -139,10 +139,12 @@ You can also change the following environment variables to set arguments for the
 TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true docker compose up demo-behavior-cpp
 ```
 
-This example uses the behavior tree viewer ([`Groot`](https://github.com/BehaviorTree/Groot)).
-Since the TurtleBot3 navigation stack uses its own behavior trees on the default ports (1666 and 1667), we use ports 1668 and 1669 for this demo.
-You can change the ports in the UI to view the navigation behavior trees instead, though.
+This example uses the behavior tree viewer ([`Groot2`](https://github.com/BehaviorTree/Groot2)).
 
 After starting the commands above (plus doing some waiting and window rearranging), you should see the following. The labeled images will appear once the robot reaches a target location.
+
+NOTE: You will need the PRO version of Groot2 to view live behavior tree updates.
+If you are a student or involved in academic work, you can get a free license to try this out.
+Refer to [the Groot2 website](https://www.behaviortree.dev/groot/) for more information.
 
 ![Example demo screenshot](./media/demo_screenshot_cpp.png)

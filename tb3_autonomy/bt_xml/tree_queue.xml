@@ -1,15 +1,34 @@
-<!-- Behavior tree that looks for objects by using a queue of locations. -->
 <root BTCPP_format="4">
+    <!-- Behavior tree that looks for objects by using a queue of locations. -->
     <BehaviorTree ID="MainTree">
-    <Sequence name="main_loop">
-        <SetLocations                   name="set_locations" num_locs="{num_locs}" loc_names="{loc_names}" loc_poses="{loc_poses}"/>
-        <RetryUntilSuccessful           num_attempts="{num_locs}">
-            <Sequence                   name="search_location">
-                <GetLocationFromQueue   name="get_loc"      loc_names="{loc_names}" target_location="{target_location}"/>   
-                <GoToPose               name="go_to_loc"    loc_poses="{loc_poses}" loc="{target_location}"/>
-                <LookForObject          name="look_for_obj" />
-            </Sequence>   
-        </RetryUntilSuccessful>
-    </Sequence>
+        <Sequence name="main_loop">
+            <SetLocations                   name="set_locations" num_locs="{num_locs}" loc_names="{loc_names}" loc_poses="{loc_poses}"/>
+            <RetryUntilSuccessful           num_attempts="{num_locs}">
+                <Sequence                   name="search_location">
+                    <GetLocationFromQueue   name="get_loc"      loc_names="{loc_names}" target_location="{target_location}"/>   
+                    <GoToPose               name="go_to_loc"    loc_poses="{loc_poses}" loc="{target_location}"/>
+                    <LookForObject          name="look_for_obj" />
+                </Sequence>   
+            </RetryUntilSuccessful>
+        </Sequence>
     </BehaviorTree>
+
+    <!-- Description of Node Models (used by Groot2) -->
+    <TreeNodesModel>
+        <Action ID="SetLocations">
+            <output_port name="num_locs"/>
+            <output_port name="loc_names"/>
+            <output_port name="loc_poses"/>
+        </Action>
+        <Action ID="GetLocationFromQueue">
+            <!-- NOTE: `inout_port` is not a typo of `input_port`, it is a bidirectional port. -->
+            <inout_port name="loc_names"/>
+            <output_port name="target_location"/>
+        </Action>
+        <Action ID="GoToPose">
+            <input_port name="loc"/>
+            <input_port name="loc_poses"/>
+        </Action>
+        <Action ID="LookForObject"/>
+    </TreeNodesModel>
 </root>

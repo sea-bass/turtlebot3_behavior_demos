@@ -18,8 +18,8 @@
 
 using namespace std::chrono_literals;
 
-const std::string bt_xml_dir = 
-    ament_index_cpp::get_package_share_directory("tb3_autonomy") + "/bt_xml";
+const std::string default_bt_xml_file = 
+    ament_index_cpp::get_package_share_directory("tb3_autonomy") + "/bt_xml/tree_naive.xml";
 const std::string tb3_worlds_share_dir = 
     ament_index_cpp::get_package_share_directory("tb3_worlds");
 const std::string default_location_file =
@@ -38,14 +38,12 @@ class AutonomyNode : public rclcpp::Node {
                 "Using location file %s", location_file_.c_str());
 
             // Declare and get the other node parameters.
-            this->declare_parameter<std::string>("tree_type", "naive");
-            tree_type_ = this->get_parameter("tree_type").as_string();
-            this->declare_parameter<bool>("enable_vision", true);
-            enable_vision_ = this->get_parameter("enable_vision").as_bool();
-            this->declare_parameter<std::string>("target_color", "blue");
+            this->declare_parameter<std::string>("tree_xml_file", default_bt_xml_file);
+            tree_xml_file_ = this->get_parameter("tree_xml_file").as_string();
+            this->declare_parameter<std::string>("target_color", "");
             target_color_ = this->get_parameter("target_color").as_string();
-            if (enable_vision_) {
-                RCLCPP_INFO(this->get_logger(), "Searching for target color %s",
+            if (target_color_ != "") {
+                RCLCPP_INFO(this->get_logger(), "Searching for target color %s...",
                     target_color_.c_str());
             }
         }
@@ -72,15 +70,13 @@ class AutonomyNode : public rclcpp::Node {
             factory.registerNodeType<GoToPose>("GoToPose", shared_from_this());
             factory.registerNodeType<LookForObject>("LookForObject", shared_from_this());
             
-            const std::string tree_file = (enable_vision_ ? std::string{} : "nav_") + "tree_" + tree_type_ + ".xml";
             auto blackboard = BT::Blackboard::create();
             blackboard->set<std::string>("location_file", location_file_);
-            tree_ = factory.createTreeFromFile(bt_xml_dir + "/" + tree_file, blackboard);
+            tree_ = factory.createTreeFromFile(tree_xml_file_, blackboard);
             
-            // Set up tree nodespublisher model XML and logging to monitor the tree in Groot2.
-            // Default ports (1666/1667) are used by Nav2 BT.
-            // TODO: Write tree nodes model XML automatically
-            std::string xml_models = BT::writeTreeNodesModelXML(factory);
+            // Set up tree logging to monitor the tree in Groot2.
+            // Default ports (1666/1667) are used by the Nav2 behavior tree, so we use another port.
+            // NOTE: You must have the PRO version of Groot2 to view live tree updates.
             publisher_ptr_ = std::make_unique<BT::Groot2Publisher>(tree_, 1668);
         }
 
@@ -100,11 +96,12 @@ class AutonomyNode : public rclcpp::Node {
             }
         }
 
-        // Member variables.
-        std::string tree_type_;
+        // Configuration parameters.
+        std::string tree_xml_file_;
         std::string location_file_;
-        bool enable_vision_;
         std::string target_color_;
+
+        // ROS and BehaviorTree.CPP variables.
         rclcpp::TimerBase::SharedPtr timer_;
         BT::Tree tree_;
         std::unique_ptr<BT::Groot2Publisher> publisher_ptr_;

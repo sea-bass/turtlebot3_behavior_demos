@@ -32,7 +32,7 @@ def generate_launch_description():
             default_value=TextSubstitution(text="True"),
             description="Enable vision behaviors. If false, do navigation only."
         ),
-        # Start autonomy stack
+        # Main autonomy node
         Node(
             package="tb3_autonomy",
             executable="autonomy_node.py",
