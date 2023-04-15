@@ -16,13 +16,8 @@ By Sebastian Castro, 2021-2023
 ### Docker Setup (Recommended)
 First, install Docker and Docker Compose using [the official install guide](https://docs.docker.com/engine/install/ubuntu/).
 
-To run Docker containers with graphics and GPU support, you will also need the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker).
+To run Docker containers with NVIDIA GPU support, you can optionally install the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker).
 
-To use GUI based tools (e.g., RViz, Gazebo) inside Docker, there is additional setup required. The simplest way is to run the command below each time you log into your machine, but there is a more detailed walkthrough of options in the [ROS Wiki](http://wiki.ros.org/docker/Tutorials/GUI).
-
-```
-xhost + local:docker
-```
 
 First, clone this repository and go into the top-level folder:
 
@@ -68,6 +63,9 @@ Then, build the workspace.
 cd turtlebot3_ws
 colcon build
 ```
+
+If you want to use BehaviorTree.CPP and Groot2 for visualization, [download Groot2 from the website](https://www.behaviortree.dev/groot/).
+To be consistent with the repository, download the AppImage and save it to your `$HOME` folder.
 
 ---
 

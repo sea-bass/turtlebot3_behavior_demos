@@ -9,7 +9,7 @@ from os.path import join
 
 # Change this to your Groot2 executable path.
 # This currently defaults to a Groot2 AppImage file in your home directory.
-groot2_executable=join(environ("HOME", "/"), "Groot2.AppImage")
+groot2_executable=join(environ.get("HOME", "/"), "Groot2.AppImage")
 
 
 def get_autonomy_and_visualization_nodes(context, *args, **kwargs):

@@ -48,7 +48,7 @@ RUN source /opt/ros/humble/setup.bash \
  && colcon build --symlink-install
 
 # Download Groot2 AppImage and place it in the home folder.
-WORKDIR $HOME
+WORKDIR /root/
 RUN curl -o Groot2.AppImage https://s3.us-west-1.amazonaws.com/download.behaviortree.dev/groot2_linux_installer/Groot2-x86_64.AppImage \
  && chmod a+x Groot2.AppImage
 
