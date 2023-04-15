@@ -16,13 +16,8 @@ By Sebastian Castro, 2021-2023
 ### Docker Setup (Recommended)
 First, install Docker and Docker Compose using [the official install guide](https://docs.docker.com/engine/install/ubuntu/).
 
-To run Docker containers with graphics and GPU support, you will also need the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker).
+To run Docker containers with NVIDIA GPU support, you can optionally install the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker).
 
-To use GUI based tools (e.g., RViz, Gazebo) inside Docker, there is additional setup required. The simplest way is to run the command below each time you log into your machine, but there is a more detailed walkthrough of options in the [ROS Wiki](http://wiki.ros.org/docker/Tutorials/GUI).
-
-```
-xhost + local:docker
-```
 
 First, clone this repository and go into the top-level folder:
 
@@ -68,6 +63,9 @@ Then, build the workspace.
 cd turtlebot3_ws
 colcon build
 ```
+
+If you want to use BehaviorTree.CPP and Groot2 for visualization, [download Groot2 from the website](https://www.behaviortree.dev/groot/).
+To be consistent with the repository, download the AppImage and save it to your `$HOME` folder.
 
 ---
 
@@ -139,10 +137,12 @@ You can also change the following environment variables to set arguments for the
 TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true docker compose up demo-behavior-cpp
 ```
 
-This example uses the behavior tree viewer ([`Groot`](https://github.com/BehaviorTree/Groot)).
-Since the TurtleBot3 navigation stack uses its own behavior trees on the default ports (1666 and 1667), we use ports 1668 and 1669 for this demo.
-You can change the ports in the UI to view the navigation behavior trees instead, though.
+This example uses the behavior tree viewer ([`Groot2`](https://github.com/BehaviorTree/Groot2)).
 
 After starting the commands above (plus doing some waiting and window rearranging), you should see the following. The labeled images will appear once the robot reaches a target location.
+
+NOTE: You will need the PRO version of Groot2 to view live behavior tree updates.
+If you are a student or involved in academic work, you can get a free license to try this out.
+Refer to [the Groot2 website](https://www.behaviortree.dev/groot/) for more information.
 
 ![Example demo screenshot](./media/demo_screenshot_cpp.png)

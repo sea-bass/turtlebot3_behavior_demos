@@ -16,7 +16,7 @@ repositories:
     url: https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
     version: humble-devel
 
-  # py_trees and related packages.
+  # py_trees and related packages for Python based behavior trees.
   py_trees:
     type: git
     url: https://github.com/splintered-reality/py_trees.git
@@ -40,13 +40,8 @@ repositories:
     url: https://github.com/sea-bass/py_trees_ros_viewer.git
     version: devel
 
-  # BehaviorTree.CPP and Groot for visualizing behavior trees from BehaviorTree.CPP.
+  # BehaviorTree.CPP for C++ based behavior trees.
   behaviortree_cpp:
     type: git
     url: https://github.com/BehaviorTree/BehaviorTree.CPP.git
-    version: 4.0.2
-  groot:
-    type: git
-    url: https://github.com/BehaviorTree/Groot.git
     version: master
-  
