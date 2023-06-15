@@ -6,6 +6,7 @@ For more information, refer to [this blog post](https://roboticseabass.com/2021/
 
 This also serves as an example for Docker workflows in ROS based projects.
 For more information, refer to [this blog post](https://roboticseabass.com/2021/04/21/docker-and-ros/).
+Please note that this blog was written by a less experienced version of me, and current me will strongly recommend that you use [Docker compose](https://docs.docker.com/compose/).
 
 If you want to use ROS 1, check out the old version of this example from the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
 
@@ -74,10 +75,7 @@ cd turtlebot3_ws
 colcon build
 ```
 
-If you want to use BehaviorTree.CPP and Groot2 for visualization, [download Groot2 from the website](https://www.behaviortree.dev/groot/).
-To be consistent with the repository, download the AppImage and save it to your `$HOME` folder.
-
-NOTE: For best results, we recommend that you change your ROS Middleware (RMW) implementation to Cyclone DDS by following [these instructions](https://docs.ros.org/en/foxy/Installation/DDS-Implementations/Working-with-Eclipse-CycloneDDS.html).
+NOTE: For best results, we recommend that you change your ROS Middleware (RMW) implementation to Cyclone DDS by following [these instructions](https://docs.ros.org/en/humble/Installation/DDS-Implementations/Working-with-Eclipse-CycloneDDS.html).
 
 ---
 
@@ -139,6 +137,9 @@ The labeled images will appear once the robot reaches a target location.
 ![Example demo screenshot](./media/demo_screenshot_python.png)
 
 ### Behavior Trees in C++
+
+If you want to use BehaviorTree.CPP and Groot2 for visualization, [download Groot2 from the website](https://www.behaviortree.dev/groot/).
+To be consistent with the repository, download the AppImage and save it to your `$HOME` folder.
 
 To start the C++ demo, which uses [`BehaviorTree.CPP`](https://www.behaviortree.dev/):
 
