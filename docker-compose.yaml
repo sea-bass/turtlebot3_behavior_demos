@@ -18,6 +18,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+      args:
+        ROS_DISTRO: humble
       target: base
     # Interactive shell
     stdin_open: true
