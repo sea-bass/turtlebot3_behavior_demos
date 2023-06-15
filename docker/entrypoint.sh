@@ -1,9 +1,9 @@
 #!/bin/bash
 # Basic entrypoint for ROS / Colcon Docker containers
 
-# Source ROS 2 Humble
-source /opt/ros/humble/setup.bash
-echo "Sourced ROS 2 Humble"
+# Source ROS 2
+source /opt/ros/${ROS_DISTRO}/setup.bash
+echo "Sourced ROS 2 ${ROS_DISTRO}"
 
 # Source the base workspace, if built
 if [ -f /turtlebot3_ws/install/setup.bash ]
