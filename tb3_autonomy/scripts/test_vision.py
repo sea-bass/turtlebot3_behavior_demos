@@ -22,12 +22,14 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 
+
 class ColorThresholdTester(Node):
     def __init__(self, args):
         # Define ROS subscriber
         super().__init__("test_vision")
         self.sub = self.create_subscription(
-            Image, "/camera/image_raw", self.img_callback, 10)
+            Image, "/camera/image_raw", self.img_callback, 10
+        )
 
         # Define vision related variables
         self.bridge = cv_bridge.CvBridge()
@@ -44,24 +46,30 @@ class ColorThresholdTester(Node):
         self.min_bounds = (args.min_h, args.min_s, args.min_v)
         self.max_bounds = (args.max_h, args.max_s, args.max_v)
         self.get_logger().info(
-            f"Using limits:\n" \
+            f"Using limits:\n"
             f"H: [{args.min_h} {args.max_h}] "
             f"S: [{args.min_s} {args.max_s}] "
-            f"V: [{args.min_v} {args.max_v}] ")
+            f"V: [{args.min_v} {args.max_v}] "
+        )
 
     def img_callback(self, msg):
-        """ Image topic subscriber callback """
+        """Image topic subscriber callback"""
         img = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv, self.min_bounds, self.max_bounds)
         keypoints = self.detector.detect(mask)
-        labeled_img = cv2.drawKeypoints(img, keypoints, None, (255,0,0), 
-                                        cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        labeled_img = cv2.drawKeypoints(
+            img,
+            keypoints,
+            None,
+            (255, 0, 0),
+            cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS,
+        )
         cv2.imshow("Image with Detections", labeled_img)
         cv2.waitKey(10)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="HSV Color Thresholding test script")
     parser.add_argument("--min_h", type=int, default=0)

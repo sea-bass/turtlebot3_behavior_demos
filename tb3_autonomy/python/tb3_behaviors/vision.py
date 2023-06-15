@@ -10,6 +10,7 @@ import py_trees
 from sensor_msgs.msg import Image
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
@@ -20,8 +21,9 @@ hsv_threshold_dict = {
     "blue": ((100, 220, 0), (150, 255, 255)),
 }
 
+
 class LookForObject(py_trees.behaviour.Behaviour):
-    """ 
+    """
     Gets images from the robot and looks for object using
     simple HSV color space thresholding and blob detection.
     """
@@ -41,10 +43,9 @@ class LookForObject(py_trees.behaviour.Behaviour):
             plt.title(self.viz_window_name)
             plt.ion()
 
-
     def initialise(self):
-        """ Starts all the vision related objects """
-        self.bridge = cv_bridge.CvBridge()        
+        """Starts all the vision related objects"""
+        self.bridge = cv_bridge.CvBridge()
         params = cv2.SimpleBlobDetector_Params()
         params.minArea = 100
         params.maxArea = 100000
@@ -58,15 +59,15 @@ class LookForObject(py_trees.behaviour.Behaviour):
         self.start_time = self.node.get_clock().now()
         self.latest_img_msg = None
         self.img_sub = self.node.create_subscription(
-            Image, "/camera/image_raw", self.img_callback, 10)
-        
+            Image, "/camera/image_raw", self.img_callback, 10
+        )
 
     def update(self):
-        """ Looks for at least one object detection using HSV thresholding """
+        """Looks for at least one object detection using HSV thresholding"""
         # Wait for an image message and handle failure case
         now = self.node.get_clock().now()
-        if (self.latest_img_msg is None):
-            if (now - self.start_time < self.img_timeout):
+        if self.latest_img_msg is None:
+            if now - self.start_time < self.img_timeout:
                 return py_trees.common.Status.RUNNING
             else:
                 self.logger.info("Image timeout exceeded")
@@ -77,16 +78,21 @@ class LookForObject(py_trees.behaviour.Behaviour):
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv, self.hsv_min, self.hsv_max)
         keypoints = self.detector.detect(mask)
-        
+
         # Visualize, if enabled
         if self.visualize:
-            labeled_img = cv2.drawKeypoints(img, keypoints, None, (255,0,0), 
-                                            cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+            labeled_img = cv2.drawKeypoints(
+                img,
+                keypoints,
+                None,
+                (255, 0, 0),
+                cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS,
+            )
             # OpenCV visualization
-            cv2.destroyAllWindows() 
+            cv2.destroyAllWindows()
             cv2.imshow(self.viz_window_name, labeled_img)
             cv2.waitKey(100)
-            
+
             # Matplotlib visualization
             # plt.imshow(labeled_img[:,:,::-1])
             # plt.pause(0.1)
@@ -99,12 +105,10 @@ class LookForObject(py_trees.behaviour.Behaviour):
             self.logger.info(f"Detected object at [{k.pt[0]}, {k.pt[1]}]")
         return py_trees.common.Status.SUCCESS
 
-
     def terminate(self, new_status):
         self.logger.info(f"Terminated with status {new_status}")
         self.img_sub = None
         self.latest_img_msg = None
-
 
     def img_callback(self, msg):
         # self.logger.info("Image received")

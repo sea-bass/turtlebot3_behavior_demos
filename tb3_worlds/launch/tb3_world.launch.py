@@ -24,7 +24,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             join(gazebo_ros_dir, "launch", "gzserver.launch.py")
         ),
-        launch_arguments={"world": default_world}.items()
+        launch_arguments={"world": default_world}.items(),
     )
     gzclient_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -37,7 +37,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             join(tb3_gazebo_dir, "launch", "robot_state_publisher.launch.py")
         ),
-        launch_arguments={"use_sim_time": use_sim_time}.items()
+        launch_arguments={"use_sim_time": use_sim_time}.items(),
     )
 
     # Spawn the turtlebot
@@ -45,15 +45,14 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             join(tb3_gazebo_dir, "launch", "spawn_turtlebot3.launch.py")
         ),
-        launch_arguments={
-            "x_pose": x_pose,
-            "y_pose": y_pose
-        }.items()
+        launch_arguments={"x_pose": x_pose, "y_pose": y_pose}.items(),
     )
 
-    return LaunchDescription([
-        gzserver_cmd,
-        gzclient_cmd,
-        robot_state_publisher_cmd,
-        spawn_turtlebot_cmd,
-    ])
+    return LaunchDescription(
+        [
+            gzserver_cmd,
+            gzclient_cmd,
+            robot_state_publisher_cmd,
+            spawn_turtlebot_cmd,
+        ]
+    )

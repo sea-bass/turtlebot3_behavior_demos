@@ -21,6 +21,7 @@ from gazebo_msgs.srv import SpawnEntity
 # Define some parameters
 model_dir = os.path.join(get_package_share_directory("tb3_worlds"), "models")
 
+
 class BlockSpawner(Node):
     def __init__(self):
         super().__init__("block_spawner")
@@ -31,14 +32,13 @@ class BlockSpawner(Node):
 
         self.declare_parameter("location_file")
 
-
     def spawn_blocks(self):
         # Parse locations YAML file
         location_file = self.get_parameter("location_file").value
         self.get_logger().info(f"Using location file: {location_file}")
         with open(location_file, "r") as f:
             locations = yaml.load(f, Loader=yaml.FullLoader)
-        
+
         # Distance from navigation waypoint to spawn object
         block_spawn_offset = 0.6
 
@@ -52,11 +52,11 @@ class BlockSpawner(Node):
             self.spawn_model(mdl, x, y, theta)
 
     def spawn_model(self, model_name, x, y, theta):
-        """ Spawns a model in Gazebo given a position """
+        """Spawns a model in Gazebo given a position"""
         model_file = os.path.join(model_dir, model_name, "model.sdf")
         with open(model_file, "r") as f:
             model_xml = f.read()
-        
+
         req = SpawnEntity.Request()
         req.name = model_name
         req.xml = model_xml
@@ -72,7 +72,7 @@ class BlockSpawner(Node):
         return future.result()
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     rclpy.init()
 
     spawner = BlockSpawner()
@@ -80,4 +80,3 @@ if __name__=="__main__":
 
     rclpy.spin(spawner)
     rclpy.shutdown()
-

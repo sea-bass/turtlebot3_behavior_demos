@@ -19,7 +19,7 @@ def generate_launch_description():
         launch_arguments={
             "x_pose": LaunchConfiguration("x_pose", default=0.0),
             "y_pose": LaunchConfiguration("y_pose", default=0.0),
-        }.items()
+        }.items(),
     )
     # For some reason, there is an error with starting both spawn world and nav
     # in this launch file without this delay ???
@@ -34,7 +34,7 @@ def generate_launch_description():
         launch_arguments={
             "use_sim_time": LaunchConfiguration("use_sim_time", default="true"),
             "map": LaunchConfiguration("map", default=default_map),
-        }.items()
+        }.items(),
     )
 
     # Set AMCL initial pose
@@ -49,14 +49,11 @@ def generate_launch_description():
         package="tb3_worlds",
         executable="block_spawner.py",
         name="block_spawner",
-        parameters=[{
-            "location_file": join(tb3_world_dir, "maps", "sim_house_locations.yaml")
-        }]
+        parameters=[
+            {"location_file": join(tb3_world_dir, "maps", "sim_house_locations.yaml")}
+        ],
     )
 
-    return LaunchDescription([
-        spawn_world_delayed,
-        nav_stack,
-        amcl_init_pose,
-        spawn_blocks
-    ])
+    return LaunchDescription(
+        [spawn_world_delayed, nav_stack, amcl_init_pose, spawn_blocks]
+    )

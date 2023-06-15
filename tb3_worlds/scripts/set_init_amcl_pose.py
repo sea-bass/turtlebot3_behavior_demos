@@ -21,8 +21,9 @@ class InitPosePublisher(Node):
         self.declare_parameter("cov", value=0.5**2)
 
         self.publisher = self.create_publisher(
-            PoseWithCovarianceStamped, "/initialpose", 10)
-        while (self.publisher.get_subscription_count() == 0):
+            PoseWithCovarianceStamped, "/initialpose", 10
+        )
+        while self.publisher.get_subscription_count() == 0:
             self.get_logger().info("Waiting for AMCL Initial pose subscriber")
             time.sleep(1.0)
 
@@ -32,7 +33,8 @@ class InitPosePublisher(Node):
         theta = self.get_parameter("theta").value
         cov = self.get_parameter("cov").value
         self.get_logger().info(
-            f"Setting initial AMCL pose to [x: {x}, y: {y}, theta: {theta}] ...")
+            f"Setting initial AMCL pose to [x: {x}, y: {y}, theta: {theta}] ..."
+        )
         msg = PoseWithCovarianceStamped()
         msg.header.frame_id = "map"
         msg.pose.pose.position.x = x
@@ -43,17 +45,47 @@ class InitPosePublisher(Node):
         msg.pose.pose.orientation.y = quat[2]
         msg.pose.pose.orientation.z = quat[3]
         msg.pose.covariance = [
-            cov, 0.0, 0.0, 0.0, 0.0, 0.0,  # Pos X
-            0.0, cov, 0.0, 0.0, 0.0, 0.0,  # Pos Y
-            0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # Pos Z
-            0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # Rot X
-            0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # Rot Y
-            0.0, 0.0, 0.0, 0.0, 0.0, cov   # Rot Z
+            cov,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,  # Pos X
+            0.0,
+            cov,
+            0.0,
+            0.0,
+            0.0,
+            0.0,  # Pos Y
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,  # Pos Z
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,  # Rot X
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,  # Rot Y
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            cov,  # Rot Z
         ]
         self.publisher.publish(msg)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     # Start ROS node and action client
     rclpy.init()
     pub = InitPosePublisher()
