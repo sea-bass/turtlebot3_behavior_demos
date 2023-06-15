@@ -28,8 +28,9 @@ from tb3_behaviors.vision import LookForObject
 
 
 default_location_file = os.path.join(
-    get_package_share_directory("tb3_worlds"),
-    "maps", "sim_house_locations.yaml")
+    get_package_share_directory("tb3_worlds"), "maps", "sim_house_locations.yaml"
+)
+
 
 class AutonomyBehavior(Node):
     def __init__(self):
@@ -52,10 +53,8 @@ class AutonomyBehavior(Node):
         self.target_color = self.get_parameter("target_color").value
         self.create_behavior_tree(self.tree_type)
 
-        self.tree.node.get_logger().info(
-            f"Using location file: {location_file}")
-        self.tree.node.get_logger().info(
-            f"Looking for color {self.target_color}...")
+        self.tree.node.get_logger().info(f"Using location file: {location_file}")
+        self.tree.node.get_logger().info(f"Looking for color {self.target_color}...")
 
     def create_behavior_tree(self, tree_type):
         if tree_type == "naive":
@@ -66,11 +65,13 @@ class AutonomyBehavior(Node):
             self.get_logger().info(f"Invalid behavior tree type {tree_type}.")
 
     def create_naive_tree(self):
-        """ Create behavior tree with explicit nodes for each location. """
+        """Create behavior tree with explicit nodes for each location."""
         if self.enable_vision:
             selector = py_trees.composites.Selector(name="navigation", memory=True)
             root = py_trees.decorators.OneShot(
-                name="root", child=selector, policy=OneShotPolicy.ON_SUCCESSFUL_COMPLETION
+                name="root",
+                child=selector,
+                policy=OneShotPolicy.ON_SUCCESSFUL_COMPLETION,
             )
             tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=False)
             tree.setup(timeout=15.0, node=self)
@@ -84,15 +85,18 @@ class AutonomyBehavior(Node):
                             name=f"search_{loc}",
                             children=[
                                 GoToPose(f"go_to_{loc}", pose, tree.node),
-                                LookForObject(f"find_{self.target_color}_{loc}",
-                                              self.target_color, tree.node)
+                                LookForObject(
+                                    f"find_{self.target_color}_{loc}",
+                                    self.target_color,
+                                    tree.node,
+                                ),
                             ],
                             memory=True,
                         ),
-                        policy=OneShotPolicy.ON_COMPLETION
+                        policy=OneShotPolicy.ON_COMPLETION,
                     )
                 )
-            
+
         else:
             seq = py_trees.composites.Sequence(name="navigation", memory=True)
             root = py_trees.decorators.OneShot(
@@ -108,7 +112,7 @@ class AutonomyBehavior(Node):
         return tree
 
     def create_queue_tree(self):
-        """ Create behavior tree by picking a next location from a queue """
+        """Create behavior tree by picking a next location from a queue"""
         bb = py_trees.blackboard.Blackboard()
         bb.set("loc_list", self.loc_list)
 
@@ -119,23 +123,26 @@ class AutonomyBehavior(Node):
         tree = py_trees_ros.trees.BehaviourTree(root, unicode_tree_debug=False)
         tree.setup(timeout=15.0, node=self)
 
-        seq.add_children([
-            GetLocationFromQueue("get_next_location", self.locations),
-            GoToPose("go_to_location", None, tree.node)
-        ])
+        seq.add_children(
+            [
+                GetLocationFromQueue("get_next_location", self.locations),
+                GoToPose("go_to_location", None, tree.node),
+            ]
+        )
         if self.enable_vision:
-            seq.add_child(LookForObject(f"find_{self.target_color}",
-                                        self.target_color, tree.node))
+            seq.add_child(
+                LookForObject(f"find_{self.target_color}", self.target_color, tree.node)
+            )
         return tree
 
     def execute(self, period=0.5):
-        """ Executes the behavior tree at the specified period. """
-        self.tree.tick_tock(period_ms=period*1000.0)
+        """Executes the behavior tree at the specified period."""
+        self.tree.tick_tock(period_ms=period * 1000.0)
         rclpy.spin(self.tree.node)
         rclpy.shutdown()
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     rclpy.init()
     behavior = AutonomyBehavior()
     behavior.execute()

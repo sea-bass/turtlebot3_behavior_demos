@@ -31,18 +31,18 @@ services:
     privileged: True
     # Allows graphical programs in the container.
     environment:
-    - DISPLAY=${DISPLAY}
-    - QT_X11_NO_MITSHM=1
-    - NVIDIA_DRIVER_CAPABILITIES=all
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
-    # Mount the source code
-    - ./tb3_autonomy:/overlay_ws/src/tb3_autonomy:rw
-    - ./tb3_worlds:/overlay_ws/src/tb3_worlds:rw
-    # Allows graphical programs in the container.
-    - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
+      # Mount the source code
+      - ./tb3_autonomy:/overlay_ws/src/tb3_autonomy:rw
+      - ./tb3_worlds:/overlay_ws/src/tb3_worlds:rw
+      # Allows graphical programs in the container.
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
     command: sleep infinity
-  
+
   # Overlay image containing the example source code.
   overlay:
     extends: base

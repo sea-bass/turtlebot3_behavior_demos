@@ -11,14 +11,15 @@ from nav2_msgs.action import NavigateToPose
 
 
 class GetLocationFromQueue(py_trees.behaviour.Behaviour):
-    """ Gets a location name from the queue """
+    """Gets a location name from the queue"""
+
     def __init__(self, name, location_dict):
         super(GetLocationFromQueue, self).__init__(name)
         self.location_dict = location_dict
         self.bb = py_trees.blackboard.Blackboard()
 
     def update(self):
-        """ Checks for the status of the navigation action """
+        """Checks for the status of the navigation action"""
         loc_list = self.bb.get("loc_list")
         if len(loc_list) == 0:
             self.logger.info("No locations available")
@@ -35,7 +36,7 @@ class GetLocationFromQueue(py_trees.behaviour.Behaviour):
 
 
 class GoToPose(py_trees.behaviour.Behaviour):
-    """ Wrapper behavior around the `move_base` action client """
+    """Wrapper behavior around the `move_base` action client"""
 
     def __init__(self, name, pose, node):
         super(GoToPose, self).__init__(name)
@@ -45,7 +46,7 @@ class GoToPose(py_trees.behaviour.Behaviour):
         self.bb = py_trees.blackboard.Blackboard()
 
     def initialise(self):
-        """ Sends the initial navigation action goal """
+        """Sends the initial navigation action goal"""
         # Check if there is a pose available in the blackboard
         try:
             target_pose = self.bb.get("target_pose")
@@ -77,7 +78,7 @@ class GoToPose(py_trees.behaviour.Behaviour):
         self.goal_status = future.result().status
 
     def update(self):
-        """ Checks for the status of the navigation action """
+        """Checks for the status of the navigation action"""
         # If there is a result, we can check the status of the action directly.
         # Otherwise, the action is still running.
         if self.goal_status is not None:
@@ -93,7 +94,7 @@ class GoToPose(py_trees.behaviour.Behaviour):
         self.bb.set("target_pose", None)
 
     def create_move_base_goal(self, x, y, theta):
-        """ Creates a MoveBaseGoal message from a 2D navigation pose """
+        """Creates a MoveBaseGoal message from a 2D navigation pose"""
         goal = NavigateToPose.Goal()
         goal.pose.header.frame_id = "map"
         goal.pose.header.stamp = self.node.get_clock().now().to_msg()

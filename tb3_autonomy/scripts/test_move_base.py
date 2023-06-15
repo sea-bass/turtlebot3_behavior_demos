@@ -36,7 +36,7 @@ class MoveBaseClient(Node):
         return self.cli.send_goal_async(goal_msg)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Move base test script")
     parser.add_argument("--x", type=float, default=1.0)
