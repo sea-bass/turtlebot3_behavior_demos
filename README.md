@@ -102,7 +102,7 @@ You can verify that display in Docker works by starting a basic Gazebo simulatio
 docker compose up sim
 ```
 
-IF you want to develop using the Docker container, you can can also launch a dev container using:
+If you want to develop using Docker, you can can also launch a dev container using:
 
 ```
 # Start the dev container
