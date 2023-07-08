@@ -85,7 +85,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Create new user and home directory
 RUN groupadd --gid $GID $USERNAME \
  && useradd --uid ${GID} --gid ${UID} --create-home ${USERNAME} \
- && echo $USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
+ && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
  && chmod 0440 /etc/sudoers.d/${USERNAME} \
  && mkdir -p /home/${USERNAME} \
  && chown -R ${GID}:${UID} /home/${USERNAME}
