@@ -31,8 +31,9 @@ RUN vcs import < dependencies.repos
 WORKDIR /turtlebot3_ws
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
  && apt-get update -y \
- && rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y \
+ && rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y \
  && colcon build --symlink-install
+ENV TURTLEBOT3_MODEL=waffle_pi
 
 # Download Groot2 AppImage and place it in the home folder.
 WORKDIR /root/

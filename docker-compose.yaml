@@ -28,17 +28,19 @@ services:
     # Networking and IPC for ROS 2
     network_mode: host
     ipc: host
-    # Needed to run Groot2
+    # Needed to display graphical applications
     privileged: True
-    # Allows graphical programs in the container.
     environment:
+      # Needed to define a TurtleBot3 model type
+      - TURTLEBOT3_MODEL=${TURTLEBOT3_MODEL:-waffle_pi}
+      # Allows graphical programs in the container.
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
       - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
+      # Allows graphical programs in the container.
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
-    command: sleep infinity
 
   # Overlay image containing the example source code.
   overlay:
@@ -48,7 +50,6 @@ services:
       context: .
       dockerfile: docker/Dockerfile
       target: overlay
-    command: sleep infinity
 
   # Developer container
   dev:
@@ -62,8 +63,6 @@ services:
         - UID=${UID:-1000}
         - GID=${UID:-1000}
         - USERNAME=${USERNAME:-devuser}
-    command: sleep infinity
-    user: ${USERNAME:-devuser}
     volumes:
       # Mount the source code
       - ./tb3_autonomy:/overlay_ws/src/tb3_autonomy:rw
@@ -72,6 +71,8 @@ services:
       - ./.colcon/build/:/overlay_ws/build/:rw
       - ./.colcon/install/:/overlay_ws/install/:rw
       - ./.colcon/log/:/overlay_ws/log/:rw
+    user: ${USERNAME:-devuser}
+    command: sleep infinity
 
   # Runs basic TurtleBot3 simulation
   sim:

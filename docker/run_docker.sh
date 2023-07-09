@@ -10,6 +10,7 @@ DOCKER_VOLUMES="
 --volume="${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority" \
 "
 DOCKER_ENV_VARS="
+--env="TURTLEBOT3_MODEL=waffle_pi" \
 --env="DISPLAY" \
 --env="QT_X11_NO_MITSHM=1" \
 --env="NVIDIA_DRIVER_CAPABILITIES=all" \

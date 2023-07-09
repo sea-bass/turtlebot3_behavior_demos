@@ -17,7 +17,11 @@ SetLocations::SetLocations(const std::string& name, const BT::NodeConfig& config
 BT::NodeStatus SetLocations::tick()
 {
     std::string location_file;
-    config().blackboard->get("location_file", location_file);
+    const auto result = config().blackboard->get("location_file", location_file);
+    if (!result) {
+        std::cerr << "[" << this->name() << "] Could not read locations file from blackboard." << std::endl;
+        return BT::NodeStatus::FAILURE;
+    }
 
     try {
         YAML::Node locations = YAML::LoadFile(location_file);
