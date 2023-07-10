@@ -5,8 +5,7 @@ The autonomy in these examples are designed using **behavior trees**.
 For more information, refer to [this blog post](https://roboticseabass.com/2021/05/08/introduction-to-behavior-trees/) or the [Behavior Trees in Robotics and AI textbook](https://arxiv.org/abs/1709.00084).
 
 This also serves as an example for Docker workflows in ROS based projects.
-For more information, refer to [this blog post](https://roboticseabass.com/2021/04/21/docker-and-ros/).
-Please note that this blog was written by a less experienced version of me, and current me will strongly recommend that you use [Docker compose](https://docs.docker.com/compose/).
+For more information, refer to [this blog post](https://roboticseabass.com/2023/07/09/updated-guide-docker-and-ros2/).
 
 If you want to use ROS 1, check out the old version of this example from the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
 
