@@ -83,25 +83,25 @@ NOTE: For best results, we recommend that you change your ROS Middleware (RMW) i
 We use [Docker Compose](https://docs.docker.com/compose/) to automate building, as shown above, but also for various useful entry points into the Docker container once it has been built.
 **All `docker compose` commands below should be run from your host machine, and not from inside the container**.
 
-To enter a Terminal in the overlay container, first start a container:
+To enter a Terminal in the overlay container:
 
 ```
-docker compose up overlay
+docker compose run overlay bash
 ```
 
-Then, in a separate Terminal, you can access the running container:
+Once inside the container, you can verify that display in Docker works by starting a basic Gazebo simulation included in the standard TurtleBot3 packages:
 
 ```
-docker exec -it turtlebot3_behavior_demos-overlay-1 bash
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 ```
 
-You can verify that display in Docker works by starting a basic Gazebo simulation included in the standard TurtleBot3 packages:
+Alternatively, you can use the pre-existing `sim` service to do this in a single line:
 
 ```
 docker compose up sim
 ```
 
-If you want to develop using Docker, you can can also launch a dev container using:
+If you want to develop using Docker, you can also launch a dev container using:
 
 ```
 # Start the dev container
