@@ -9,7 +9,7 @@ For more information, refer to [this blog post](https://roboticseabass.com/2023/
 
 If you want to use ROS 1, check out the old version of this example from the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
 
-By Sebastian Castro, 2021-2023
+By Sebastian Castro, 2021-2024
 
 ---
 
