@@ -14,7 +14,7 @@
 repos:
   # Standard hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.6.0
     hooks:
       - id: check-ast
       - id: check-case-conflict
@@ -29,19 +29,19 @@ repos:
       - id: fix-byte-order-marker
 
   - repo: https://github.com/psf/black
-    rev: 23.3.0
+    rev: 24.4.2
     hooks:
       - id: black
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.5
+    rev: v2.3.0
     hooks:
       - id: codespell
         args: ["--write-changes", "-L", "atleast,inout,ether"] # Provide a comma-separated list of misspelled words that codespell should ignore (for example: '-L', 'word1,word2,word3').
         exclude: \.(svg|pyc|stl|dae|lock)$
 
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v16.0.5
+    rev: v18.1.6
     hooks:
       - id: clang-format
         files: \.(c|cc|cxx|cpp|frag|glsl|h|hpp|hxx|ih|ispc|ipp|java|m|proto|vert)$
@@ -49,7 +49,7 @@ repos:
         args: ["-fallback-style=none"]
 
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.32.0
+    rev: v1.35.1
     hooks:
       - id: yamllint
         args:
@@ -62,6 +62,6 @@ repos:
         files: \.(yml|yaml)$
 
   - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.11.2
+    rev: v3.12.2
     hooks:
       - id: markdown-link-check

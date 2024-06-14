@@ -37,9 +37,9 @@ def get_autonomy_and_visualization_nodes(context, *args, **kwargs):
             parameters=[
                 {
                     "location_file": LaunchConfiguration("location_file"),
-                    "target_color": LaunchConfiguration("target_color")
-                    if enable_vision
-                    else "",
+                    "target_color": (
+                        LaunchConfiguration("target_color") if enable_vision else ""
+                    ),
                     "tree_xml_file": xml_file_path,
                 }
             ],
