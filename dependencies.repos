@@ -1,12 +1,9 @@
 repositories:
-
-  # TurtleBot3 Repo
-  # TODO: Remote once this PR is in the binary release:
-  # https://github.com/ROBOTIS-GIT/turtlebot3/pull/916
-  turtlebot3:
+  # TurtleBot4 Repo
+  nav2_minimal_turtlebot_simulation:
     type: git
-    url: https://github.com/ROBOTIS-GIT/turtlebot3.git
-    version: humble-devel
+    url: https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation.git
+    version: main
 
   # py_trees and related packages for Python based behavior trees.
   py_trees:

@@ -1,0 +1,41 @@
+launch:
+- arg:
+    name: 'use_slam_toolbox'
+    default: 'False'
+- arg:
+    name: 'world_file'
+    default: '$(find-pkg-share tb3_worlds)/worlds/sim_house.sdf.xacro'
+- arg:
+    name: 'map_file'
+    default: '$(find-pkg-share tb3_worlds)/maps/sim_house_map.yaml'
+- arg:
+    name: 'gz_sdf_file'
+    default: '$(find-pkg-share tb3_worlds)/urdf/gz_waffle.sdf.xacro'
+
+- include:
+    file: '$(find-pkg-share nav2_bringup)/launch/tb3_simulation_launch.py'
+    arg:
+      - name: 'headless'
+        value: 'False'
+      - name: 'slam'
+        value: '$(var use_slam_toolbox)'
+      - name: 'world'
+        value: '$(var world_file)'
+      - name: 'map'
+        value: '$(var map_file)'
+      - name: 'robot_sdf'
+        value: '$(var gz_sdf_file)'
+      - name: 'x_pose'
+        value: '0.0'
+      - name: 'y_pose'
+        value: '0.0'
+
+# - node: ##TODO: Update spawner
+#     pkg: "tb3_worlds"
+#     exec: "block_spawner"
+#     name: "block_spawner"
+
+# - node: ##TODO /or modify nav2_params.yaml to set initial_pose 
+#     pkg: "tb3_worlds"
+#     exec: "set_init_amcl_pose"
+#     name: "set_init_amcl_pose"

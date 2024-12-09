@@ -10,11 +10,8 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclpy</depend>
-  <depend>gazebo_msgs</depend>
-  <depend>gazebo_ros</depend>
   <depend>geometry_msgs</depend>
-  <depend>turtlebot3</depend>
-  <depend>turtlebot3_gazebo</depend>
+  <depend>nav2_minimal_tb3_sim</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
