@@ -71,7 +71,7 @@ def generate_launch_description():
 
     declare_world_cmd = DeclareLaunchArgument(
         'world',
-        default_value=os.path.join(get_package_share_directory('tb3_worlds'), 'worlds', 'sim_house.world'),
+        default_value=os.path.join(get_package_share_directory('tb3_worlds'), 'worlds', 'sim_house.sdf.xacro'),
         description='Full path to world model file to load',
     )
 

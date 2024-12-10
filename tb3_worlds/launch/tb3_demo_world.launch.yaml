@@ -1,5 +1,8 @@
 launch:
 - arg:
+    name: 'use_turtlebot3' ## Default: False, Use Turtlebot4
+    default: 'True'
+- arg:
     name: 'use_slam_toolbox'
     default: 'False'
 - arg:
@@ -14,6 +17,7 @@ launch:
 
 - include:
     file: '$(find-pkg-share nav2_bringup)/launch/tb3_simulation_launch.py'
+    if: '$(eval "$(var use_turtlebot3) == True")'
     arg:
       - name: 'headless'
         value: 'False'
@@ -30,12 +34,29 @@ launch:
       - name: 'y_pose'
         value: '0.0'
 
-# - node: ##TODO: Update spawner
-#     pkg: "tb3_worlds"
-#     exec: "block_spawner"
-#     name: "block_spawner"
+- include:
+    file: '$(find-pkg-share nav2_bringup)/launch/tb4_simulation_launch.py'
+    if: '$(eval "$(var use_turtlebot3) == False")'
+    arg:
+      - name: 'headless'
+        value: 'False'
+      - name: 'world'
+        value: '$(var world_file)'
+      - name: 'map'
+        value: '$(var map_file)'
+      - name: 'x_pose'
+        value: '0.0'
+      - name: 'y_pose'
+        value: '0.0'
 
-# - node: ##TODO /or modify nav2_params.yaml to set initial_pose 
-#     pkg: "tb3_worlds"
-#     exec: "set_init_amcl_pose"
-#     name: "set_init_amcl_pose"
+- timer:
+    period: 3.0
+    children:
+      # Block Spawner
+      - include:
+          file: '$(find-pkg-share tb3_worlds)/launch/block_spawner.launch.py'
+      # Set /initialpose 
+      - node: 
+          pkg: "tb3_worlds"
+          exec: "set_init_amcl_pose.py"
+          name: "initial_pose_publisher"
