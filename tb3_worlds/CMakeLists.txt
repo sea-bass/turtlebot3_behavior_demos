@@ -13,7 +13,6 @@ find_package(nav2_minimal_tb3_sim REQUIRED)
 
 # Install programs
 install(PROGRAMS
-    scripts/block_spawner.py
     scripts/set_init_amcl_pose.py
     DESTINATION lib/${PROJECT_NAME}
 )
