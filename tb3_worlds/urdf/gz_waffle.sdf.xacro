@@ -383,9 +383,9 @@
 
         <pose>0.069 -0.047 0.107 0 0 0</pose>
 
-        <sensor name="intel_realsense_r200_depth" type="depth">
+        <sensor name="intel_realsense_r200_depth" type="camera">
           <always_on>1</always_on>
-          <update_rate>5</update_rate>
+          <update_rate>30.0</update_rate>
           <pose>0.064 -0.047 0.107 0 0 0</pose>
           <gz_frame_id>camera_depth_frame</gz_frame_id>
           <camera name="realsense_depth_camera">
@@ -394,19 +394,10 @@
               <width>320</width>
               <height>240</height>
             </image>
-            <lens>
-              <projection>
-                <!-- focal_length = fx = fy = width / ( 2 * tan (hfov / 2 ) ) -->
-                <!-- tx = hackBaseline * focal_length -->
-                <tx>19.4</tx>
-              </projection>
-            </lens>
-            <depth_camera>
-              <clip>
-                <near>0.001</near>
-                <far>5.0</far>
-              </clip>
-            </depth_camera>
+            <clip>
+              <near>0.001</near>
+              <far>5.0</far>
+            </clip>
           </camera>
         </sensor>
       </link>
