@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile
       args:
-        ROS_DISTRO: humble
+        ROS_DISTRO: ${ROS_DISTRO:?}
       target: base
     # Interactive shell
     stdin_open: true
@@ -52,27 +52,27 @@ services:
       target: overlay
 
   # Developer container
-  dev:
-    extends: overlay
-    image: turtlebot3_behavior:dev
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-      target: dev
-      args:
-        - UID=${UID:-1000}
-        - GID=${UID:-1000}
-        - USERNAME=${USERNAME:-devuser}
-    volumes:
-      # Mount the source code
-      - ./tb3_autonomy:/overlay_ws/src/tb3_autonomy:rw
-      - ./tb3_worlds:/overlay_ws/src/tb3_worlds:rw
-      # Mount colcon build artifacts for faster rebuilds
-      - ./.colcon/build/:/overlay_ws/build/:rw
-      - ./.colcon/install/:/overlay_ws/install/:rw
-      - ./.colcon/log/:/overlay_ws/log/:rw
-    user: ${USERNAME:-devuser}
-    command: sleep infinity
+  # dev:
+  #   extends: overlay
+  #   image: turtlebot3_behavior:dev
+  #   build:
+  #     context: .
+  #     dockerfile: docker/Dockerfile
+  #     target: dev
+  #     args:
+  #       - UID=${UID:-1000}
+  #       - GID=${GID:-1000}
+  #       - USERNAME=${USERNAME:-devuser}
+  #   volumes:
+  #     # Mount the source code
+  #     - ./tb3_autonomy:/overlay_ws/src/tb3_autonomy:rw
+  #     - ./tb3_worlds:/overlay_ws/src/tb3_worlds:rw
+  #     # Mount colcon build artifacts for faster rebuilds
+  #     - ./.colcon/build/:/overlay_ws/build/:rw
+  #     - ./.colcon/install/:/overlay_ws/install/:rw
+  #     - ./.colcon/log/:/overlay_ws/log/:rw
+  #   user: ${USERNAME:-devuser}
+  #   command: sleep infinity
 
   # Runs basic TurtleBot3 simulation
   sim:
@@ -82,7 +82,7 @@ services:
   # Demo world
   demo-world:
     extends: overlay
-    command: ros2 launch tb3_worlds tb3_demo_world.launch.py
+    command: ros2 launch tb3_worlds tb3_demo_world.launch.yaml
 
   # Behavior demo using Python and py_trees
   demo-behavior-py:

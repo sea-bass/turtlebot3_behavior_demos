@@ -1,5 +1,5 @@
 # ROS distribution to use
-ARG ROS_DISTRO=humble
+ARG ROS_DISTRO=jazzy
 
 ########################################
 # Base Image for TurtleBot3 Simulation #
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  python3-pip python3-opencv python3-tk python3-pyqt5.qtwebengine
 
 # Install additional Python modules
-RUN pip3 install matplotlib transforms3d
+RUN pip3 install --break-system-packages matplotlib transforms3d
 
 # Use Cyclone DDS as middleware
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -85,7 +85,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Create new user and home directory
 RUN groupadd --gid $GID $USERNAME \
- && useradd --uid ${GID} --gid ${UID} --create-home ${USERNAME} \
+ && useradd --uid ${UID} --gid ${GID} --create-home ${USERNAME} \
  && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
  && chmod 0440 /etc/sudoers.d/${USERNAME} \
  && mkdir -p /home/${USERNAME} \

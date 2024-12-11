@@ -1,5 +1,5 @@
 # TurtleBot3 Behavior Demos
-In this repository, we demonstrate autonomous behavior with a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 22.04 and ROS 2 Humble.
+In this repository, we demonstrate autonomous behavior with a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 24.04 and ROS 2 Jazzy.
 
 The autonomy in these examples are designed using **behavior trees**.
 For more information, refer to [this blog post](https://roboticseabass.com/2021/05/08/introduction-to-behavior-trees/) or the [Behavior Trees in Robotics and AI textbook](https://arxiv.org/abs/1709.00084).
@@ -74,7 +74,7 @@ cd turtlebot3_ws
 colcon build
 ```
 
-NOTE: For best results, we recommend that you change your ROS Middleware (RMW) implementation to Cyclone DDS by following [these instructions](https://docs.ros.org/en/humble/Installation/DDS-Implementations/Working-with-Eclipse-CycloneDDS.html).
+NOTE: For best results, we recommend that you change your ROS Middleware (RMW) implementation to Cyclone DDS by following [these instructions](https://docs.ros.org/en/jazzy/Installation/DDS-Implementations/Working-with-Eclipse-CycloneDDS.html).
 
 ---
 
