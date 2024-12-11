@@ -1,5 +1,5 @@
 # This is a modified copy of https://github.com/ros-navigation/navigation2/blob/d6b02ac407a26d9394a23f76620f25f2274c8c37/nav2_bringup/launch/tb3_simulation_launch.py
-# Launches robot_state_publiser and gazebo with world argument
+# Launches robot_state_publisher and gazebo with world argument
 import os
 import tempfile
 
@@ -22,111 +22,106 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     # Get the launch directory
-    sim_dir = get_package_share_directory('nav2_minimal_tb3_sim')
+    sim_dir = get_package_share_directory("nav2_minimal_tb3_sim")
+    bringup_dir = get_package_share_directory("tb3_worlds")
 
     # Create the launch configuration variables
-    namespace = LaunchConfiguration('namespace')
-    use_sim_time = LaunchConfiguration('use_sim_time')
+    namespace = LaunchConfiguration("namespace")
+    use_sim_time = LaunchConfiguration("use_sim_time")
 
     # Launch configuration variables specific to simulation
-    world = LaunchConfiguration('world')
+    world = LaunchConfiguration("world")
     pose = {
-        'x': LaunchConfiguration('x_pose', default='0.0'),
-        'y': LaunchConfiguration('y_pose', default='0.0'),
-        'z': LaunchConfiguration('z_pose', default='0.01'),
-        'R': LaunchConfiguration('roll', default='0.00'),
-        'P': LaunchConfiguration('pitch', default='0.00'),
-        'Y': LaunchConfiguration('yaw', default='0.00'),
+        "x": LaunchConfiguration("x_pose", default="0.0"),
+        "y": LaunchConfiguration("y_pose", default="0.0"),
+        "z": LaunchConfiguration("z_pose", default="0.01"),
+        "R": LaunchConfiguration("roll", default="0.00"),
+        "P": LaunchConfiguration("pitch", default="0.00"),
+        "Y": LaunchConfiguration("yaw", default="0.00"),
     }
-    robot_name = LaunchConfiguration('robot_name')
-    robot_sdf = LaunchConfiguration('robot_sdf')
+    robot_name = LaunchConfiguration("robot_name")
+    robot_sdf = LaunchConfiguration("robot_sdf")
 
-    remappings = [('/tf', 'tf'), ('/tf_static', 'tf_static')]
+    remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
 
     # Declare the launch arguments
     declare_namespace_cmd = DeclareLaunchArgument(
-        'namespace', default_value='', description='Top-level namespace'
+        "namespace", default_value="", description="Top-level namespace"
     )
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
-        'use_sim_time',
-        default_value='true',
-        description='Use simulation (Gazebo) clock if true',
+        "use_sim_time",
+        default_value="true",
+        description="Use simulation (Gazebo) clock if true",
     )
 
     declare_world_cmd = DeclareLaunchArgument(
-        'world',
-        default_value=os.path.join(get_package_share_directory('tb3_worlds'), 'worlds', 'sim_house.sdf.xacro'),
-        description='Full path to world model file to load',
+        "world",
+        default_value=os.path.join(bringup_dir, "worlds", "sim_house.sdf.xacro"),
+        description="Full path to world model file to load",
     )
 
     declare_robot_name_cmd = DeclareLaunchArgument(
-        'robot_name', default_value='turtlebot3_waffle', description='name of the robot'
+        "robot_name", default_value="turtlebot3_waffle", description="name of the robot"
     )
 
     declare_robot_sdf_cmd = DeclareLaunchArgument(
-        'robot_sdf',
-        default_value=os.path.join(get_package_share_directory('tb3_worlds'), 'urdf', 'gz_waffle.sdf.xacro'),
-        description='Full path to robot sdf file to spawn the robot in gazebo',
+        "robot_sdf",
+        default_value=os.path.join(bringup_dir, "urdf", "gz_waffle.sdf.xacro"),
+        description="Full path to robot sdf file to spawn the robot in gazebo",
     )
 
-    urdf = os.path.join(sim_dir, 'urdf', 'turtlebot3_waffle.urdf')
-    with open(urdf, 'r') as infp:
+    urdf = os.path.join(sim_dir, "urdf", "turtlebot3_waffle.urdf")
+    with open(urdf, "r") as infp:
         robot_description = infp.read()
 
     robot_state_publisher_cmd = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='robot_state_publisher',
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        name="robot_state_publisher",
         namespace=namespace,
-        output='screen',
+        output="screen",
         parameters=[
-            {'use_sim_time': use_sim_time, 'robot_description': robot_description}
+            {"use_sim_time": use_sim_time, "robot_description": robot_description}
         ],
         remappings=remappings,
     )
 
-
     # The SDF file for the world is a xacro file because we wanted to
-    # conditionally load the SceneBroadcaster plugin based on wheter we're
+    # conditionally load the SceneBroadcaster plugin based on whether we're
     # running in headless mode. But currently, the Gazebo command line doesn't
     # take SDF strings for worlds, so the output of xacro needs to be saved into
     # a temporary file and passed to Gazebo.
-    world_sdf = tempfile.mktemp(prefix='tb3_', suffix='.sdf')
-    world_sdf_xacro = ExecuteProcess(
-        cmd=['xacro', '-o', world_sdf, world])
-    gazebo_server = ExecuteProcess(
-        cmd=['gz', 'sim', '-r', '-s', world_sdf],
-        output='screen',
+    world_sdf = tempfile.mktemp(prefix="tb3_", suffix=".sdf")
+    world_sdf_xacro = ExecuteProcess(cmd=["xacro", "-o", world_sdf, world])
+    gazebo = ExecuteProcess(
+        cmd=["gz", "sim", "-r", world_sdf],
+        output="screen",
     )
 
-    remove_temp_sdf_file = RegisterEventHandler(event_handler=OnShutdown(
-        on_shutdown=[
-            OpaqueFunction(function=lambda _: os.remove(world_sdf))
-        ]))
+    remove_temp_sdf_file = RegisterEventHandler(
+        event_handler=OnShutdown(
+            on_shutdown=[OpaqueFunction(function=lambda _: os.remove(world_sdf))]
+        )
+    )
 
-    gazebo_client = IncludeLaunchDescription(
+    gz_robot_spawner = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory('ros_gz_sim'),
-                         'launch',
-                         'gz_sim.launch.py')
+            os.path.join(bringup_dir, "launch", "spawn_tb3.launch.py")
         ),
-        launch_arguments={'gz_args': ['-v4 -g ']}.items(),
+        launch_arguments={
+            "namespace": namespace,
+            "use_sim_time": use_sim_time,
+            "robot_name": robot_name,
+            "robot_sdf": robot_sdf,
+            "x_pose": pose["x"],
+            "y_pose": pose["y"],
+            "z_pose": pose["z"],
+            "roll": pose["R"],
+            "pitch": pose["P"],
+            "yaw": pose["Y"],
+        }.items(),
     )
-
-    gz_robot = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(sim_dir, 'launch', 'spawn_tb3.launch.py')),
-        launch_arguments={'namespace': namespace,
-                          'use_sim_time': use_sim_time,
-                          'robot_name': robot_name,
-                          'robot_sdf': robot_sdf,
-                          'x_pose': pose['x'],
-                          'y_pose': pose['y'],
-                          'z_pose': pose['z'],
-                          'roll': pose['R'],
-                          'pitch': pose['P'],
-                          'yaw': pose['Y']}.items())
 
     # Create the launch description
     return LaunchDescription(
@@ -138,9 +133,8 @@ def generate_launch_description():
             declare_robot_sdf_cmd,
             world_sdf_xacro,
             remove_temp_sdf_file,
-            gz_robot,
-            gazebo_server,
-            gazebo_client,
-            robot_state_publisher_cmd 
+            gz_robot_spawner,
+            gazebo,
+            robot_state_publisher_cmd,
         ]
     )

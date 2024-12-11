@@ -8,17 +8,18 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
+
 def generate_launch_description():
-    lds = [] # Launch Descriptions
-    pkg_dir = get_package_share_directory('tb3_worlds')
-    
+    lds = []  # Launch Descriptions
+    pkg_dir = get_package_share_directory("tb3_worlds")
+
     # Parse locations YAML file
-    yaml_config_path = os.path.join(pkg_dir, 'maps', 'sim_house_locations.yaml')
-    with open(yaml_config_path, 'r') as f:
+    yaml_config_path = os.path.join(pkg_dir, "maps", "sim_house_locations.yaml")
+    with open(yaml_config_path, "r") as f:
         locations = yaml.load(f, Loader=yaml.FullLoader)
-    
+
     # Distance from navigation waypoint to spawn object
-    block_spawn_offset = 0.3
+    block_spawn_offset = 0.05
 
     # Spawn blocks in random locations
     model_names = ["red_block", "green_block", "blue_block"]
@@ -28,20 +29,27 @@ def generate_launch_description():
         x += block_spawn_offset * math.cos(theta)
         y += block_spawn_offset * math.sin(theta)
 
-        mdl_sdf = os.path.join(pkg_dir, 'models', mdl_name, 'model.sdf')
-        mdl_name= 'blue_block'
-        lds.append(IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('ros_gz_sim'), 'launch', 'gz_spawn_model.launch.py')),
-            launch_arguments={
-                'world': '',
-                'file': mdl_sdf,
-                'name': mdl_name,
-                'x': str(x),
-                'y': str(y),
-                'z': '0.1',
-                'Y': str(theta)}.items()
+        mdl_sdf = os.path.join(pkg_dir, "models", mdl_name, "model.sdf")
+        mdl_name = "blue_block"
+        lds.append(
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    os.path.join(
+                        get_package_share_directory("ros_gz_sim"),
+                        "launch",
+                        "gz_spawn_model.launch.py",
+                    )
+                ),
+                launch_arguments={
+                    "world": "",
+                    "file": mdl_sdf,
+                    "name": mdl_name,
+                    "x": str(x),
+                    "y": str(y),
+                    "z": "0.2",
+                    "Y": str(theta),
+                }.items(),
             )
         )
-    
+
     return LaunchDescription(lds)

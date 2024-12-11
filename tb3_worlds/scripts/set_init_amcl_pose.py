@@ -9,16 +9,19 @@ import transforms3d
 from rclpy.node import Node
 from geometry_msgs.msg import PoseWithCovarianceStamped
 
+
 class InitPosePublisher(Node):
     def __init__(self):
         super().__init__("init_pose_publisher")
 
-        self.declare_parameter("x", value=0.0)
-        self.declare_parameter("y", value=0.0)
+        self.declare_parameter("x", value=0.6)
+        self.declare_parameter("y", value=0.6)
         self.declare_parameter("theta", value=0.0)
         self.declare_parameter("cov", value=0.5**2)
 
-        self.publisher = self.create_publisher(PoseWithCovarianceStamped, "/initialpose", 10)
+        self.publisher = self.create_publisher(
+            PoseWithCovarianceStamped, "/initialpose", 10
+        )
         while self.publisher.get_subscription_count() == 0:
             self.get_logger().info("Waiting for AMCL Initial pose subscriber")
             time.sleep(1.0)
@@ -82,6 +85,7 @@ class InitPosePublisher(Node):
         ]
         self.publisher.publish(msg)
 
+
 if __name__ == "__main__":
     # Start ROS node and action client
     rclpy.init()
@@ -89,11 +93,11 @@ if __name__ == "__main__":
     pub = InitPosePublisher()
 
     # Run for predefined number of cycles
-    number_of_cycles = 3 
+    number_of_cycles = 3
     cycle_count = 0
     while rclpy.ok() and cycle_count < number_of_cycles:
         rclpy.spin_once(pub)
         cycle_count += 1
-        
+
     pub.destroy_node()
     rclpy.shutdown()

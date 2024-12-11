@@ -19,7 +19,7 @@ install(PROGRAMS
 
 # Install directories
 install(DIRECTORY
-  launch maps models worlds urdf
+  launch maps models worlds urdf configs
   DESTINATION share/${PROJECT_NAME}
 )
 

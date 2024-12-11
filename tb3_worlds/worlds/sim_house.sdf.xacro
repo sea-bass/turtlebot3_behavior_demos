@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <sdf version="1.6" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:arg name="headless" default="true"/>
+  <xacro:arg name="headless" default="false"/>
   <world name='default'>
     <plugin
       filename="gz-sim-physics-system"
