@@ -1,5 +1,5 @@
 repositories:
-  # TurtleBot4 Repo
+  # Simulation and Nav2 support for TurtleBot robots
   nav2_minimal_turtlebot_simulation:
     type: git
     url: https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation.git
