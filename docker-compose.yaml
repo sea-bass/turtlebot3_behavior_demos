@@ -11,7 +11,6 @@
 # To open an interactive shell to a running container:
 #   docker exec -it <container_name> bash
 
-version: "3.9"
 services:
   # Base image containing dependencies.
   base:
@@ -52,27 +51,24 @@ services:
       target: overlay
 
   # Developer container
-  # dev:
-  #   extends: overlay
-  #   image: turtlebot3_behavior:dev
-  #   build:
-  #     context: .
-  #     dockerfile: docker/Dockerfile
-  #     target: dev
-  #     args:
-  #       - UID=${UID:-1000}
-  #       - GID=${GID:-1000}
-  #       - USERNAME=${USERNAME:-devuser}
-  #   volumes:
-  #     # Mount the source code
-  #     - ./tb3_autonomy:/overlay_ws/src/tb3_autonomy:rw
-  #     - ./tb3_worlds:/overlay_ws/src/tb3_worlds:rw
-  #     # Mount colcon build artifacts for faster rebuilds
-  #     - ./.colcon/build/:/overlay_ws/build/:rw
-  #     - ./.colcon/install/:/overlay_ws/install/:rw
-  #     - ./.colcon/log/:/overlay_ws/log/:rw
-  #   user: ${USERNAME:-devuser}
-  #   command: sleep infinity
+  dev:
+    extends: overlay
+    image: turtlebot3_behavior:dev
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: dev
+      args:
+        - USERNAME=${USERNAME:-devuser}
+    volumes:
+      # Mount the source code
+      - ./tb3_autonomy:/overlay_ws/src/tb3_autonomy:rw
+      - ./tb3_worlds:/overlay_ws/src/tb3_worlds:rw
+      # Mount colcon build artifacts for faster rebuilds
+      - ./.colcon/build/:/overlay_ws/build/:rw
+      - ./.colcon/install/:/overlay_ws/install/:rw
+      - ./.colcon/log/:/overlay_ws/log/:rw
+    command: sleep infinity
 
   # Runs basic TurtleBot3 simulation
   sim:
