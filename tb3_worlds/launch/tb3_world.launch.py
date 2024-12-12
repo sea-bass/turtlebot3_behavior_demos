@@ -15,19 +15,24 @@ from launch.actions import (
 )
 from launch.event_handlers import OnShutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-
+from launch.substitutions import (
+    LaunchConfiguration,
+    EnvironmentVariable,
+    PythonExpression,
+    Command,
+)
 from launch_ros.actions import Node
+from launch.conditions import IfCondition
 
 
 def generate_launch_description():
     # Get the launch directory
-    sim_dir = get_package_share_directory("nav2_minimal_tb3_sim")
     bringup_dir = get_package_share_directory("tb3_worlds")
 
     # Create the launch configuration variables
     namespace = LaunchConfiguration("namespace")
     use_sim_time = LaunchConfiguration("use_sim_time")
+    turtlebot_model = LaunchConfiguration("turtlebot_model")
 
     # Launch configuration variables specific to simulation
     world = LaunchConfiguration("world")
@@ -62,7 +67,7 @@ def generate_launch_description():
     )
 
     declare_robot_name_cmd = DeclareLaunchArgument(
-        "robot_name", default_value="turtlebot3_waffle", description="name of the robot"
+        "robot_name", default_value="turtlebot", description="name of the robot"
     )
 
     declare_robot_sdf_cmd = DeclareLaunchArgument(
@@ -71,9 +76,34 @@ def generate_launch_description():
         description="Full path to robot sdf file to spawn the robot in gazebo",
     )
 
-    urdf = os.path.join(sim_dir, "urdf", "turtlebot3_waffle.urdf")
-    with open(urdf, "r") as infp:
-        robot_description = infp.read()
+    turtlebot_model_cmd = DeclareLaunchArgument(
+        "turtlebot_model",
+        default_value=EnvironmentVariable("TURTLEBOT3_MODEL", default_value="4"),
+    )
+
+    turtlebot_model_os_value = os.getenv("TURTLEBOT3_MODEL", "4")
+
+    if turtlebot_model_os_value == "3":
+        urdf = os.path.join(
+            get_package_share_directory("nav2_minimal_tb3_sim"),
+            "urdf",
+            "turtlebot3_waffle.urdf",
+        )
+        with open(urdf, "r") as infp:
+            robot_description = infp.read()
+    else:
+        robot_description = Command(
+            [
+                "xacro",
+                " ",
+                os.path.join(
+                    get_package_share_directory("nav2_minimal_tb4_description"),
+                    "urdf",
+                    "standard",
+                    "turtlebot4.urdf.xacro",
+                ),
+            ]
+        )
 
     robot_state_publisher_cmd = Node(
         package="robot_state_publisher",
@@ -105,14 +135,14 @@ def generate_launch_description():
         )
     )
 
-    gz_robot_spawner = IncludeLaunchDescription(
+    gz_tb3_spawner = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(bringup_dir, "launch", "spawn_tb3.launch.py")
         ),
         launch_arguments={
             "namespace": namespace,
             "use_sim_time": use_sim_time,
-            "robot_name": robot_name,
+            "robot_name": "turtlebot3",
             "robot_sdf": robot_sdf,
             "x_pose": pose["x"],
             "y_pose": pose["y"],
@@ -121,6 +151,29 @@ def generate_launch_description():
             "pitch": pose["P"],
             "yaw": pose["Y"],
         }.items(),
+        condition=IfCondition(PythonExpression([turtlebot_model, " == 3"])),
+    )
+
+    gz_tb4_spawner = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory("nav2_minimal_tb4_sim"),
+                "launch",
+                "spawn_tb4.launch.py",
+            )
+        ),
+        launch_arguments={
+            "namespace": namespace,
+            "use_sim_time": use_sim_time,
+            "robot_name": "turtlebot4",
+            "x_pose": pose["x"],
+            "y_pose": pose["y"],
+            "z_pose": pose["z"],
+            "roll": pose["R"],
+            "pitch": pose["P"],
+            "yaw": pose["Y"],
+        }.items(),
+        condition=IfCondition(PythonExpression([turtlebot_model, " == 4"])),
     )
 
     # Create the launch description
@@ -131,9 +184,11 @@ def generate_launch_description():
             declare_world_cmd,
             declare_robot_name_cmd,
             declare_robot_sdf_cmd,
+            turtlebot_model_cmd,
             world_sdf_xacro,
             remove_temp_sdf_file,
-            gz_robot_spawner,
+            gz_tb3_spawner,
+            gz_tb4_spawner,
             gazebo,
             robot_state_publisher_cmd,
         ]
