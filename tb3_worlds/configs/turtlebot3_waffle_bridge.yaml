@@ -1,5 +1,5 @@
 # This is a copy of https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation/blob/main/nav2_minimal_tb3_sim/configs/turtlebot3_waffle_bridge.yaml
-# Modification: 
+# Modification:
 #   - Added camera bridge
 #   - Use Twist message for /cmd_vel (For now)
 # replace clock_bridge

@@ -14,8 +14,8 @@ class InitPosePublisher(Node):
     def __init__(self):
         super().__init__("init_pose_publisher")
 
-        self.declare_parameter("x", value=0.6)
-        self.declare_parameter("y", value=0.6)
+        self.declare_parameter("x", value=0.0)
+        self.declare_parameter("y", value=0.0)
         self.declare_parameter("theta", value=0.0)
         self.declare_parameter("cov", value=0.5**2)
 

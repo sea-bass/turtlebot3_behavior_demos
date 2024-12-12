@@ -30,7 +30,6 @@ def generate_launch_description():
         y += block_spawn_offset * math.sin(theta)
 
         mdl_sdf = os.path.join(pkg_dir, "models", mdl_name, "model.sdf")
-        mdl_name = "blue_block"
         lds.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
@@ -46,7 +45,7 @@ def generate_launch_description():
                     "name": mdl_name,
                     "x": str(x),
                     "y": str(y),
-                    "z": "0.2",
+                    "z": "0.06",
                     "Y": str(theta),
                 }.items(),
             )
