@@ -37,7 +37,7 @@ ENV TURTLEBOT3_MODEL=waffle_pi
 
 # Download Groot2 AppImage and place it in the home folder.
 WORKDIR /root/
-RUN curl -o Groot2.AppImage https://s3.us-west-1.amazonaws.com/download.behaviortree.dev/groot2_linux_installer/Groot2-v1.5.2-x86_64.AppImage \
+RUN curl -o Groot2.AppImage https://s3.us-west-1.amazonaws.com/download.behaviortree.dev/groot2_linux_installer/Groot2-v1.6.1-x86_64.AppImage \
  && chmod a+x Groot2.AppImage
 
 # Remove display warnings
