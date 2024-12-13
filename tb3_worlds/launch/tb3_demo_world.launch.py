@@ -87,7 +87,7 @@ def generate_launch_description():
     )
 
     declare_robot_name_cmd = DeclareLaunchArgument(
-        "robot_name", default_value="turtlebot3_waffle", description="name of the robot"
+        "robot_name", default_value="turtlebot", description="name of the robot"
     )
 
     sim_cmd = IncludeLaunchDescription(

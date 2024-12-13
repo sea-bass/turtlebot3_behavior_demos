@@ -9,11 +9,12 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import AppendEnvironmentVariable
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression, EnvironmentVariable
 from launch.substitutions.command import Command
 from launch.substitutions.find_executable import FindExecutable
 
 from launch_ros.actions import Node
+from launch.conditions import IfCondition
 
 
 def generate_launch_description():
@@ -23,6 +24,8 @@ def generate_launch_description():
     namespace = LaunchConfiguration("namespace")
     robot_name = LaunchConfiguration("robot_name")
     robot_sdf = LaunchConfiguration("robot_sdf")
+    turtlebot_model = LaunchConfiguration("turtlebot_model")
+    gz_bridge_config = LaunchConfiguration("gz_bridge_config")
     pose = {
         "x": LaunchConfiguration("x_pose", default="0.0"),
         "y": LaunchConfiguration("y_pose", default="0.0"),
@@ -38,7 +41,7 @@ def generate_launch_description():
     )
 
     declare_robot_name_cmd = DeclareLaunchArgument(
-        "robot_name", default_value="turtlebot3_waffle", description="name of the robot"
+        "robot_name", default_value="turtlebot3", description="name of the robot"
     )
 
     declare_robot_sdf_cmd = DeclareLaunchArgument(
@@ -47,15 +50,24 @@ def generate_launch_description():
         description="Full path to robot sdf file to spawn the robot in gazebo",
     )
 
+    declare_turtlebot_model_cmd = DeclareLaunchArgument(
+        "turtlebot_model",
+        default_value=EnvironmentVariable("TURTLEBOT3_MODEL", default_value="4"),
+    )
+
+    declare_gz_bridge_cmd = DeclareLaunchArgument(
+        "gz_bridge_config",
+        default_value=os.path.join(bringup_dir, "configs", "turtlebot4_bridge.yaml"),
+        description="Full path to robot bridge configuration file",
+    )
+
     bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
         namespace=namespace,
         parameters=[
             {
-                "config_file": os.path.join(
-                    bringup_dir, "configs", "turtlebot3_waffle_bridge.yaml"
-                ),
+                "config_file": gz_bridge_config,
                 "expand_gz_topic_names": True,
                 "use_sim_time": True,
             }
@@ -63,7 +75,8 @@ def generate_launch_description():
         output="screen",
     )
 
-    spawn_model = Node(
+    spawn_tb3_model = Node(
+        condition=IfCondition(PythonExpression([turtlebot_model, " == 3"])),
         package="ros_gz_sim",
         executable="create",
         output="screen",
@@ -97,6 +110,20 @@ def generate_launch_description():
         ],
     )
 
+    spawn_tb4_model = Node(
+        condition=IfCondition(PythonExpression([turtlebot_model, " == 4"])),
+        package='ros_gz_sim',
+        executable='create',
+        namespace=namespace,
+        output='screen',
+        arguments=[
+            '-name', robot_name,
+            '-topic', 'robot_description',
+            '-x', pose['x'], '-y', pose['y'], '-z', pose['z'],
+            '-R', pose['R'], '-P', pose['P'], '-Y', pose['Y']],
+        parameters=[{'use_sim_time': True}]
+    )
+
     set_env_vars_resources = AppendEnvironmentVariable(
         "GZ_SIM_RESOURCE_PATH", os.path.join(gz_mdl_dir, "models")
     )
@@ -109,10 +136,12 @@ def generate_launch_description():
     ld.add_action(declare_namespace_cmd)
     ld.add_action(declare_robot_name_cmd)
     ld.add_action(declare_robot_sdf_cmd)
-
+    ld.add_action(declare_turtlebot_model_cmd)
+    ld.add_action(declare_gz_bridge_cmd)
     ld.add_action(set_env_vars_resources)
     ld.add_action(set_env_vars_resources2)
 
     ld.add_action(bridge)
-    ld.add_action(spawn_model)
+    ld.add_action(spawn_tb3_model)
+    ld.add_action(spawn_tb4_model)
     return ld

@@ -15,14 +15,8 @@ from launch.actions import (
 )
 from launch.event_handlers import OnShutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import (
-    LaunchConfiguration,
-    EnvironmentVariable,
-    PythonExpression,
-    Command,
-)
+from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
-from launch.conditions import IfCondition
 
 
 def generate_launch_description():
@@ -32,7 +26,6 @@ def generate_launch_description():
     # Create the launch configuration variables
     namespace = LaunchConfiguration("namespace")
     use_sim_time = LaunchConfiguration("use_sim_time")
-    turtlebot_model = LaunchConfiguration("turtlebot_model")
 
     # Launch configuration variables specific to simulation
     world = LaunchConfiguration("world")
@@ -76,14 +69,12 @@ def generate_launch_description():
         description="Full path to robot sdf file to spawn the robot in gazebo",
     )
 
-    turtlebot_model_cmd = DeclareLaunchArgument(
-        "turtlebot_model",
-        default_value=EnvironmentVariable("TURTLEBOT3_MODEL", default_value="4"),
-    )
-
     turtlebot_model_os_value = os.getenv("TURTLEBOT3_MODEL", "4")
 
     if turtlebot_model_os_value == "3":
+        gz_bridge_config = os.path.join(
+            bringup_dir, "configs", "turtlebot3_bridge.yaml"
+        )
         urdf = os.path.join(
             get_package_share_directory("nav2_minimal_tb3_sim"),
             "urdf",
@@ -91,7 +82,12 @@ def generate_launch_description():
         )
         with open(urdf, "r") as infp:
             robot_description = infp.read()
+
     else:
+        # Turtlebot4 model
+        gz_bridge_config = os.path.join(
+            bringup_dir, "configs", "turtlebot4_bridge.yaml"
+        )
         robot_description = Command(
             [
                 "xacro",
@@ -135,15 +131,16 @@ def generate_launch_description():
         )
     )
 
-    gz_tb3_spawner = IncludeLaunchDescription(
+    gz_tb_spawner = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(bringup_dir, "launch", "spawn_tb3.launch.py")
+            os.path.join(bringup_dir, "launch", "turtlebot_spawner.launch.py")
         ),
         launch_arguments={
             "namespace": namespace,
             "use_sim_time": use_sim_time,
-            "robot_name": "turtlebot3",
+            "robot_name": robot_name,
             "robot_sdf": robot_sdf,
+            "gz_bridge_config": gz_bridge_config,
             "x_pose": pose["x"],
             "y_pose": pose["y"],
             "z_pose": pose["z"],
@@ -151,29 +148,6 @@ def generate_launch_description():
             "pitch": pose["P"],
             "yaw": pose["Y"],
         }.items(),
-        condition=IfCondition(PythonExpression([turtlebot_model, " == 3"])),
-    )
-
-    gz_tb4_spawner = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory("nav2_minimal_tb4_sim"),
-                "launch",
-                "spawn_tb4.launch.py",
-            )
-        ),
-        launch_arguments={
-            "namespace": namespace,
-            "use_sim_time": use_sim_time,
-            "robot_name": "turtlebot4",
-            "x_pose": pose["x"],
-            "y_pose": pose["y"],
-            "z_pose": pose["z"],
-            "roll": pose["R"],
-            "pitch": pose["P"],
-            "yaw": pose["Y"],
-        }.items(),
-        condition=IfCondition(PythonExpression([turtlebot_model, " == 4"])),
     )
 
     # Create the launch description
@@ -184,11 +158,9 @@ def generate_launch_description():
             declare_world_cmd,
             declare_robot_name_cmd,
             declare_robot_sdf_cmd,
-            turtlebot_model_cmd,
             world_sdf_xacro,
             remove_temp_sdf_file,
-            gz_tb3_spawner,
-            gz_tb4_spawner,
+            gz_tb_spawner,
             gazebo,
             robot_state_publisher_cmd,
         ]
