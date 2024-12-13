@@ -9,7 +9,11 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import AppendEnvironmentVariable
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration, PythonExpression, EnvironmentVariable
+from launch.substitutions import (
+    LaunchConfiguration,
+    PythonExpression,
+    EnvironmentVariable,
+)
 from launch.substitutions.command import Command
 from launch.substitutions.find_executable import FindExecutable
 
@@ -112,16 +116,29 @@ def generate_launch_description():
 
     spawn_tb4_model = Node(
         condition=IfCondition(PythonExpression([turtlebot_model, " == 4"])),
-        package='ros_gz_sim',
-        executable='create',
+        package="ros_gz_sim",
+        executable="create",
         namespace=namespace,
-        output='screen',
+        output="screen",
         arguments=[
-            '-name', robot_name,
-            '-topic', 'robot_description',
-            '-x', pose['x'], '-y', pose['y'], '-z', pose['z'],
-            '-R', pose['R'], '-P', pose['P'], '-Y', pose['Y']],
-        parameters=[{'use_sim_time': True}]
+            "-name",
+            robot_name,
+            "-topic",
+            "robot_description",
+            "-x",
+            pose["x"],
+            "-y",
+            pose["y"],
+            "-z",
+            pose["z"],
+            "-R",
+            pose["R"],
+            "-P",
+            pose["P"],
+            "-Y",
+            pose["Y"],
+        ],
+        parameters=[{"use_sim_time": True}],
     )
 
     set_env_vars_resources = AppendEnvironmentVariable(
