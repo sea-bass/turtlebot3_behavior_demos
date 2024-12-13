@@ -19,7 +19,7 @@ def generate_launch_description():
         locations = yaml.load(f, Loader=yaml.FullLoader)
 
     # Distance from navigation waypoint to spawn object
-    block_spawn_offset = 0.05
+    block_spawn_offset = 0.6
 
     # Spawn blocks in random locations
     model_names = ["red_block", "green_block", "blue_block"]

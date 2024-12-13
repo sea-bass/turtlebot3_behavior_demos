@@ -389,14 +389,14 @@
           <pose>0.064 -0.047 0.107 0 0 0</pose>
           <gz_frame_id>camera_depth_frame</gz_frame_id>
           <camera name="realsense_depth_camera">
-            <horizontal_fov>1.047</horizontal_fov>
+            <horizontal_fov>1.25</horizontal_fov>
             <image>
               <width>320</width>
               <height>240</height>
             </image>
             <clip>
               <near>0.001</near>
-              <far>5.0</far>
+              <far>100</far>
             </clip>
           </camera>
         </sensor>
