@@ -54,7 +54,7 @@ def generate_launch_description():
 
     declare_params_file_cmd = DeclareLaunchArgument(
         "params_file",
-        default_value=os.path.join(nav2_bringup_dir, "params", "nav2_params.yaml"),
+        default_value=os.path.join(bringup_dir, "configs", "nav2_params.yaml"),
         description="Full path to the ROS2 parameters file to use for all launched nodes",
     )
 
@@ -100,19 +100,20 @@ def generate_launch_description():
         }.items(),
     )
 
-    # Set /initialpose
-    init_amcl_cmd = Node(
-        package="tb3_worlds",
-        executable="set_init_amcl_pose.py",
-        name="initial_pose_publisher",
-        parameters=[
-            {
-                "x": 0.6,
-                "y": 0.6,
-            }
-        ],
-        output="screen",
-    )
+    ## Update: Set initial pose in configs/nav2_params.yaml using AMCL initial_pose* parameters
+    ## Set /initialpose
+    # init_amcl_cmd = Node(
+    #     package="tb3_worlds",
+    #     executable="set_init_amcl_pose.py",
+    #     name="initial_pose_publisher",
+    #     parameters=[
+    #         {
+    #             "x": 0.6,
+    #             "y": 0.6,
+    #         }
+    #     ],
+    #     output="screen",
+    # )
 
     # Block Spawner
     block_spawner_cmd = IncludeLaunchDescription(
@@ -170,7 +171,7 @@ def generate_launch_description():
     ld.add_action(sim_cmd)
     ld.add_action(rviz_cmd)
     ld.add_action(bringup_cmd)
-    ld.add_action(init_amcl_cmd)
+    # ld.add_action(init_amcl_cmd)
     ld.add_action(block_spawner_cmd)
 
     return ld
