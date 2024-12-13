@@ -60,7 +60,7 @@ def generate_launch_description():
 
     declare_turtlebot_model_cmd = DeclareLaunchArgument(
         "turtlebot_model",
-        default_value=EnvironmentVariable("TURTLEBOT3_MODEL", default_value="4"),
+        default_value=EnvironmentVariable("TURTLEBOT_MODEL", default_value="4"),
     )
 
     declare_gz_bridge_cmd = DeclareLaunchArgument(

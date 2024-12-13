@@ -30,8 +30,8 @@ services:
     # Needed to display graphical applications
     privileged: True
     environment:
-      # Needed to define a TurtleBot3 model type
-      - TURTLEBOT3_MODEL=${TURTLEBOT3_MODEL:-waffle_pi}
+      # Needed to define a TurtleBot model type (3 or 4)
+      - TURTLEBOT_MODEL=${TURTLEBOT_MODEL:-4}
       # Allows graphical programs in the container.
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
@@ -78,7 +78,7 @@ services:
   # Demo world
   demo-world:
     extends: overlay
-    command: ros2 launch tb3_worlds tb3_demo_world.launch.yaml
+    command: ros2 launch tb3_worlds tb3_demo_world.launch.py
 
   # Behavior demo using Python and py_trees
   demo-behavior-py:

@@ -74,7 +74,7 @@ def generate_launch_description():
         description="Full path to robot sdf file to spawn the robot in gazebo",
     )
 
-    turtlebot_model_os_value = os.getenv("TURTLEBOT3_MODEL", "4")
+    turtlebot_model_os_value = os.getenv("TURTLEBOT_MODEL", "4")
 
     if turtlebot_model_os_value == "3":
         gz_bridge_config = os.path.join(
