@@ -46,7 +46,7 @@
 # replace cmd_vel_bridge
 - ros_topic_name: "cmd_vel"
   gz_topic_name: "/cmd_vel"
-  ros_type_name: "geometry_msgs/msg/Twist" # Use Twist message in Jazzy(Dec-2024) /or older, Otherwise use TwistStamped
+  ros_type_name: "geometry_msgs/msg/TwistStamped"
   gz_type_name: "gz.msgs.Twist"
   direction: ROS_TO_GZ
 

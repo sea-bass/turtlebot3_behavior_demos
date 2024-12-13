@@ -1,7 +1,6 @@
 # This is a copy of https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation/blob/main/nav2_minimal_tb3_sim/configs/turtlebot3_waffle_bridge.yaml
 # Modification:
 #   - Added camera bridge
-#   - Use Twist message for /cmd_vel (For now)
 # replace clock_bridge
 - topic_name: "/clock"
   ros_type_name: "rosgraph_msgs/msg/Clock"
@@ -43,7 +42,7 @@
 
 # replace cmd_vel_bridge
 - topic_name: "cmd_vel"
-  ros_type_name: "geometry_msgs/msg/Twist" # Use Twist message in Jazzy(Dec-2024) /or older, Otherwise use TwistStamped
+  ros_type_name: "geometry_msgs/msg/TwistStamped"
   gz_type_name: "gz.msgs.Twist"
   direction: ROS_TO_GZ
 
