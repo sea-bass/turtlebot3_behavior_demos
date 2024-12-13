@@ -1,5 +1,5 @@
-# This is a copy of https://github.com/ros-navigation/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py
-# Launches ros_gz_bridge and spawns turtlebot3 model
+# This is a copy of https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation/blob/main/nav2_minimal_tb3_sim/launch/spawn_tb3.launch.py
+# Launches ros_gz_bridge and spawns turtlebot4/turtlebot3 model
 import os
 from pathlib import Path
 

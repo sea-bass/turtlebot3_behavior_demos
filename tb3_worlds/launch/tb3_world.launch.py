@@ -1,4 +1,4 @@
-# This is a modified copy of https://github.com/ros-navigation/navigation2/blob/d6b02ac407a26d9394a23f76620f25f2274c8c37/nav2_bringup/launch/tb3_simulation_launch.py
+# This is a copy of https://github.com/ros-navigation/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py
 # Launches robot_state_publisher and gazebo with world argument
 import os
 import tempfile
