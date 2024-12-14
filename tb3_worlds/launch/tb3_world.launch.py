@@ -1,5 +1,10 @@
-# This is a copy of https://github.com/ros-navigation/navigation2/blob/main/nav2_bringup/launch/tb3_simulation_launch.py
-# Launches robot_state_publisher and gazebo with world argument
+# This file has been modified from
+# https://github.com/ros-navigation/navigation2/blob/9d60bc0a3ca4e201250254c866c4eedc1441ed4e/nav2_bringup/launch/tb3_simulation_launch.py
+# Modification:
+#   - Minimal setup for simulation, launching:
+#       - robot_state_publisher
+#       - gazebo with (worlds/sim_house.sdf.xacro) world
+
 import os
 import tempfile
 

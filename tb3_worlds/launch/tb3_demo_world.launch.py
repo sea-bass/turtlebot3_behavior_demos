@@ -1,6 +1,9 @@
-#
-import os
+# This file has been modified from
+# https://github.com/ros-navigation/navigation2/blob/9d60bc0a3ca4e201250254c866c4eedc1441ed4e/nav2_bringup/launch/tb3_simulation_launch.py
+# Modification:
+#   - Separate nav2 bringup from robot simulation
 
+import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription

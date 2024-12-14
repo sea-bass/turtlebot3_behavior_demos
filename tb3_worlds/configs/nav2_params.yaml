@@ -1,3 +1,9 @@
+# This file has been modified from
+# https://github.com/ros-navigation/navigation2/blob/9d60bc0a3ca4e201250254c866c4eedc1441ed4e/nav2_bringup/params/nav2_params.yaml
+# Modification:
+#   - Set initial_pose for AMCL
+#   - Use stamped_cmd_vel
+
 /**:
   ros__parameters:
     enable_stamped_cmd_vel: true

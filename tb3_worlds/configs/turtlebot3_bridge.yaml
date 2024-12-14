@@ -1,6 +1,8 @@
-# This is a copy of https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation/blob/main/nav2_minimal_tb3_sim/configs/turtlebot3_waffle_bridge.yaml
+# This file has been modified from
+# https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation/blob/091b5ff12436890a54de6325df3573ae110e912b/nav2_minimal_tb3_sim/configs/turtlebot3_waffle_bridge.yaml
 # Modification:
 #   - Added camera bridge
+
 # replace clock_bridge
 - topic_name: "/clock"
   ros_type_name: "rosgraph_msgs/msg/Clock"
@@ -48,7 +50,7 @@
 
 # replace image_bridge
 - ros_topic_name: "/camera/image_raw"
-  gz_topic_name: "/world/default/model/turtlebot/link/camera_link/sensor/intel_realsense_r200_depth/image"
+  gz_topic_name: "/realsense_camera"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
