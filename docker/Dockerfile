@@ -4,7 +4,7 @@ ARG ROS_DISTRO=jazzy
 #######################################
 # Base Image for TurtleBot Simulation #
 #######################################
-FROM osrf/ros:${ROS_DISTRO}-desktop as base
+FROM osrf/ros:${ROS_DISTRO}-desktop AS base
 ENV ROS_DISTRO=${ROS_DISTRO}
 SHELL ["/bin/bash", "-c"]
 
@@ -72,7 +72,7 @@ ENTRYPOINT [ "/entrypoint.sh" ]
 #####################
 # Development Image #
 #####################
-FROM overlay as dev
+FROM overlay AS dev
 
 # Install extra tools for development
 RUN apt-get update && apt-get install -y --no-install-recommends \
