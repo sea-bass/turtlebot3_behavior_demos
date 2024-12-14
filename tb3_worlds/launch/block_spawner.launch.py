@@ -18,16 +18,19 @@ def generate_launch_description():
     with open(yaml_config_path, "r") as f:
         locations = yaml.load(f, Loader=yaml.FullLoader)
 
+    # Offset between Gazebo world and map frame (can we fix this somehow else?)
+    block_spawn_offset = [-0.6, -0.6]
+
     # Distance from navigation waypoint to spawn object
-    block_spawn_offset = 0.6
+    offset_from_robot = 0.6
 
     # Spawn blocks in random locations
     model_names = ["red_block", "green_block", "blue_block"]
     sampled_locs = random.sample(list(locations.keys()), len(model_names))
     for mdl_name, loc in zip(model_names, sampled_locs):
         x, y, theta = locations[loc]
-        x += block_spawn_offset * math.cos(theta)
-        y += block_spawn_offset * math.sin(theta)
+        x += block_spawn_offset[0] + offset_from_robot * math.cos(theta)
+        y += block_spawn_offset[1] + offset_from_robot * math.sin(theta)
 
         mdl_sdf = os.path.join(pkg_dir, "models", mdl_name, "model.sdf")
         lds.append(
