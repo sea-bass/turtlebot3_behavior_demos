@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
 <sdf version="1.6" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<!-- 
+# This file has been modified from
+# https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation/blob/091b5ff12436890a54de6325df3573ae110e912b/nav2_minimal_tb3_sim/urdf/gz_waffle.sdf.xacro
+# Modification:
+#   - Camera sensor
+ -->
     <xacro:arg name="namespace" default=""/>
 
     <model name="turtlebot3_waffle"> 
@@ -385,7 +391,6 @@
 
         <sensor name="intel_realsense_r200_depth" type="camera">
           <always_on>1</always_on>
-          <update_rate>30.0</update_rate>
           <pose>0.064 -0.047 0.107 0 0 0</pose>
           <gz_frame_id>camera_depth_frame</gz_frame_id>
           <camera name="realsense_depth_camera">
@@ -399,6 +404,8 @@
               <far>100</far>
             </clip>
           </camera>
+          <update_rate>20.0</update_rate>
+          <topic>realsense_camera</topic>
         </sensor>
       </link>
 
