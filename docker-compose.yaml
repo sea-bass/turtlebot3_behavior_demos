@@ -31,7 +31,7 @@ services:
     privileged: True
     environment:
       # Needed to define a TurtleBot model type (3 or 4)
-      - TURTLEBOT_MODEL=${TURTLEBOT_MODEL:-4}
+      - TURTLEBOT_MODEL=${TURTLEBOT_MODEL:-3}
       # Allows graphical programs in the container.
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
