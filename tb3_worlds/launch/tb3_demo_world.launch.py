@@ -100,21 +100,6 @@ def generate_launch_description():
         }.items(),
     )
 
-    ## Update: Set initial pose in configs/nav2_params.yaml using AMCL initial_pose* parameters
-    ## Set /initialpose
-    # init_amcl_cmd = Node(
-    #     package="tb3_worlds",
-    #     executable="set_init_amcl_pose.py",
-    #     name="initial_pose_publisher",
-    #     parameters=[
-    #         {
-    #             "x": 0.6,
-    #             "y": 0.6,
-    #         }
-    #     ],
-    #     output="screen",
-    # )
-
     # Block Spawner
     block_spawner_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -171,7 +156,6 @@ def generate_launch_description():
     ld.add_action(sim_cmd)
     ld.add_action(rviz_cmd)
     ld.add_action(bringup_cmd)
-    # ld.add_action(init_amcl_cmd)
     ld.add_action(block_spawner_cmd)
 
     return ld

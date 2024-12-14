@@ -11,11 +11,6 @@ find_package(rclpy REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav2_minimal_tb3_sim REQUIRED)
 
-# Install programs
-install(PROGRAMS
-    scripts/set_init_amcl_pose.py
-    DESTINATION lib/${PROJECT_NAME}
-)
 
 # Install directories
 install(DIRECTORY
