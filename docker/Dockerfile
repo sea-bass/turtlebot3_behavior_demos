@@ -1,20 +1,20 @@
 # ROS distribution to use
-ARG ROS_DISTRO=humble
+ARG ROS_DISTRO=jazzy
 
-########################################
-# Base Image for TurtleBot3 Simulation #
-########################################
-FROM osrf/ros:${ROS_DISTRO}-desktop as base
+#######################################
+# Base Image for TurtleBot Simulation #
+#######################################
+FROM ros:${ROS_DISTRO} AS base
 ENV ROS_DISTRO=${ROS_DISTRO}
 SHELL ["/bin/bash", "-c"]
 
 # Install basic apt packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
- git libcanberra-gtk-module libcanberra-gtk3-module fuse3 libfuse2 libqt5svg5-dev \
+ curl git libcanberra-gtk-module libcanberra-gtk3-module fuse3 libfuse2 libqt5svg5-dev \
  python3-pip python3-opencv python3-tk python3-pyqt5.qtwebengine
 
 # Install additional Python modules
-RUN pip3 install matplotlib transforms3d
+RUN pip3 install --break-system-packages matplotlib transforms3d
 
 # Use Cyclone DDS as middleware
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -22,22 +22,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 # Create Colcon workspace with external dependencies
-RUN mkdir -p /turtlebot3_ws/src
-WORKDIR /turtlebot3_ws/src
+RUN mkdir -p /turtlebot_ws/src
+WORKDIR /turtlebot_ws/src
 COPY dependencies.repos .
 RUN vcs import < dependencies.repos
 
 # Build the base Colcon workspace, installing dependencies first.
-WORKDIR /turtlebot3_ws
+WORKDIR /turtlebot_ws
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
  && apt-get update -y \
  && rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y \
  && colcon build --symlink-install
-ENV TURTLEBOT3_MODEL=waffle_pi
+ENV TURTLEBOT_MODEL=3
 
 # Download Groot2 AppImage and place it in the home folder.
 WORKDIR /root/
-RUN curl -o Groot2.AppImage https://s3.us-west-1.amazonaws.com/download.behaviortree.dev/groot2_linux_installer/Groot2-v1.5.2-x86_64.AppImage \
+RUN curl -o Groot2.AppImage https://s3.us-west-1.amazonaws.com/download.behaviortree.dev/groot2_linux_installer/Groot2-v1.6.1-x86_64.AppImage \
  && chmod a+x Groot2.AppImage
 
 # Remove display warnings
@@ -47,21 +47,21 @@ RUN chmod -R 0700 /tmp/runtime-root
 ENV NO_AT_BRIDGE 1
 
 # Set up the entrypoint
-WORKDIR /turtlebot3_ws
+WORKDIR /turtlebot_ws
 COPY ./docker/entrypoint.sh /
 ENTRYPOINT [ "/entrypoint.sh" ]
 
-###########################################
-# Overlay Image for TurtleBot3 Simulation #
-###########################################
+##########################################
+# Overlay Image for TurtleBot Simulation #
+##########################################
 FROM base AS overlay
 
 # Create an overlay Colcon workspace
 RUN mkdir -p /overlay_ws/src
 WORKDIR /overlay_ws
-COPY ./tb3_autonomy/ ./src/tb3_autonomy/
-COPY ./tb3_worlds/ ./src/tb3_worlds/
-RUN source /turtlebot3_ws/install/setup.bash \
+COPY ./tb_autonomy/ ./src/tb_autonomy/
+COPY ./tb_worlds/ ./src/tb_worlds/
+RUN source /turtlebot_ws/install/setup.bash \
  && rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y \
  && colcon build --symlink-install
 
@@ -72,34 +72,13 @@ ENTRYPOINT [ "/entrypoint.sh" ]
 #####################
 # Development Image #
 #####################
-FROM overlay as dev
-
-# Dev container arguments
-ARG USERNAME=devuser
-ARG UID=1000
-ARG GID=${UID}
+FROM overlay AS dev
 
 # Install extra tools for development
 RUN apt-get update && apt-get install -y --no-install-recommends \
  gdb gdbserver nano
 
-# Create new user and home directory
-RUN groupadd --gid $GID $USERNAME \
- && useradd --uid ${GID} --gid ${UID} --create-home ${USERNAME} \
- && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
- && chmod 0440 /etc/sudoers.d/${USERNAME} \
- && mkdir -p /home/${USERNAME} \
- && chown -R ${UID}:${GID} /home/${USERNAME}
-
-# Set the ownership of the overlay workspace to the new user
-RUN chown -R ${UID}:${GID} /overlay_ws/
-
-# Move Groot2 to new user's home directory and ensure it can be run
-RUN groupadd fuse \
- && usermod -aG fuse ${USERNAME}
-RUN mv /root/Groot2.AppImage /home/${USERNAME} \ 
- && chown ${UID}:${GID} /home/${USERNAME}/Groot2.AppImage
-
-# Set the user and source entrypoint in the user's .bashrc file
-USER ${USERNAME}
-RUN echo "source /entrypoint.sh" >> /home/${USERNAME}/.bashrc
+# Set up the entrypoint, including it in the .bashrc for interactive shells
+COPY ./docker/entrypoint.sh /
+ENTRYPOINT [ "/entrypoint.sh" ]
+RUN echo "source /entrypoint.sh" >> ~/.bashrc

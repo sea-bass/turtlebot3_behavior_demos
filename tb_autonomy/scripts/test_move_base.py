@@ -5,7 +5,7 @@ Script that tests the `navigate_to_pose` action client to move the robot base.
 
 Example usage:
   Python:   python3 test_move_base.py --x 0 --y 2 --theta 1.57
-  ros2:     ros2 run tb3_autonomy test_move_base.py --x 0 --y 2 --theta 1.57
+  ros2:     ros2 run tb_autonomy test_move_base.py --x 0 --y 2 --theta 1.57
 """
 
 import argparse

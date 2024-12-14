@@ -11,7 +11,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def generate_launch_description():
     lds = []  # Launch Descriptions
-    pkg_dir = get_package_share_directory("tb3_worlds")
+    pkg_dir = get_package_share_directory("tb_worlds")
 
     # Parse locations YAML file
     yaml_config_path = os.path.join(pkg_dir, "maps", "sim_house_locations.yaml")

@@ -5,7 +5,7 @@ Script that tests a simple color thresholding vision approach.
 
 Example usage:
   Python:   python3 test_vision.py --min_h 0 --max_h 30 --min_s 220 --max_s 255 --min_v 0 --max_v 255
-  ros2:     ros2 run tb3_autonomy test_vision.py --min_h 0 --max_h 30 --min_s 220 --max_s 255 --min_v 0 --max_v 255
+  ros2:     ros2 run tb_autonomy test_vision.py --min_h 0 --max_h 30 --min_s 220 --max_s 255 --min_v 0 --max_v 255
 
 For reference, these are some approximate thresholds on the H channel.
   Red: 160 - 180

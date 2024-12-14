@@ -1,5 +1,5 @@
 """
-Navigation behaviors for TurtleBot3.
+Navigation behaviors for TurtleBot.
 """
 
 import py_trees

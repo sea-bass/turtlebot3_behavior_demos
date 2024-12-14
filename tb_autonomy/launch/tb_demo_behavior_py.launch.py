@@ -8,8 +8,8 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    pkg_tb3_worlds = get_package_share_directory("tb3_worlds")
-    default_world_dir = join(pkg_tb3_worlds, "maps", "sim_house_locations.yaml")
+    pkg_tb_worlds = get_package_share_directory("tb_worlds")
+    default_world_dir = join(pkg_tb_worlds, "maps", "sim_house_locations.yaml")
 
     return LaunchDescription(
         [
@@ -36,7 +36,7 @@ def generate_launch_description():
             ),
             # Main autonomy node
             Node(
-                package="tb3_autonomy",
+                package="tb_autonomy",
                 executable="autonomy_node.py",
                 name="autonomy_node_python",
                 output="screen",

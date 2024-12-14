@@ -1,15 +1,15 @@
 #!/bin/bash
-# Basic entrypoint for ROS / Colcon Docker containers
+# Basic entrypoint for ROS Docker containers
 
 # Source ROS 2
 source /opt/ros/${ROS_DISTRO}/setup.bash
 echo "Sourced ROS 2 ${ROS_DISTRO}"
 
 # Source the base workspace, if built
-if [ -f /turtlebot3_ws/install/setup.bash ]
+if [ -f /turtlebot_ws/install/setup.bash ]
 then
-  source /turtlebot3_ws/install/setup.bash
-  echo "Sourced TurtleBot3 base workspace"
+  source /turtlebot_ws/install/setup.bash
+  echo "Sourced TurtleBot base workspace"
 fi
 
 # Source the overlay workspace, if built

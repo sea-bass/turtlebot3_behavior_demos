@@ -1,5 +1,5 @@
 /*
- * Main behavior node for TurtleBot3. 
+ * Main behavior node for TurtleBot. 
  */
 
 #include <chrono>
@@ -19,11 +19,11 @@
 using namespace std::chrono_literals;
 
 const std::string default_bt_xml_file = 
-    ament_index_cpp::get_package_share_directory("tb3_autonomy") + "/bt_xml/tree_naive.xml";
-const std::string tb3_worlds_share_dir = 
-    ament_index_cpp::get_package_share_directory("tb3_worlds");
+    ament_index_cpp::get_package_share_directory("tb_autonomy") + "/bt_xml/tree_naive.xml";
+const std::string tb_worlds_share_dir = 
+    ament_index_cpp::get_package_share_directory("tb_worlds");
 const std::string default_location_file =
-    tb3_worlds_share_dir + "/maps/sim_house_locations.yaml";
+    tb_worlds_share_dir + "/maps/sim_house_locations.yaml";
 
 
 class AutonomyNode : public rclcpp::Node {

@@ -20,7 +20,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     # Get the launch directory
-    bringup_dir = get_package_share_directory("tb3_worlds")
+    bringup_dir = get_package_share_directory("tb_worlds")
     nav2_bringup_dir = get_package_share_directory("nav2_bringup")
 
     # Create the launch configuration variables
@@ -95,7 +95,7 @@ def generate_launch_description():
 
     sim_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(bringup_dir, "launch", "tb3_world.launch.py")
+            os.path.join(bringup_dir, "launch", "tb_world.launch.py")
         ),
         launch_arguments={
             "namespace": namespace,

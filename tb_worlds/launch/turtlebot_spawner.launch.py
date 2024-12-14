@@ -2,7 +2,7 @@
 # https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation/blob/091b5ff12436890a54de6325df3573ae110e912b/nav2_minimal_tb3_sim/launch/spawn_tb3.launch.py
 # Modification:
 #   - Add gz_bridge_config argument for specifying bridge yaml file
-#   - Spawn Robot: Given the environment variable ("TURTLEBOT3_MODEL"), choose either:
+#   - Spawn Robot: Given the environment variable ("TURTLEBOT_MODEL"), choose either:
 #       - Spawn turtlebot3 using xacro executable
 #       - Spawn turtlebot4 using robot_description topic
 
@@ -27,7 +27,7 @@ from launch.conditions import IfCondition
 
 def generate_launch_description():
     gz_mdl_dir = get_package_share_directory("nav2_minimal_tb3_sim")
-    bringup_dir = get_package_share_directory("tb3_worlds")
+    bringup_dir = get_package_share_directory("tb_worlds")
 
     namespace = LaunchConfiguration("namespace")
     robot_name = LaunchConfiguration("robot_name")
@@ -60,12 +60,12 @@ def generate_launch_description():
 
     declare_turtlebot_model_cmd = DeclareLaunchArgument(
         "turtlebot_model",
-        default_value=EnvironmentVariable("TURTLEBOT3_MODEL", default_value="4"),
+        default_value=EnvironmentVariable("TURTLEBOT_MODEL", default_value="3"),
     )
 
     declare_gz_bridge_cmd = DeclareLaunchArgument(
         "gz_bridge_config",
-        default_value=os.path.join(bringup_dir, "configs", "turtlebot4_bridge.yaml"),
+        default_value=os.path.join(bringup_dir, "configs", "turtlebot3_bridge.yaml"),
         description="Full path to robot bridge configuration file",
     )
 

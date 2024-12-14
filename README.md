@@ -1,5 +1,5 @@
-# TurtleBot3 Behavior Demos
-In this repository, we demonstrate autonomous behavior with a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) using Ubuntu 22.04 and ROS 2 Humble.
+# TurtleBot Behavior Demos
+In this repository, we demonstrate autonomous behavior with a simulated [ROBOTIS TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview) or [Clearpath TurtleBot 4](https://clearpathrobotics.com/turtlebot-4/) using Ubuntu 24.04 and ROS 2 Jazzy.
 
 The autonomy in these examples are designed using **behavior trees**.
 For more information, refer to [this blog post](https://roboticseabass.com/2021/05/08/introduction-to-behavior-trees/) or the [Behavior Trees in Robotics and AI textbook](https://arxiv.org/abs/1709.00084).
@@ -7,9 +7,16 @@ For more information, refer to [this blog post](https://roboticseabass.com/2021/
 This also serves as an example for Docker workflows in ROS based projects.
 For more information, refer to [this blog post](https://roboticseabass.com/2023/07/09/updated-guide-docker-and-ros2/).
 
-If you want to use ROS 1, check out the old version of this example from the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
+For older versions:
+
+* If you want to use ROS 1, check out the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
+* If you want to use ROS 2 Humble, check out the [`humble`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
 
 By Sebastian Castro, 2021-2024
+
+Other key contributors:
+* [Kemal Bektaş](https://github.com/bektaskemal) -- Upgrade to BehaviorTree.CPP v4.
+* [ElSayed ElSheikh](https://github.com/elsayedelsheikh) -- Upgrade to new Gazebo.
 
 ---
 
@@ -37,14 +44,14 @@ docker compose build
 
 ### Local Setup
 
-If you do not want to use Docker, you can directly clone this package to a Colcon workspace and build it provided you have the necessary dependencies.
-As long as you can run the examples in the [TurtleBot3 manual](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/#overview), you should be in good shape.
+If you do not want to use Docker, you can directly clone this package to a ROS 2 workspace and build it provided you have the necessary dependencies.
+As long as you can run the examples in the [Nav2 Minimal TurtleBot Simulation repo](https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation), you should be in good shape.
 
-First, make a Colcon workspace and clone this repo there:
+First, make a ROS 2 workspace and clone this repo there:
 
 ```
-mkdir -p turtlebot3_ws/src
-cd turtlebot3_ws/src
+mkdir -p turtlebot_ws/src
+cd turtlebot_ws/src
 git clone https://github.com/sea-bass/turtlebot3_behavior_demos.git
 ```
 
@@ -70,11 +77,11 @@ pip3 install matplotlib transforms3d
 Then, build the workspace.
 
 ```
-cd turtlebot3_ws
+cd turtlebot_ws
 colcon build
 ```
 
-NOTE: For best results, we recommend that you change your ROS Middleware (RMW) implementation to Cyclone DDS by following [these instructions](https://docs.ros.org/en/humble/Installation/DDS-Implementations/Working-with-Eclipse-CycloneDDS.html).
+NOTE: For best results, we recommend that you change your ROS Middleware (RMW) implementation to Cyclone DDS by following [these instructions](https://docs.ros.org/en/jazzy/Installation/DDS-Implementations/Working-with-Eclipse-CycloneDDS.html).
 
 ---
 
@@ -89,16 +96,16 @@ To enter a Terminal in the overlay container:
 docker compose run overlay bash
 ```
 
-Once inside the container, you can verify that display in Docker works by starting a basic Gazebo simulation included in the standard TurtleBot3 packages:
+Once inside the container, you can verify that display in Docker works by starting a Gazebo simulation with Nav2 support:
 
 ```
-ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+ros2 launch tb_worlds tb_demo_world.launch.py
 ```
 
 Alternatively, you can use the pre-existing `sim` service to do this in a single line:
 
 ```
-docker compose up sim
+docker compose up demo-world
 ```
 
 If you want to develop using Docker, you can also launch a dev container using:
@@ -135,7 +142,7 @@ docker compose up demo-behavior-py
 You can also change the following environment variables to set arguments for the launch files, or by modifying the defaults in the `.env` file:
 
 ```
-TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true docker compose up demo-behavior-py
+TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true TURTLEBOT_MODEL=4 docker compose up demo-behavior-py
 ```
 
 Note that the behavior tree viewer ([`py_trees_ros_viewer`](https://github.com/splintered-reality/py_trees_ros_viewer)) should automatically discover the ROS node containing the behavior tree and visualize it.
@@ -159,7 +166,7 @@ docker compose up demo-behavior-cpp
 You can also change the following environment variables to set arguments for the launch files, or by modifying the defaults in the `.env` file:
 
 ```
-TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true docker compose up demo-behavior-cpp
+TARGET_COLOR=green BT_TYPE=queue ENABLE_VISION=true TURTLEBOT_MODEL=4 docker compose up demo-behavior-cpp
 ```
 
 This example uses the behavior tree viewer ([`Groot2`](https://github.com/BehaviorTree/Groot2)).

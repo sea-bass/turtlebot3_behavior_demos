@@ -1,4 +1,4 @@
-// Navigation behaviors for TurtleBot3
+// Navigation behaviors for TurtleBot
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"

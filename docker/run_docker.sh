@@ -2,7 +2,7 @@
 # Sample script to run a command in a Docker container
 #
 # Usage Example:
-# ./run_docker.sh turtlebot3_behavior:overlay "ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py"
+# ./run_docker.sh turtlebot_behavior:overlay "ros2 launch tb_worlds tb_demo_world.launch.py"
 
 # Define Docker volumes and environment variables
 DOCKER_VOLUMES="
@@ -10,7 +10,7 @@ DOCKER_VOLUMES="
 --volume="${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority" \
 "
 DOCKER_ENV_VARS="
---env="TURTLEBOT3_MODEL=waffle_pi" \
+--env="TURTLEBOT_MODEL=3" \
 --env="DISPLAY" \
 --env="QT_X11_NO_MITSHM=1" \
 --env="NVIDIA_DRIVER_CAPABILITIES=all" \
