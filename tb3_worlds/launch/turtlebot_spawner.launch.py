@@ -1,7 +1,7 @@
 # This file has been modified from
 # https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation/blob/091b5ff12436890a54de6325df3573ae110e912b/nav2_minimal_tb3_sim/launch/spawn_tb3.launch.py
 # Modification:
-#   - Add gz_bridge_config argument for specifing bridge yaml file
+#   - Add gz_bridge_config argument for specifying bridge yaml file
 #   - Spawn Robot: Given the environment variable ("TURTLEBOT3_MODEL"), choose either:
 #       - Spawn turtlebot3 using xacro executable
 #       - Spawn turtlebot4 using robot_description topic
