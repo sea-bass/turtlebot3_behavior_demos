@@ -1,9 +1,9 @@
 # ROS distribution to use
 ARG ROS_DISTRO=jazzy
 
-########################################
-# Base Image for TurtleBot3 Simulation #
-########################################
+#######################################
+# Base Image for TurtleBot Simulation #
+#######################################
 FROM osrf/ros:${ROS_DISTRO}-desktop as base
 ENV ROS_DISTRO=${ROS_DISTRO}
 SHELL ["/bin/bash", "-c"]
@@ -22,13 +22,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 # Create Colcon workspace with external dependencies
-RUN mkdir -p /turtlebot3_ws/src
-WORKDIR /turtlebot3_ws/src
+RUN mkdir -p /turtlebot_ws/src
+WORKDIR /turtlebot_ws/src
 COPY dependencies.repos .
 RUN vcs import < dependencies.repos
 
 # Build the base Colcon workspace, installing dependencies first.
-WORKDIR /turtlebot3_ws
+WORKDIR /turtlebot_ws
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
  && apt-get update -y \
  && rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y \
@@ -47,21 +47,21 @@ RUN chmod -R 0700 /tmp/runtime-root
 ENV NO_AT_BRIDGE 1
 
 # Set up the entrypoint
-WORKDIR /turtlebot3_ws
+WORKDIR /turtlebot_ws
 COPY ./docker/entrypoint.sh /
 ENTRYPOINT [ "/entrypoint.sh" ]
 
-###########################################
-# Overlay Image for TurtleBot3 Simulation #
-###########################################
+##########################################
+# Overlay Image for TurtleBot Simulation #
+##########################################
 FROM base AS overlay
 
 # Create an overlay Colcon workspace
 RUN mkdir -p /overlay_ws/src
 WORKDIR /overlay_ws
-COPY ./tb3_autonomy/ ./src/tb3_autonomy/
-COPY ./tb3_worlds/ ./src/tb3_worlds/
-RUN source /turtlebot3_ws/install/setup.bash \
+COPY ./tb_autonomy/ ./src/tb_autonomy/
+COPY ./tb_worlds/ ./src/tb_worlds/
+RUN source /turtlebot_ws/install/setup.bash \
  && rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y \
  && colcon build --symlink-install
 

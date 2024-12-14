@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.8)
-project(tb3_autonomy)
+cmake_minimum_required(VERSION 3.22)
+project(tb_autonomy)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -31,8 +31,8 @@ install(DIRECTORY
 
 # Install Python package
 ament_python_install_package(
-    tb3_behaviors
-    PACKAGE_DIR python/tb3_behaviors)
+    tb_behaviors
+    PACKAGE_DIR python/tb_behaviors)
 
 # Install Python scripts
 install(PROGRAMS

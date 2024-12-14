@@ -23,13 +23,13 @@ def get_autonomy_and_visualization_nodes(context, *args, **kwargs):
     xml_file_name = f"{prefix}tree_{tree_type}.xml"
     print(f"\nUsing Behavior tree file: {xml_file_name}\n")
 
-    pkg_tb3_autonomy = get_package_share_directory("tb3_autonomy")
-    xml_file_path = join(pkg_tb3_autonomy, "bt_xml", xml_file_name)
+    pkg_tb_autonomy = get_package_share_directory("tb_autonomy")
+    xml_file_path = join(pkg_tb_autonomy, "bt_xml", xml_file_name)
 
     return [
         # Main autonomy node.
         Node(
-            package="tb3_autonomy",
+            package="tb_autonomy",
             executable="autonomy_node_cpp",
             name="autonomy_node_cpp",
             output="screen",
@@ -52,8 +52,8 @@ def get_autonomy_and_visualization_nodes(context, *args, **kwargs):
 
 
 def generate_launch_description():
-    pkg_tb3_worlds = get_package_share_directory("tb3_worlds")
-    default_world_dir = join(pkg_tb3_worlds, "maps", "sim_house_locations.yaml")
+    pkg_tb_worlds = get_package_share_directory("tb_worlds")
+    default_world_dir = join(pkg_tb_worlds, "maps", "sim_house_locations.yaml")
 
     return LaunchDescription(
         [

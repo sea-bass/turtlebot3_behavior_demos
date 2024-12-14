@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
 """
-Autonomy node for the TurtleBot3.
+Autonomy node for the TurtleBot.
 
 This script relies on a YAML file of potential navigation locations, 
 which is listed as a `location_file` ROS parameter.
 
 Example usage:
-  ros2 run tb3_autonomy autonomy_node.py
-  ros2 run tb3_autonomy autonomy_node.py --ros-args -p location_file:=/path/to/my/file.yaml
-  ros2 run tb3_autonomy autonomy_node.py --ros-args -p tree_type:=queue -p target_color:=green
+  ros2 run tb_autonomy autonomy_node.py
+  ros2 run tb_autonomy autonomy_node.py --ros-args -p location_file:=/path/to/my/file.yaml
+  ros2 run tb_autonomy autonomy_node.py --ros-args -p tree_type:=queue -p target_color:=green
 """
 
 import os
@@ -23,12 +23,12 @@ import py_trees_ros
 from py_trees.common import OneShotPolicy
 from ament_index_python.packages import get_package_share_directory
 
-from tb3_behaviors.navigation import GoToPose, GetLocationFromQueue
-from tb3_behaviors.vision import LookForObject
+from tb_behaviors.navigation import GoToPose, GetLocationFromQueue
+from tb_behaviors.vision import LookForObject
 
 
 default_location_file = os.path.join(
-    get_package_share_directory("tb3_worlds"), "maps", "sim_house_locations.yaml"
+    get_package_share_directory("tb_worlds"), "maps", "sim_house_locations.yaml"
 )
 
 

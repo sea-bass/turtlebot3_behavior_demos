@@ -2,7 +2,7 @@
 # Sample script to run a command in a Docker container
 #
 # Usage Example:
-# ./run_docker.sh turtlebot3_behavior:overlay "ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py"
+# ./run_docker.sh turtlebot_behavior:overlay "ros2 launch tb_worlds tb_demo_world.launch.py"
 
 # Define Docker volumes and environment variables
 DOCKER_VOLUMES="

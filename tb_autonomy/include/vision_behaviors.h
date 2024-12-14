@@ -1,4 +1,4 @@
-// Vision behaviors for TurtleBot3
+// Vision behaviors for TurtleBot
 
 #include <map>
 
