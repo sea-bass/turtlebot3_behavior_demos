@@ -58,8 +58,6 @@ services:
       context: .
       dockerfile: docker/Dockerfile
       target: dev
-      args:
-        - USERNAME=${USERNAME:-devuser}
     volumes:
       # Mount the source code
       - ./tb_autonomy:/overlay_ws/src/tb_autonomy:rw

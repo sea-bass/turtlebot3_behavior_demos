@@ -65,7 +65,7 @@ def generate_launch_description():
 
     declare_gz_bridge_cmd = DeclareLaunchArgument(
         "gz_bridge_config",
-        default_value=os.path.join(bringup_dir, "configs", "turtlebot4_bridge.yaml"),
+        default_value=os.path.join(bringup_dir, "configs", "turtlebot3_bridge.yaml"),
         description="Full path to robot bridge configuration file",
     )
 
