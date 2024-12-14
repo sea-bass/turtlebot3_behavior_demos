@@ -7,9 +7,10 @@ For more information, refer to [this blog post](https://roboticseabass.com/2021/
 This also serves as an example for Docker workflows in ROS based projects.
 For more information, refer to [this blog post](https://roboticseabass.com/2023/07/09/updated-guide-docker-and-ros2/).
 
-If you want to use ROS 1, check out the old version of this example from the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
+For older versions:
 
-If you want to use ROS 2 Humble, check out the old version of this example from the [`humble`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
+* If you want to use ROS 1, check out the [`noetic`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
+* If you want to use ROS 2 Humble, check out the [`humble`](https://github.com/sea-bass/turtlebot3_behavior_demos/tree/noetic) branch of this repository.
 
 By Sebastian Castro, 2021-2024
 
