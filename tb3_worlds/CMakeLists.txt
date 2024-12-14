@@ -8,21 +8,13 @@ endif()
 # Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclpy REQUIRED)
-find_package(gazebo_msgs REQUIRED)
-find_package(gazebo_ros REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(turtlebot3_gazebo REQUIRED)
+find_package(nav2_minimal_tb3_sim REQUIRED)
 
-# Install programs
-install(PROGRAMS
-    scripts/block_spawner.py
-    scripts/set_init_amcl_pose.py
-    DESTINATION lib/${PROJECT_NAME}
-)
 
 # Install directories
 install(DIRECTORY
-  launch maps models worlds
+  launch maps models worlds urdf configs
   DESTINATION share/${PROJECT_NAME}
 )
 

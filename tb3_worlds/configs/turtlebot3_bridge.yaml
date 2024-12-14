@@ -1,0 +1,56 @@
+# This file has been modified from
+# https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation/blob/091b5ff12436890a54de6325df3573ae110e912b/nav2_minimal_tb3_sim/configs/turtlebot3_waffle_bridge.yaml
+# Modification:
+#   - Added camera bridge
+
+# replace clock_bridge
+- topic_name: "/clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "gz.msgs.Clock"
+  direction: GZ_TO_ROS
+
+# no equivalent in TB3 - add
+- topic_name: "joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
+
+# replace odom_bridge - check gz topic name
+# gz topic published by DiffDrive plugin
+- topic_name: "odom"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+# replace odom_tf_bridge - check gz and ros topic names
+# gz topic published by DiffDrive plugin
+# prefix ros2 topic with gz
+- topic_name: "tf"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "gz.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+# replace imu_bridge - check gz topic name
+- topic_name: "imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
+
+# replace lidar_bridge
+- topic_name: "scan"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+
+# replace cmd_vel_bridge
+- topic_name: "cmd_vel"
+  ros_type_name: "geometry_msgs/msg/TwistStamped"
+  gz_type_name: "gz.msgs.Twist"
+  direction: ROS_TO_GZ
+
+# replace image_bridge
+- ros_topic_name: "/camera/image_raw"
+  gz_topic_name: "/realsense_camera"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
