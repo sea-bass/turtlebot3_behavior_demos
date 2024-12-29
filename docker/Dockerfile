@@ -74,11 +74,38 @@ ENTRYPOINT [ "/entrypoint.sh" ]
 #####################
 FROM overlay AS dev
 
+# Dev container arguments
+ARG USERNAME=devuser
+ARG UID=1000
+ARG GID=${UID}
+
 # Install extra tools for development
 RUN apt-get update && apt-get install -y --no-install-recommends \
  gdb gdbserver nano
 
+# In Ubuntu 24.04, there is already a user named "ubuntu" with UID 1000.
+# Delete this in the (common) event that the user on the host also has this UID.
+RUN touch /var/mail/ubuntu \
+    && chown ubuntu /var/mail/ubuntu \
+    && userdel -r ubuntu
+
+# Create new user and home directory
+RUN groupadd --gid $GID $USERNAME \
+ && useradd --uid ${GID} --gid ${UID} --create-home ${USERNAME} \
+ && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
+ && chmod 0440 /etc/sudoers.d/${USERNAME} \
+ && mkdir -p /home/${USERNAME} \
+ && chown -R ${UID}:${GID} /home/${USERNAME}
+
+# Set the ownership of the overlay workspace to the new user
+RUN chown -R ${UID}:${GID} /overlay_ws/
+
+# Move Groot2 to new user's home directory and ensure it can be run
+RUN groupadd fuse \
+ && usermod -aG fuse ${USERNAME}
+RUN mv /root/Groot2.AppImage /home/${USERNAME} \ 
+ && chown ${UID}:${GID} /home/${USERNAME}/Groot2.AppImage
+
 # Set up the entrypoint, including it in the .bashrc for interactive shells
-COPY ./docker/entrypoint.sh /
-ENTRYPOINT [ "/entrypoint.sh" ]
-RUN echo "source /entrypoint.sh" >> ~/.bashrc
+USER ${USERNAME}
+RUN echo "source /entrypoint.sh" >> /home/${USERNAME}/.bashrc
