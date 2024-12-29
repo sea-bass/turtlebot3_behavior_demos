@@ -58,6 +58,10 @@ services:
       context: .
       dockerfile: docker/Dockerfile
       target: dev
+      args:
+        - UID=${UID:-1000}
+        - GID=${UID:-1000}
+        - USERNAME=${USERNAME:-devuser}
     volumes:
       # Mount the source code
       - ./tb_autonomy:/overlay_ws/src/tb_autonomy:rw
@@ -66,6 +70,7 @@ services:
       - ./.colcon/build/:/overlay_ws/build/:rw
       - ./.colcon/install/:/overlay_ws/install/:rw
       - ./.colcon/log/:/overlay_ws/log/:rw
+    user: ${USERNAME:-devuser}
     command: sleep infinity
 
   # Demo simulation world
