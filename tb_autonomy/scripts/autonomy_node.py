@@ -3,7 +3,7 @@
 """
 Autonomy node for the TurtleBot.
 
-This script relies on a YAML file of potential navigation locations, 
+This script relies on a YAML file of potential navigation locations,
 which is listed as a `location_file` ROS parameter.
 
 Example usage:
