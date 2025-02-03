@@ -29,12 +29,12 @@ repos:
       - id: fix-byte-order-marker
 
   - repo: https://github.com/psf/black
-    rev: 24.10.0
+    rev: 25.1.0
     hooks:
       - id: black
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.0
+    rev: v2.4.1
     hooks:
       - id: codespell
         args: ["--write-changes", "-L", "atleast,inout,ether"] # Provide a comma-separated list of misspelled words that codespell should ignore (for example: '-L', 'word1,word2,word3').
