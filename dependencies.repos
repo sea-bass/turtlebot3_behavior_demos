@@ -1,4 +1,10 @@
 repositories:
+  # Nav2 repo (seems like the binaries are not working at the moment)
+  navigation2:
+    type: git
+    url: https://github.com/ros-navigation/navigation2.git
+    version: jazzy
+
   # Simulation and Nav2 support for TurtleBot robots
   nav2_minimal_turtlebot_simulation:
     type: git
@@ -22,11 +28,9 @@ repositories:
     type: git
     url: https://github.com/splintered-reality/py_trees_ros_interfaces.git
     version: devel
-  # NOTE: For now, using a personal fork to remove deprecation warnings:
-  # https://github.com/splintered-reality/py_trees_ros_viewer/pull/34
   py_trees_ros_viewer:
     type: git
-    url: https://github.com/sea-bass/py_trees_ros_viewer.git
+    url: https://github.com/splintered-reality/py_trees_ros_viewer.git
     version: devel
 
   # BehaviorTree.CPP for C++ based behavior trees.
