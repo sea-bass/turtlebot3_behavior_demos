@@ -1,4 +1,10 @@
 repositories:
+  # Nav2 repo (seems like the binaries are not working at the moment)
+  navigation2:
+    type: git
+    url: https://github.com/ros-navigation/navigation2.git
+    version: jazzy
+
   # Simulation and Nav2 support for TurtleBot robots
   nav2_minimal_turtlebot_simulation:
     type: git

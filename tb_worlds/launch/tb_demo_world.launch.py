@@ -15,8 +15,6 @@ from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
-from launch_ros.actions import Node
-
 
 def generate_launch_description():
     # Get the launch directory
@@ -122,7 +120,7 @@ def generate_launch_description():
         }.items(),
     )
 
-    bringup_cmd = IncludeLaunchDescription(
+    nav_bringup_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(nav2_bringup_dir, "launch", "bringup_launch.py")
         ),
@@ -158,7 +156,7 @@ def generate_launch_description():
     # Add the actions to launch all of the navigation nodes
     ld.add_action(sim_cmd)
     ld.add_action(rviz_cmd)
-    ld.add_action(bringup_cmd)
     ld.add_action(block_spawner_cmd)
+    ld.add_action(nav_bringup_cmd)
 
     return ld
