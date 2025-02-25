@@ -29,8 +29,8 @@ RUN vcs import < dependencies.repos
 
 # Build the base Colcon workspace, installing dependencies first.
 WORKDIR /turtlebot3_ws
-RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
- && apt-get update -y \
+RUN apt-get update -y \
+ && source /opt/ros/${ROS_DISTRO}/setup.bash \
  && rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y \
  && colcon build --symlink-install
 ENV TURTLEBOT3_MODEL=waffle_pi
