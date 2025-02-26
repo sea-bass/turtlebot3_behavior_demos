@@ -9,6 +9,13 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+  # Whenever certain branches are pushed
+  push:
+    branches: [main, humble]
+
+  # On demand from github.com for testing
+  workflow_dispatch:
+
 jobs:
   # Build docker images
   docker:
