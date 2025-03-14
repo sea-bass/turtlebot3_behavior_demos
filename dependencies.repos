@@ -4,33 +4,3 @@ repositories:
     type: git
     url: https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation.git
     version: main
-
-  # py_trees and related packages for Python based behavior trees.
-  py_trees:
-    type: git
-    url: https://github.com/splintered-reality/py_trees.git
-    version: devel
-  py_trees_js:
-    type: git
-    url: https://github.com/splintered-reality/py_trees_js.git
-    version: devel
-  py_trees_ros:
-    type: git
-    url: https://github.com/splintered-reality/py_trees_ros.git
-    version: devel
-  py_trees_ros_interfaces:
-    type: git
-    url: https://github.com/splintered-reality/py_trees_ros_interfaces.git
-    version: devel
-  # NOTE: For now, using a personal fork to remove deprecation warnings:
-  # https://github.com/splintered-reality/py_trees_ros_viewer/pull/34
-  py_trees_ros_viewer:
-    type: git
-    url: https://github.com/sea-bass/py_trees_ros_viewer.git
-    version: devel
-
-  # BehaviorTree.CPP for C++ based behavior trees.
-  behaviortree_cpp:
-    type: git
-    url: https://github.com/BehaviorTree/BehaviorTree.CPP.git
-    version: master
