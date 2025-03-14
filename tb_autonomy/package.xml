@@ -16,6 +16,8 @@
   <depend>ament_index_cpp</depend>
   <depend>behaviortree_cpp</depend>
   <depend>nav2_msgs</depend>
+  <depend>py_trees_ros</depend>
+  <depend>py_trees_ros_viewer</depend>
   <depend>sensor_msgs</depend>
   <depend>tb_worlds</depend>
   <depend>tf2</depend>
