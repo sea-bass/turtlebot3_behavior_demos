@@ -41,7 +41,7 @@ repos:
         exclude: \.(svg|pyc|stl|dae|lock)$
 
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v19.1.7
+    rev: v20.1.0
     hooks:
       - id: clang-format
         files: \.(c|cc|cxx|cpp|frag|glsl|h|hpp|hxx|ih|ispc|ipp|java|m|proto|vert)$
@@ -49,7 +49,7 @@ repos:
         args: ["-fallback-style=none"]
 
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.35.1
+    rev: v1.36.2
     hooks:
       - id: yamllint
         args:
@@ -62,7 +62,7 @@ repos:
         files: \.(yml|yaml)$
 
   - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.13.6
+    rev: v3.13.7
     hooks:
       - id: markdown-link-check
 
