@@ -41,7 +41,7 @@ repos:
         exclude: \.(svg|pyc|stl|dae|lock)$
 
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v21.1.5
+    rev: v21.1.6
     hooks:
       - id: clang-format
         files: \.(c|cc|cxx|cpp|frag|glsl|h|hpp|hxx|ih|ispc|ipp|java|m|proto|vert)$
@@ -62,7 +62,7 @@ repos:
         files: \.(yml|yaml)$
 
   - repo: https://github.com/tcort/markdown-link-check
-    rev: v3.14.1
+    rev: v3.14.2
     hooks:
       - id: markdown-link-check
 
