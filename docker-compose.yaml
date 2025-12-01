@@ -29,6 +29,7 @@ services:
     ipc: host
     # Needed to display graphical applications
     privileged: True
+    gpus: all
     environment:
       # Needed to define a TurtleBot model type (3 or 4)
       - TURTLEBOT_MODEL=${TURTLEBOT_MODEL:-3}
