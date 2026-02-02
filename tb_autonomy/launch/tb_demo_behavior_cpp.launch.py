@@ -6,7 +6,6 @@ from launch_ros.actions import Node
 from os import environ
 from os.path import join
 
-
 # Change this to your Groot2 executable path.
 # This currently defaults to a Groot2 AppImage file in your home directory.
 groot2_executable = join(environ.get("HOME", "/"), "Groot2.AppImage")
