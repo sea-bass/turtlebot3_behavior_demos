@@ -26,7 +26,6 @@ from ament_index_python.packages import get_package_share_directory
 from tb_behaviors.navigation import GoToPose, GetLocationFromQueue
 from tb_behaviors.vision import LookForObject
 
-
 default_location_file = os.path.join(
     get_package_share_directory("tb_worlds"), "maps", "sim_house_locations.yaml"
 )
