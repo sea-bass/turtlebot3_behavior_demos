@@ -85,8 +85,8 @@ def generate_launch_description():
             "urdf",
             "turtlebot3_waffle.urdf",
         )
-        with open(urdf, "r") as infp:
-            robot_description = infp.read()
+        with open(urdf, "r") as info:
+            robot_description = info.read()
 
     else:
         # TurtleBot 4 model
