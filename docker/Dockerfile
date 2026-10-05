@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  python3-pip python3-opencv python3-tk python3-pyqt5.qtwebengine
 
 # Install additional Python modules
-RUN pip3 install --break-system-packages matplotlib transforms3d
+RUN pip3 install --break-system-packages 'numpy<2' matplotlib transforms3d
 
 # Use Cyclone DDS as middleware
 RUN apt-get update && apt-get install -y --no-install-recommends \
